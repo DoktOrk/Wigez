@@ -9,9 +9,7 @@
     {{! charset("utf-8") !}}
     {{! pageTitle($title) !}}
 
-    <link rel="icon" type="image/png" href="/favicon-32x32.png?v=1.0" sizes="32x32">
-    <link rel="icon" type="image/png" href="/favicon-16x16.png?v=1.0" sizes="16x16">
-    <link rel="shortcut icon" type="image/x-icon" href="/admin/themes/images/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
 
     <!-- Google icon -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">

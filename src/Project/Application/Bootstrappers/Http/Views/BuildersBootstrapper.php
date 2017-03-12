@@ -28,6 +28,10 @@ class BuildersBootstrapper extends Bootstrapper
             /** @see AdminBuilder::build() */
             return (new AdminBuilder())->build($view);
         });
+        $viewFactory->registerBuilder('layouts/empty', function (IView $view) {
+            /** @see AdminBuilder::build() */
+            return (new WebsiteBuilder())->build($view);
+        });
         $viewFactory->registerBuilder('errors/html/Error', function (IView $view) {
             /** @see HtmlErrorBuilder::build() */
             return (new HtmlErrorBuilder())->build($view);

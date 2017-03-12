@@ -15,7 +15,7 @@ class User extends Controller
      */
     public function showLoginPage() : Response
     {
-        $this->view = $this->viewFactory->createView('contents/admin/login');
+        $this->view = $this->viewFactory->createView('contents/login');
 
         return new Response($this->viewCompiler->compile($this->view));
     }

@@ -38,23 +38,9 @@
     <link rel="stylesheet" type="text/css" href="/admin/themes/css/propeller-admin.css">
 </head>
 
-<body>
-    <!--content area start-->
-    <div id="content" class="pmd-content inner-page">
+<body class="body-custom">
 
-        <!--tab start-->
-        <div class="container-fluid full-width-container">
-
-
-            <main class="main">
-                <% show("content") %>
-            </main>
-
-
-        </div><!-- tab end -->
-
-    </div><!-- content area end -->
-
+    <% show("content") %>
 
     <!-- Scripts Starts -->
     <script src="/admin/js/jquery-1.12.2.min.js"></script>
