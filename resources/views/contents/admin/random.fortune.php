@@ -1,4 +1,4 @@
-<% extends("Admin") %>
+<% extends("layouts/admin") %>
 
 <% part("content") %>
 

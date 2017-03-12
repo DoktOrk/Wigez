@@ -1,4 +1,4 @@
-<% extends("Master") %>
+<% extends("layouts/empty") %>
 
 <% part("content") %>
 <div id="main-wrapper">

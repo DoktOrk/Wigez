@@ -16,7 +16,7 @@ class Index extends Controller
      */
     public function showHomePage() : Response
     {
-        $this->view = $this->viewFactory->createView('Home');
+        $this->view = $this->viewFactory->createView('contents/website/home');
 
         return new Response($this->viewCompiler->compile($this->view));
     }
