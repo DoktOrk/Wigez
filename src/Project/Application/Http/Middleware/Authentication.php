@@ -5,25 +5,15 @@ use Closure;
 use Opulence\Http\Requests\Request;
 use Opulence\Http\Responses\RedirectResponse;
 use Opulence\Http\Responses\Response;
-use Opulence\Routing\Middleware\IMiddleware;
-use Project\Application\Auth\Authenticator;
+use Opulence\Http\Responses\ResponseHeaders;
 
-class Authentication implements IMiddleware
+class Authentication extends Session
 {
-    /** @var null|Authenticator */
-    private $authenticator = null;
-
-    // Inject any dependencies your middleware needs
-    public function __construct(Authenticator $authenticator)
-    {
-        $this->authenticator = $authenticator;
-    }
-
     // $next consists of the next middleware in the pipeline
     public function handle(Request $request, Closure $next) : Response
     {
-        if (!$this->authenticator->isLoggedIn()) {
-            return new RedirectResponse('/login');
+        if (!$this->session->get('username')) {
+            return new RedirectResponse(PATH_LOGIN, ResponseHeaders::HTTP_TEMPORARY_REDIRECT);
         }
 
         return $next($request);

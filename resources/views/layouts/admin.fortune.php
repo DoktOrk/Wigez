@@ -60,6 +60,18 @@
     <!-- Left sidebar -->
     <aside class="pmd-sidebar sidebar-default pmd-sidebar-slide-push pmd-sidebar-left pmd-sidebar-open bg-fill-darkblue sidebar-with-icons" role="navigation">
         <ul class="nav pmd-sidebar-nav">
+            <li class="dropdown pmd-dropdown pmd-user-info visible-xs visible-md visible-sm visible-lg">
+                <a aria-expanded="false" data-toggle="dropdown" class="btn-user dropdown-toggle media" data-sidebar="true" aria-expandedhref="javascript:void(0);">
+                    <div class="media-left">
+                        <img src="/admin/themes/images/user-icon.png" alt="New User">
+                    </div>
+                    <div class="media-body media-middle">Admin</div>
+                    <div class="media-right media-middle"><i class="dic-more-vert dic"></i></div>
+                </a>
+                <div class="pmd-dropdown-menu-container"><div class="pmd-dropdown-menu-bg"></div><ul class="dropdown-menu">
+                        <li><a href="{{! route('logout') !}}">Logout</a></li>
+                    </ul></div>
+            </li>
             <li><a class="pmd-ripple-effect" href="{{! route('pages') !}}" tabindex="-1"><i class="material-icons media-left media-middle">text_format</i> <span class="media-body">Pages</span></a></li>
             <li><a class="pmd-ripple-effect" href="{{! route('categories') !}}" tabindex="-1"><i class="material-icons media-left media-middle">group_work</i> <span class="media-body">Categories</span></a></li>
             <li><a class="pmd-ripple-effect" href="{{! route('customers') !}}" tabindex="-1"><i class="material-icons media-left media-middle">person</i> <span class="media-body">Customers</span></a></li>

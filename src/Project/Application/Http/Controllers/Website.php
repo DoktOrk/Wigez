@@ -15,7 +15,8 @@ class Website extends Controller
     {
         $this->view = $this->viewFactory->createView('contents/admin/random');
 
-        $this->view->setVar('title', 'Home');
+        $this->view->setVar('title', 'Random');
+        $this->view->setVar('random', rand(0, 20));
 
         return new Response($this->viewCompiler->compile($this->view));
     }
