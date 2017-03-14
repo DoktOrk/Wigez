@@ -4,6 +4,7 @@ use Project\Application\Bootstrappers\Cache\RedisBootstrapper;
 use Project\Application\Bootstrappers\Databases\SqlBootstrapper;
 use Project\Application\Bootstrappers\Events\EventDispatcherBootstrapper;
 use Project\Application\Bootstrappers\Orm\OrmBootstrapper;
+use Project\Application\Bootstrappers\Translation\TranslationBootstrapper;
 use Project\Application\Bootstrappers\Validation\ValidatorBootstrapper;
 
 /**
@@ -17,5 +18,6 @@ return [
     SqlBootstrapper::class,
     RedisBootstrapper::class,
     OrmBootstrapper::class,
+    TranslationBootstrapper::class,
     ValidatorBootstrapper::class
 ];

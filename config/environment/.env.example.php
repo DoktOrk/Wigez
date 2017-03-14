@@ -63,3 +63,10 @@ Environment::setVar("REDIS_DATABASE", 0);
  * ----------------------------------------------------------
  */
 Environment::setVar("ENCRYPTION_KEY", "");
+
+/**
+ * ----------------------------------------------------------
+ * Set the default language
+ * ----------------------------------------------------------
+ */
+Environment::setVar("DEFAULT_LANGUAGE", "en");

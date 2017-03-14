@@ -46,7 +46,7 @@
                 <a href="javascript:void(0);"
                    class="btn btn-sm pmd-btn-fab pmd-btn-flat pmd-ripple-effect pull-left margin-r8 pmd-sidebar-toggle"><i
                             class="material-icons">menu</i></a>
-                <a href="index.html" class="navbar-brand">
+                <a href="{{! route('dashboard') !}}l" class="navbar-brand">
                     Logo
                 </a>
             </div>
@@ -65,7 +65,7 @@
                     <div class="media-left">
                         <img src="/admin/themes/images/user-icon.png" alt="New User">
                     </div>
-                    <div class="media-body media-middle">Admin</div>
+                    <div class="media-body media-middle">{{ $username }}</div>
                     <div class="media-right media-middle"><i class="dic-more-vert dic"></i></div>
                 </a>
                 <div class="pmd-dropdown-menu-container"><div class="pmd-dropdown-menu-bg"></div><ul class="dropdown-menu">

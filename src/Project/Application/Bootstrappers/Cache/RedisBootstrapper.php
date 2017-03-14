@@ -7,6 +7,7 @@ use Opulence\Ioc\Bootstrappers\ILazyBootstrapper;
 use Opulence\Ioc\IContainer;
 use Opulence\Redis\Redis;
 use Opulence\Redis\Types\TypeMapper;
+use Project\Application\Constant\Env;
 use Redis as Client;
 use RuntimeException;
 
@@ -28,18 +29,14 @@ class RedisBootstrapper extends Bootstrapper implements ILazyBootstrapper
      */
     public function registerBindings(IContainer $container)
     {
-        try {
-            $client = new Client();
-            $client->connect(
-                getenv('REDIS_HOST'),
-                getenv('REDIS_PORT')
-            );
-            $client->select(getenv('REDIS_DATABASE'));
-            $redis = new Redis($client);
-            $container->bindInstance(Redis::class, $redis);
-            $container->bindInstance(TypeMapper::class, new TypeMapper());
-        } catch (Exception $ex) {
-            throw new RuntimeException('Failed to register Redis bindings', 0, $ex);
-        }
+        $client = new Client();
+        $client->connect(
+            getenv(Env::REDIS_HOST),
+            getenv(Env::REDIS_PORT)
+        );
+        $client->select(getenv(Env::REDIS_DATABASE));
+        $redis = new Redis($client);
+        $container->bindInstance(Redis::class, $redis);
+        $container->bindInstance(TypeMapper::class, new TypeMapper());
     }
 }

@@ -5,6 +5,7 @@ namespace Project\Application\Auth;
 use Opulence\Cryptography\Hashing\BcryptHasher;
 use Opulence\Databases\ConnectionPools\ConnectionPool;
 use Opulence\QueryBuilders\MySql\QueryBuilder;
+use Project\Application\Constant\Env;
 
 class Authenticator
 {
@@ -34,7 +35,7 @@ class Authenticator
      */
     public function canLogin(string $username, string $oassword): bool
     {
-        $salt = getenv('ENCRYPTION_KEY');
+        $salt = getenv(Env::ENCRYPTION_KEY);
 
         $hashedValue = $this->getUserPassword($username);
         if (empty($hashedValue)) {
