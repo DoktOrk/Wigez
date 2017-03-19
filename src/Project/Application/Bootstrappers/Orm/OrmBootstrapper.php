@@ -1,6 +1,7 @@
 <?php
 namespace Project\Application\Bootstrappers\Orm;
 
+use Opulence\Databases\ConnectionPools\ConnectionPool;
 use Opulence\Databases\IConnection;
 use Opulence\Ioc\Bootstrappers\Bootstrapper;
 use Opulence\Ioc\Bootstrappers\ILazyBootstrapper;
@@ -15,6 +16,9 @@ use Opulence\Orm\Ids\Generators\IdGeneratorRegistry;
 use Opulence\Orm\Ids\Generators\IIdGeneratorRegistry;
 use Opulence\Orm\IUnitOfWork;
 use Opulence\Orm\UnitOfWork;
+use Project\Domain\Entities\Page;
+use Project\Domain\Orm\DataMappers\PageSqlDataMapper;
+use Project\Domain\Orm\PageRepo;
 use RuntimeException;
 
 /**
@@ -33,6 +37,7 @@ class OrmBootstrapper extends Bootstrapper implements ILazyBootstrapper
             IIdGeneratorRegistry::class,
             IUnitOfWork::class,
             // Add your repository classes here
+            PageRepo::class,
         ];
     }
 
@@ -73,7 +78,20 @@ class OrmBootstrapper extends Bootstrapper implements ILazyBootstrapper
      */
     private function bindRepositories(IContainer $container, IUnitOfWork $unitOfWork)
     {
+        $connectionPool = $container->resolve(ConnectionPool::class);
+
+        $readConnection = $connectionPool->getReadConnection();
+        $writeConnection = $connectionPool->getWriteConnection();
+
         // Bind your repositories here
+        $container->bindInstance(
+            PageRepo::class,
+            new PageRepo(
+                Page::class,
+                new PageSqlDataMapper($readConnection, $writeConnection),
+                $unitOfWork
+            )
+        );
     }
 
     /**
