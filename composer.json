@@ -15,6 +15,10 @@
       "Project\\": [
         "src/Project",
         "tests/src/Project"
+      ],
+      "Grid\\": [
+        "src/Grid",
+        "tests/src/Grid"
       ]
     }
   },
