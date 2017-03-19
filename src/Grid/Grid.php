@@ -1,0 +1,121 @@
+<?php
+
+namespace Grid;
+
+use Grid\Collection\Actions;
+use Grid\Collection\Filters;
+use Grid\Component\Component;
+use Grid\Helper\StringHelper;
+use Grid\Table\ITable;
+
+class Grid extends Component implements IGrid
+{
+    /**
+     *   %1$s - filter
+     *   %2$s - actions
+     *   %3$s - table
+     */
+    const TEMPLATE_CONTENT = '%1$s%2$s%3$s';
+
+    const TAG_GRID = 'div';
+    const TAG_FILTER = 'div';
+    const TAG_ACTIONS = 'div';
+    const TAG_FORM = 'form';
+
+    const ATTRIBUTE_GRID_CLASS = 'grid';
+    const ATTRIBUTE_FILTER_CLASS = 'grid-filters';
+    const ATTRIBUTE_ACTIONS_CLASS = 'grid-actions';
+
+    const ATTRIBUTES_FORM = ['class' => 'grid-form'];
+
+    /** @var string */
+    protected $containerClass = '';
+
+    /** @var ITable */
+    protected $table;
+
+    /** @var Filters */
+    protected $filters;
+
+    /** @var Actions */
+    protected $actions;
+
+    /** @var string */
+    protected $whitespace;
+
+    /**
+     * @param ITable $rows
+     * @param Filters|null $filters
+     * @param Actions|null $massActions
+     * @param array $attributes
+     */
+    public function __construct(
+        ITable $table,
+        Filters $filters = null,
+        Actions $actions = null,
+        array $attributes = []
+    ) {
+        $this->table = $table;
+
+        parent::__construct('', static::TAG_GRID, $attributes);
+
+        $this->appendToAttribute(Component::ATTRIBUTE_CLASS, static::ATTRIBUTE_GRID_CLASS);
+
+        if ($actions) {
+            $this->actions = $actions;
+            $this->actions->appendToAttribute(Component::ATTRIBUTE_CLASS, static::ATTRIBUTE_ACTIONS_CLASS);
+        }
+
+        if ($filters) {
+            $this->filters = $filters;
+            $this->filters->appendToAttribute(Component::ATTRIBUTE_CLASS, static::ATTRIBUTE_FILTER_CLASS);
+        }
+    }
+
+    /**
+     * @param int $num
+     * @param string $whitespace
+     */
+    public function setIndentation(int $num, string $whitespace = '    ')
+    {
+        $indentationStep = $this->filters || $this->actions ? 2 : 1;
+
+        $this->table->setIndentation($num + $indentationStep, $whitespace);
+        $this->filters->setIndentation($num + $indentationStep, $whitespace);
+
+        $this->indentation = str_repeat($num, $whitespace);
+        $this->whitespace = $whitespace;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString(): string
+    {
+        $filters = (string)$this->filters;
+        $actions = $this->actions ? (string)$this->actions : '';
+        $table = (string)$this->table;
+
+        $this->content = sprintf(static::TEMPLATE_CONTENT, $filters, $actions, $table);
+
+        $this->wrapContentInForm();
+
+        return parent::__toString();
+    }
+
+    protected function wrapContentInForm()
+    {
+        if (!$this->actions && !$this->filters) {
+            return;
+        }
+
+        $whitespace = $this->indentation . $this->whitespace;
+
+        $this->content = StringHelper::wrapInTag(
+            $this->content,
+            static::TAG_FORM,
+            static::ATTRIBUTES_FORM,
+            $whitespace
+        );
+    }
+}
