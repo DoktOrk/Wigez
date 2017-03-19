@@ -26,9 +26,10 @@ class HomeTest extends IntegrationTestCase
             ->go()
             ->assertResponse
             ->isOK();
-        $this->assertView->varEquals('title', 'Welcome to Opulence')
+
+        $this->assertView->varEquals('title', 'Home')
             ->varEquals('metaKeywords', [])
             ->varEquals('metaDescription', '')
-            ->varEquals('css', '/assets/css/style.css');
+            ->varEquals('css', '/website/css/style.css');
     }
 }
