@@ -2,39 +2,38 @@
 
 namespace Grid\Collection;
 
-use Grid\Action\IAction;
-use Grid\Component\Component;
 use InvalidArgumentException;
 use LogicException;
+use Grid\Cell\ICell;
 
-class Actions extends BaseCollection
+class Pages extends BaseCollection
 {
-    /** @var Component[] */
+    /** @var IPage[] */
     protected $components = [];
 
     /**
-     * @return Component
+     * @return IPage
      * @throws LogicException
      */
     public function current()
     {
-        /** @var Component $object */
+        /** @var IPage $object */
         $object = parent::current();
 
-        $object = $this->verifyReturn($object, Component::class);
+        $object = $this->verifyReturn($object, IPage::class);
 
         return $object;
     }
 
     /**
      * @param int|null $offset
-     * @param Component $value
+     * @param IPage $value
      *
      * @throws InvalidArgumentException
      */
     public function offsetSet($offset, $value)
     {
-        $this->verifyArgument($value, Component::class);
+        $this->verifyArgument($value, IPage::class);
 
         parent::offsetSet($offset, $value);
     }
@@ -42,15 +41,15 @@ class Actions extends BaseCollection
     /**
      * @param int $offset
      *
-     * @return Component|null
+     * @return IPage|null
      * @throws LogicException
      */
     public function offsetGet($offset)
     {
-        /** @var IAction $object */
+        /** @var IPage $object */
         $object = parent::offsetGet($offset);
 
-        $object = $this->verifyReturn($object, Component::class);
+        $this->verifyReturn($object, IPage::class);
 
         return $object;
     }

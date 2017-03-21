@@ -2,12 +2,12 @@
 
 namespace Grid\Table;
 
-use Grid\Collection\Actions;
 use Grid\Collection\Cells;
 use Grid\Collection\Rows;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
+use PHPUnit_Framework_TestCase as TestCase;
 
-class TableTest extends \PHPUnit_Framework_TestCase
+class TableTest extends TestCase
 {
     /** @var Table */
     protected $sut;
