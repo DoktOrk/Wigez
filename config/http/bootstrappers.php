@@ -5,6 +5,7 @@ use Project\Application\Bootstrappers\Http\Routing\RouterBootstrapper;
 use Project\Application\Bootstrappers\Http\Sessions\SessionBootstrapper;
 use Project\Application\Bootstrappers\Http\Views\BuildersBootstrapper;
 use Project\Application\Bootstrappers\Http\Views\ViewBootstrapper;
+use Project\Application\Bootstrappers\Grid\GridBootstrapper;
 
 /**
  * ----------------------------------------------------------
@@ -17,5 +18,6 @@ return [
     ViewBootstrapper::class,
     SessionBootstrapper::class,
     ViewFunctionsBootstrapper::class,
-    BuildersBootstrapper::class
+    BuildersBootstrapper::class,
+    GridBootstrapper::class,
 ];
