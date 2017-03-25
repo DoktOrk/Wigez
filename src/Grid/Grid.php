@@ -81,9 +81,12 @@ class Grid extends Component implements IGrid
         $indentationStep = $this->filters || $this->actions ? 2 : 1;
 
         $this->table->setIndentation($num + $indentationStep, $whitespace);
-        $this->filters->setIndentation($num + $indentationStep, $whitespace);
 
-        $this->indentation = str_repeat($num, $whitespace);
+        if ($this->filters) {
+            $this->filters->setIndentation($num + $indentationStep, $whitespace);
+        }
+
+        $this->indentation = str_repeat($whitespace, $num);
         $this->whitespace = $whitespace;
     }
 
@@ -117,5 +120,21 @@ class Grid extends Component implements IGrid
             static::ATTRIBUTES_FORM,
             $whitespace
         );
+    }
+
+    /**
+     * @return ITable
+     */
+    public function getTable() :ITable
+    {
+        return $this->table;
+    }
+
+    /**
+     * @param Filters $filters
+     */
+    public function setFilter(Filters $filters)
+    {
+        $this->filters = $filters;
     }
 }

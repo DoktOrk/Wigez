@@ -2,8 +2,6 @@
 
 namespace Grid\Table;
 
-use Grid\Cell\Cell;
-use Grid\Collection\Actions;
 use Grid\Collection\Cells;
 use Grid\Collection\Rows;
 use Grid\Component\Component;
@@ -28,15 +26,16 @@ class Table extends Component implements ITable
     protected $rows;
 
     /**
-     * @param Rows $rows
-     * @param Cells|null $headers
+     * @param Rows  $rows
+     * @param Cells $headers
+     * @param array $attributes
      */
-    public function __construct(Rows $rows, Cells $headers = null)
+    public function __construct(Rows $rows, Cells $headers, array $attributes = [])
     {
         $this->rows = $rows;
         $this->headers = $headers;
 
-        parent::__construct('', static::TAG_TABLE);
+        parent::__construct('', static::TAG_TABLE, $attributes);
     }
 
     /**
@@ -44,29 +43,7 @@ class Table extends Component implements ITable
      */
     public function getHeader(): Cells
     {
-        if ($this->headers !== null) {
-            return $this->headers;
-        }
-
-        $this->createHeader();
-
         return $this->headers;
-    }
-
-    protected function createHeader()
-    {
-        $this->headers = new Cells(static::TAG_ROWS);
-
-        if (count($this->rows) === 0) {
-            return;
-        }
-
-        /** @var Cell $cell */
-        foreach ($this->rows[0] as $cell) {
-            $group = $cell->getGroup();
-
-            $this->headers[] = new Cell($group, $group, [], static::TAG_HEADER_CELL);
-        }
     }
 
     /**
@@ -78,15 +55,7 @@ class Table extends Component implements ITable
     }
 
     /**
-     * @return bool
-     */
-    public function hasMassActions(): Actions
-    {
-        return count($this->massActions);
-    }
-
-    /**
-     * @param int $num
+     * @param int    $num
      * @param string $whitespace
      */
     public function setIndentation(int $num, string $whitespace = '    ')
@@ -99,7 +68,7 @@ class Table extends Component implements ITable
             $row->setIndentation($num + 1, $whitespace);
         }
 
-        $this->indentation = str_repeat($num, $whitespace);
+        $this->indentation = str_repeat($whitespace, $num);
     }
 
     /**

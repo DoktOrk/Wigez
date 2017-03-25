@@ -54,7 +54,9 @@ class BaseCollection extends Component implements ArrayAccess, Countable, Iterat
      */
     public function current()
     {
-        return $this->components[$this->position];
+        $component = $this->components[$this->position];
+
+        return $component;
     }
 
     /**

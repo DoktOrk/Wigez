@@ -12,6 +12,17 @@ class Rows extends BaseCollection
     protected $components = [];
 
     /**
+     * @param string|null $tag
+     * @param array $attributes
+     */
+    public function __construct(string $tag = null, $attributes = [])
+    {
+        $tag = $tag ?: 'tbody';
+
+        parent::__construct($tag, $attributes);
+    }
+
+    /**
      * @return IRow
      * @throws LogicException
      */

@@ -7,6 +7,9 @@ use Grid\Component\Component;
 
 class Cell extends Component implements ICell
 {
+    const HEAD = 'th';
+    const BODY = 'td';
+
     /** @var string */
     protected $group = '';
 
@@ -16,7 +19,7 @@ class Cell extends Component implements ICell
      * @param array $attributes
      * @param string $tag
      */
-    public function __construct(string $content, string $group, array $attributes = [], string $tag = 'td')
+    public function __construct(string $content, string $group, array $attributes = [], string $tag = self::BODY)
     {
         $this->group = $group;
 

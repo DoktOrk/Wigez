@@ -8,6 +8,8 @@ use Grid\Cell\ICell;
 
 class Cells extends BaseCollection
 {
+    const HEAD = 'thead';
+
     /** @var ICell[] */
     protected $components = [];
 
@@ -20,7 +22,7 @@ class Cells extends BaseCollection
         /** @var ICell $object */
         $object = parent::current();
 
-        $object = $this->verifyReturn($object, ICell::class);
+        $this->verifyReturn($object, ICell::class);
 
         return $object;
     }
