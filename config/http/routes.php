@@ -24,7 +24,7 @@ $router->group(['controllerNamespace' => 'Project\\Application\\Http\\Controller
 
     $router->group(['path' => PATH_ADMIN, 'middleware' => 'Project\\Application\\Http\\Middleware\\Authentication'],
         function (Router $router) {
-            $entitites = [
+            $entities = [
                 'pages'      => 'Page',
                 'categories' => 'Category',
                 'customers'  => 'Customer',
@@ -35,7 +35,7 @@ $router->group(['controllerNamespace' => 'Project\\Application\\Http\\Controller
             $router->get(PATH_DASHBOARD, 'Admin@showDashboardPage', [OPTIONS_NAME => ROUTE_DASHBOARD]);
             $router->get(PATH_RANDOM, 'Admin@showRandomPage', [OPTIONS_NAME => ROUTE_RANDOM]);
 
-            foreach ($entitites as $route => $controllerName) {
+            foreach ($entities as $route => $controllerName) {
                 $path = strtolower($controllerName);
 
                 $router->get("/${path}", "${controllerName}@show", [OPTIONS_NAME => "${route}"]);
