@@ -1,15 +1,14 @@
 <?php
-
 namespace Project\Application\Http\Controllers;
 
 use Opulence\Routing\Urls\UrlGenerator;
-use Project\Domain\Orm\FileRepo as Repo;
-use Project\Application\Grid\Factory\File as GridFactory;
+use Project\Domain\Orm\DownloadRepo as Repo;
+use Project\Application\Grid\Factory\Download as GridFactory;
 
-class File extends CrudAbstract
+class Download extends CrudAbstract
 {
-    const ENTITY_SINGULAR = 'file';
-    const ENTITY_PLURAL   = 'files';
+    const ENTITY_SINGULAR = 'download';
+    const ENTITY_PLURAL   = 'downloads';
 
     /** @var GridFactory */
     protected $gridFactory;

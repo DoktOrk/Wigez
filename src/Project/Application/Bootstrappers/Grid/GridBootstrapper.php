@@ -1,9 +1,11 @@
 <?php
+
 namespace Project\Application\Bootstrappers\Grid;
 
 use Opulence\Ioc\Bootstrappers\Bootstrapper;
 use Opulence\Ioc\Bootstrappers\ILazyBootstrapper;
 use Opulence\Ioc\IContainer;
+use Opulence\Routing\Urls\UrlGenerator;
 use Project\Application\Grid\Factory\Page as PageGridFactory;
 
 /**
@@ -11,14 +13,16 @@ use Project\Application\Grid\Factory\Page as PageGridFactory;
  */
 class GridBootstrapper extends Bootstrapper implements ILazyBootstrapper
 {
+    protected $bindings = [
+        PageGridFactory::class,
+    ];
+
     /**
      * @inheritdoc
      */
-    public function getBindings() : array
+    public function getBindings(): array
     {
-        return [
-            PageGridFactory::class,
-        ];
+        return $this->bindings;
     }
 
     /**
@@ -26,6 +30,10 @@ class GridBootstrapper extends Bootstrapper implements ILazyBootstrapper
      */
     public function registerBindings(IContainer $container)
     {
-        $container->bindInstance(PageGridFactory::class, new PageGridFactory());
+        $urlResorver = $container->resolve(UrlGenerator::class);
+
+        foreach ($this->bindings as $className) {
+            $container->bindInstance($className, new $className($urlResorver));
+        }
     }
 }

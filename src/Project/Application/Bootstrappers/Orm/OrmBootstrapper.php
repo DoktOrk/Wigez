@@ -1,4 +1,5 @@
 <?php
+
 namespace Project\Application\Bootstrappers\Orm;
 
 use Opulence\Databases\ConnectionPools\ConnectionPool;
@@ -16,8 +17,20 @@ use Opulence\Orm\Ids\Generators\IdGeneratorRegistry;
 use Opulence\Orm\Ids\Generators\IIdGeneratorRegistry;
 use Opulence\Orm\IUnitOfWork;
 use Opulence\Orm\UnitOfWork;
+use Project\Domain\Entities\Category;
+use Project\Domain\Entities\Customer;
+use Project\Domain\Entities\Download;
+use Project\Domain\Entities\File;
 use Project\Domain\Entities\Page;
+use Project\Domain\Orm\CategoryRepo;
+use Project\Domain\Orm\CustomerRepo;
+use Project\Domain\Orm\DataMappers\CategorySqlDataMapper;
+use Project\Domain\Orm\DataMappers\CustomerSqlDataMapper;
+use Project\Domain\Orm\DataMappers\DownloadSqlDataMapper;
+use Project\Domain\Orm\DataMappers\FileSqlDataMapper;
 use Project\Domain\Orm\DataMappers\PageSqlDataMapper;
+use Project\Domain\Orm\DownloadRepo;
+use Project\Domain\Orm\FileRepo;
 use Project\Domain\Orm\PageRepo;
 use RuntimeException;
 
@@ -26,19 +39,28 @@ use RuntimeException;
  */
 class OrmBootstrapper extends Bootstrapper implements ILazyBootstrapper
 {
+    /** @var array */
+    protected $repoMappers = [
+        CategoryRepo::class => [CategorySqlDataMapper::class, Category::class],
+        CustomerRepo::class => [CustomerSqlDataMapper::class, Customer::class],
+        PageRepo::class     => [PageSqlDataMapper::class, Page::class],
+        FileRepo::class     => [FileSqlDataMapper::class, File::class],
+        DownloadRepo::class     => [DownloadSqlDataMapper::class, Download::class],
+    ];
+
     /**
      * @inheritdoc
      */
-    public function getBindings() : array
+    public function getBindings(): array
     {
-        return [
+        $baseBindings = [
             IChangeTracker::class,
             IIdAccessorRegistry::class,
             IIdGeneratorRegistry::class,
             IUnitOfWork::class,
-            // Add your repository classes here
-            PageRepo::class,
         ];
+
+        return array_merge($baseBindings, array_keys($this->repoMappers));
     }
 
     /**
@@ -47,13 +69,13 @@ class OrmBootstrapper extends Bootstrapper implements ILazyBootstrapper
     public function registerBindings(IContainer $container)
     {
         try {
-            $idAccessorRegistry = new IdAccessorRegistry();
+            $idAccessorRegistry  = new IdAccessorRegistry();
             $idGeneratorRegistry = new IdGeneratorRegistry();
             $this->registerIdAccessors($idAccessorRegistry);
             $this->registerIdGenerators($idGeneratorRegistry);
-            $changeTracker = new ChangeTracker();
+            $changeTracker  = new ChangeTracker();
             $entityRegistry = new EntityRegistry($idAccessorRegistry, $changeTracker);
-            $unitOfWork = new UnitOfWork(
+            $unitOfWork     = new UnitOfWork(
                 $entityRegistry,
                 $idAccessorRegistry,
                 $idGeneratorRegistry,
@@ -68,30 +90,6 @@ class OrmBootstrapper extends Bootstrapper implements ILazyBootstrapper
         } catch (IocException $ex) {
             throw new RuntimeException('Failed to register ORM bindings', 0, $ex);
         }
-    }
-
-    /**
-     * Binds repositories to the container
-     *
-     * @param IContainer $container The container to bind to
-     * @param IUnitOfWork $unitOfWork The unit of work to use in repositories
-     */
-    private function bindRepositories(IContainer $container, IUnitOfWork $unitOfWork)
-    {
-        $connectionPool = $container->resolve(ConnectionPool::class);
-
-        $readConnection = $connectionPool->getReadConnection();
-        $writeConnection = $connectionPool->getWriteConnection();
-
-        // Bind your repositories here
-        $container->bindInstance(
-            PageRepo::class,
-            new PageRepo(
-                Page::class,
-                new PageSqlDataMapper($readConnection, $writeConnection),
-                $unitOfWork
-            )
-        );
     }
 
     /**
@@ -112,5 +110,69 @@ class OrmBootstrapper extends Bootstrapper implements ILazyBootstrapper
     private function registerIdGenerators(IIdGeneratorRegistry $idGeneratorRegistry)
     {
         // Register your Id generators for classes that will be managed by the unit of work
+    }
+
+    /**
+     * Binds repositories to the container
+     *
+     * @param IContainer  $container  The container to bind to
+     * @param IUnitOfWork $unitOfWork The unit of work to use in repositories
+     */
+    private function bindRepositories(IContainer $container, IUnitOfWork $unitOfWork)
+    {
+        $connectionPool = $container->resolve(ConnectionPool::class);
+
+        $readConnection  = $connectionPool->getReadConnection();
+        $writeConnection = $connectionPool->getWriteConnection();
+
+        foreach ($this->repoMappers as $repoClass => $classes) {
+            $container->bindFactory(
+                $repoClass,
+                $this->createFactory(
+                    $container,
+                    $repoClass,
+                    $classes[0],
+                    $classes[1],
+                    $readConnection,
+                    $writeConnection,
+                    $unitOfWork
+                )
+            );
+        }
+    }
+
+    /**
+     * @param IContainer  $container
+     * @param string      $repoClass
+     * @param string      $dataMapperClass
+     * @param string      $entityClass
+     * @param IConnection $readConnection
+     * @param IConnection $writeConnection
+     * @param IUnitOfWork $unitOfWork
+     *
+     * @return \Closure
+     */
+    private function createFactory(
+        IContainer $container,
+        string $repoClass,
+        string $dataMapperClass,
+        string $entityClass,
+        IConnection $readConnection,
+        IConnection $writeConnection,
+        IUnitOfWork $unitOfWork
+    ) {
+        return function () use (
+            $container,
+            $repoClass,
+            $dataMapperClass,
+            $entityClass,
+            $readConnection,
+            $writeConnection,
+            $unitOfWork
+        ) {
+            $dataMapper = new $dataMapperClass($readConnection, $writeConnection);
+
+            return new $repoClass($entityClass, $dataMapper, $unitOfWork);
+        };
     }
 }

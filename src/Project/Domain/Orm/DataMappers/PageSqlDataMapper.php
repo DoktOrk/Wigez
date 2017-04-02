@@ -4,7 +4,6 @@ namespace Project\Domain\Orm\DataMappers;
 
 use Project\Domain\Entities\Page as Entity;
 use Opulence\Orm\DataMappers\SqlDataMapper;
-use PDO;
 
 class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
 {
@@ -45,6 +44,9 @@ class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
         $statement->execute();
     }
 
+    /**
+     * @return array
+     */
     public function getAll() : array
     {
         $sql = 'SELECT id, title, body FROM pages';
@@ -56,7 +58,7 @@ class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
     /**
      * @param int|string $id
      *
-     * @return array|mixed|null
+     * @return array|null
      */
     public function getById($id)
     {
@@ -73,7 +75,7 @@ class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
     /**
      * @param string $title
      *
-     * @return array|mixed|null
+     * @return array|null
      */
     public function getByTitle(string $title)
     {

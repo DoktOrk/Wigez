@@ -3,7 +3,6 @@
 namespace Grid;
 
 
-use Grid\Action\Button;
 use Grid\Cell\Cell;
 use Grid\Collection\Actions;
 use Grid\Collection\Cells;
@@ -40,7 +39,7 @@ class Factory
         Actions $cellActions = null,
         Actions $gridActions = null
     ) {
-        $tableBody = static::createTableBody($entities, $getters, $bodyAttributes, $cellActions);
+        $tableBody   = static::createTableBody($entities, $getters, $bodyAttributes, $cellActions);
         $tableHeader = static::createTableHeader($headers, $headerAttributes, $cellActions);
 
         $table = new Table($tableBody, $tableHeader, $tableAttributes);
@@ -70,7 +69,9 @@ class Factory
             $cells = new Cells();
 
             foreach ($getters as $group => $getter) {
-                $cells[] = new Cell($entity->$getter(), $group, $bodyAttributes, Cell::BODY);
+                $content = is_callable($getter) ? $getter($entity) : (string)$entity->$getter();
+
+                $cells[] = new Cell($content, $group, $bodyAttributes, Cell::BODY);
             }
 
             $row = new Row($cells, $actions->duplicate());

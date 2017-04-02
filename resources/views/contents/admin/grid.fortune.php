@@ -2,7 +2,7 @@
 
 <% part("content") %>
 
-<h1>Pages</h1>
+<h1>{{ $title }}</h1>
 
 {{! $grid !}}
 

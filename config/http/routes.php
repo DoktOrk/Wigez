@@ -24,19 +24,26 @@ $router->group(['controllerNamespace' => 'Project\\Application\\Http\\Controller
 
     $router->group(['path' => PATH_ADMIN, 'middleware' => 'Project\\Application\\Http\\Middleware\\Authentication'],
         function (Router $router) {
-            /** @see \Project\Application\Http\Controllers\Admin::showDashboardPage() */
+            $entitites = [
+                'pages'      => 'Page',
+                'categories' => 'Category',
+                'customers'  => 'Customer',
+                'files'      => 'File',
+                'downloads'  => 'Download',
+            ];
+
             $router->get(PATH_DASHBOARD, 'Admin@showDashboardPage', [OPTIONS_NAME => ROUTE_DASHBOARD]);
-            /** @see \Project\Application\Http\Controllers\Admin::showRandomPage() */
             $router->get(PATH_RANDOM, 'Admin@showRandomPage', [OPTIONS_NAME => ROUTE_RANDOM]);
-            /** @see \Project\Application\Http\Controllers\Website::showPagesPage() */
-            $router->get(PATH_PAGES, 'Website@showPagesPage', [OPTIONS_NAME => ROUTE_PAGES]);
-            /** @see \Project\Application\Http\Controllers\File::showCategoriesPage() */
-            $router->get(PATH_CATEGORIES, 'File@showCategoriesPage', [OPTIONS_NAME => ROUTE_CATEGORIES]);
-            /** @see \Project\Application\Http\Controllers\File::showCustomersPage() */
-            $router->get(PATH_CUSTOMERS, 'File@showCustomersPage', [OPTIONS_NAME => ROUTE_CUSTOMERS]);
-            /** @see \Project\Application\Http\Controllers\File::showFilesPage() */
-            $router->get(PATH_FILES, 'File@showFilesPage', [OPTIONS_NAME => ROUTE_FILES]);
-            /** @see \Project\Application\Http\Controllers\File::showDownloadsPage() */
-            $router->get(PATH_DOWNLOADS, 'File@showDownloadsPage', [OPTIONS_NAME => ROUTE_DOWNLOADS]);
+
+            foreach ($entitites as $route => $controllerName) {
+                $path = strtolower($controllerName);
+
+                $router->get("/${path}", "${controllerName}@show", [OPTIONS_NAME => "${route}"]);
+                $router->get("/${path}/new", "${controllerName}@create", [OPTIONS_NAME => "${route}-new"]);
+                $router->put("/${path}/new", "${controllerName}@new", [OPTIONS_NAME => "${route}-new"]);
+                $router->get("/${path}/:id/edit", "${controllerName}@edit", [OPTIONS_NAME => "${route}-edit"]);
+                $router->put("/${path}/:id/edit", "${controllerName}@update", [OPTIONS_NAME => "${route}-edit"]);
+                $router->get("/${path}/:id/delete", "${controllerName}@delete", [OPTIONS_NAME => "${route}-delete"]);
+            }
         });
 });

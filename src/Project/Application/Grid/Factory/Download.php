@@ -7,17 +7,24 @@ use Grid\Collection\Actions;
 use Grid\Factory;
 use Grid\Grid;
 use Opulence\Routing\Router;
+use Project\Domain\Entities\Download as Entity;
 
-class Page extends Base
+class Download extends Base
 {
-    const GROUP_ID = 'page-id';
-    const GROUP_TITLE = 'page-title';
+    const GROUP_ID = 'download-id';
+    const GROUP_FILE = 'download-file';
+    const GROUP_CUSTOMER = 'download-customer';
+    const GROUP_DOWNLOADED_AT = 'download-downloaded-at';
 
     const HEADER_ID = 'Id';
-    const HEADER_TITLE = 'Title';
+    const HEADER_FILE = 'File';
+    const HEADER_CUSTOMER = 'Customer';
+    const HEADER_DOWNLOADED_AT = 'Downloaded At';
 
     const GETTER_ID = 'getId';
-    const GETTER_TITLE = 'getTitle';
+    const GETTER_FILE = 'getFile';
+    const GETTER_CUSTOMER = 'getCustomer';
+    const GETTER_DOWNLOADED_AT = 'getDownloadedAt';
 
     /** @var array */
     protected $headerAttributes = [];
@@ -35,8 +42,18 @@ class Page extends Base
      */
     public function createGrid(array $pages): Grid
     {
-        $getters = [static::GROUP_ID => static::GETTER_ID, static::GROUP_TITLE => static::GETTER_TITLE];
-        $headers = [static::GROUP_ID => static::HEADER_ID, static::GROUP_TITLE => static::HEADER_TITLE];
+        $headers = [
+            static::GROUP_ID            => static::HEADER_ID,
+            static::GROUP_FILE          => static::HEADER_FILE,
+            static::GROUP_CUSTOMER      => static::HEADER_CUSTOMER,
+            static::GROUP_DOWNLOADED_AT => static::HEADER_DOWNLOADED_AT,
+        ];
+        $getters = [
+            static::GROUP_ID            => static::GETTER_ID,
+            static::GROUP_FILE          => static::GETTER_FILE,
+            static::GROUP_CUSTOMER      => static::GETTER_CUSTOMER,
+            static::GROUP_DOWNLOADED_AT => [$this, 'getDownloadedAt'],
+        ];
 
         $cellActions = $this->getCellActions();
 
@@ -71,7 +88,7 @@ class Page extends Base
             static::ATTRIBUTE_HREF  => ROUTE_PAGES_DELETE,
         ];
 
-        $cellActions = new Actions();
+        $cellActions   = new Actions();
         $cellActions[] = new Button(
             static::LABEL_EDIT,
             Button::TAG_A,
@@ -86,6 +103,16 @@ class Page extends Base
         );
 
         return $cellActions;
+    }
+
+    /**
+     * @param Entity $entity
+     *
+     * @return string
+     */
+    public function getDownloadedAt(Entity $entity): string
+    {
+        return $entity->getDownloadedAt()->format(Entity::DATE_FORMAT);
     }
 }
 

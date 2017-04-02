@@ -8,16 +8,25 @@ use Grid\Factory;
 use Grid\Grid;
 use Opulence\Routing\Router;
 
-class Page extends Base
+class Customer extends Base
 {
-    const GROUP_ID = 'page-id';
-    const GROUP_TITLE = 'page-title';
+    const GROUP_ID = 'customer-id';
+    const GROUP_NAME = 'customer-name';
+    const GROUP_EMAIL = 'customer-email';
+    const GROUP_PASSWORD = 'customer-password';
+    const GROUP_PASSWORD_SENT = 'customer-password-sent';
 
     const HEADER_ID = 'Id';
-    const HEADER_TITLE = 'Title';
+    const HEADER_NAME = 'Name';
+    const HEADER_EMAIL = 'Email';
+    const HEADER_PASSWORD = 'Password';
+    const HEADER_PASSWORD_SENT = 'Password Sent';
 
     const GETTER_ID = 'getId';
-    const GETTER_TITLE = 'getTitle';
+    const GETTER_NAME = 'getName';
+    const GETTER_EMAIL = 'getEmail';
+    const GETTER_PASSWORD = 'getPassword';
+    const GETTER_PASSWORD_SENT = 'getPasswordSent';
 
     /** @var array */
     protected $headerAttributes = [];
@@ -35,8 +44,20 @@ class Page extends Base
      */
     public function createGrid(array $pages): Grid
     {
-        $getters = [static::GROUP_ID => static::GETTER_ID, static::GROUP_TITLE => static::GETTER_TITLE];
-        $headers = [static::GROUP_ID => static::HEADER_ID, static::GROUP_TITLE => static::HEADER_TITLE];
+        $getters = [
+            static::GROUP_ID            => static::GETTER_ID,
+            static::GROUP_NAME          => static::GETTER_NAME,
+            static::GROUP_EMAIL         => static::GETTER_EMAIL,
+            static::GROUP_PASSWORD      => static::GETTER_PASSWORD,
+            static::GROUP_PASSWORD_SENT => static::GETTER_PASSWORD_SENT,
+        ];
+        $headers = [
+            static::GROUP_ID            => static::HEADER_ID,
+            static::GROUP_NAME          => static::HEADER_NAME,
+            static::GROUP_EMAIL         => static::HEADER_EMAIL,
+            static::GROUP_PASSWORD      => static::HEADER_PASSWORD,
+            static::GROUP_PASSWORD_SENT => static::HEADER_PASSWORD_SENT,
+        ];
 
         $cellActions = $this->getCellActions();
 
@@ -71,7 +92,7 @@ class Page extends Base
             static::ATTRIBUTE_HREF  => ROUTE_PAGES_DELETE,
         ];
 
-        $cellActions = new Actions();
+        $cellActions   = new Actions();
         $cellActions[] = new Button(
             static::LABEL_EDIT,
             Button::TAG_A,

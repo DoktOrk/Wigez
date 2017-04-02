@@ -3,13 +3,13 @@
 namespace Project\Application\Http\Controllers;
 
 use Opulence\Routing\Urls\UrlGenerator;
-use Project\Domain\Orm\FileRepo as Repo;
-use Project\Application\Grid\Factory\File as GridFactory;
+use Project\Application\Grid\Factory\Page as GridFactory;
+use Project\Domain\Orm\PageRepo as Repo;
 
-class File extends CrudAbstract
+class Page extends CrudAbstract
 {
-    const ENTITY_SINGULAR = 'file';
-    const ENTITY_PLURAL   = 'files';
+    const ENTITY_SINGULAR = 'page';
+    const ENTITY_PLURAL   = 'pages';
 
     /** @var GridFactory */
     protected $gridFactory;
