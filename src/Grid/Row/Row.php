@@ -70,6 +70,10 @@ class Row extends Component implements IRow
     {
         $this->entity = $entity;
 
+        if (null === $this->actions) {
+            return;
+        }
+
         foreach ($this->actions as $action) {
             $action->setEntity($entity);
         }

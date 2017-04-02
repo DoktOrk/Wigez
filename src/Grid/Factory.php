@@ -74,7 +74,9 @@ class Factory
                 $cells[] = new Cell($content, $group, $bodyAttributes, Cell::BODY);
             }
 
-            $row = new Row($cells, $actions->duplicate());
+            $rowActions = $actions ? $actions->duplicate() : null;
+
+            $row = new Row($cells, $rowActions);
             $row->setEntity($entity);
 
             $tableBody[] = $row;
