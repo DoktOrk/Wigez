@@ -72,8 +72,8 @@ class DownloadSqlDataMapper extends SqlDataMapper implements IDownloadDataMapper
         $sqlParts = [];
 
         $sqlParts[] = 'SELECT file_downloads.id, file_downloads.file_id, file_downloads.customer_id, file_downloads.downloaded_at,';
-        $sqlParts[] = 'files.file AS file_name,';
-        $sqlParts[] = 'customers.name AS customer_name';
+        $sqlParts[] = '  files.file AS file_name,';
+        $sqlParts[] = '  customers.name AS customer_name';
         $sqlParts[] = 'FROM file_downloads';
         $sqlParts[] = 'INNER JOIN files ON files.id=file_downloads.file_id';
         $sqlParts[] = 'INNER JOIN customers ON customers.id=file_downloads.customer_id';

@@ -24,30 +24,24 @@ class Customer implements IEntity
     /** @var string */
     protected $password;
 
-    /** @var int */
-    protected $passwordSent;
-
     /**
      * @param int        $id
      * @param string     $name
      * @param string     $email
      * @param Category[] $categories
      * @param string     $password
-     * @param int        $passwordSent
      */
     public function __construct(
         int $id,
         string $name,
         string $email,
         array $categories,
-        string $password,
-        int $passwordSent
+        string $password
     ) {
         $this->id             = $id;
         $this->name           = $name;
         $this->email          = $email;
         $this->password       = $password;
-        $this->passwordSent   = $passwordSent;
 
         foreach ($categories as $category) {
             $this->categories[$category->getId()] = $category;
@@ -141,14 +135,6 @@ class Customer implements IEntity
     public function getPassword(): string
     {
         return $this->password;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPasswordSent(): int
-    {
-        return $this->passwordSent;
     }
 
     /**

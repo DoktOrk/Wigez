@@ -54,6 +54,38 @@ class CustomerSqlDataMapper extends SqlDataMapper implements ICustomerDataMapper
     }
 
     /**
+     * @param Entity $entity
+     */
+    private function updateCategories(Entity $entity)
+    {
+        foreach ($entity->getDeletedCategories() as $category) {
+            $statement = $this->writeConnection->prepare(
+                'DELETE FROM categories_customers WHERE customer_id = :customer_id'
+            );
+            $statement->bindValues(
+                [
+                    'customer_id' => [$entity->getId(), \PDO::PARAM_INT],
+                    'category_id' => [$category->getId(), \PDO::PARAM_INT],
+                ]
+            );
+            $statement->execute();
+        }
+
+        foreach ($entity->getNewCategories() as $category) {
+            $statement = $this->writeConnection->prepare(
+                'INSERT INTO categories_customers VALUES customer_id = :customer_id, category_id = :category_id'
+            );
+            $statement->bindValues(
+                [
+                    'customer_id' => [$entity->getId(), \PDO::PARAM_INT],
+                    'category_id' => [$category->getId(), \PDO::PARAM_INT],
+                ]
+            );
+            $statement->execute();
+        }
+    }
+
+    /**
      * @return array
      */
     public function getAll(): array
@@ -74,8 +106,7 @@ class CustomerSqlDataMapper extends SqlDataMapper implements ICustomerDataMapper
         $sqlParts = [];
 
         $sqlParts[] = 'SELECT customers.id, customers.`name`, customers.email, customers.`password`,';
-        $sqlParts[] = '  customers.password_sent,';
-        $sqlParts[] = '  GROUP_CONCAT(CONCAT(categories.`id`, \'-\', categories.`pos`, \'-\', categories.`name`)) AS categories';
+        $sqlParts[] = '  GROUP_CONCAT(CONCAT(categories.`id`, \'-\', categories.`name`)) AS categories';
         $sqlParts[] = 'FROM customers';
         $sqlParts[] = 'LEFT JOIN categories_customers ON categories_customers.customer_id=customers.id';
         $sqlParts[] = 'LEFT JOIN categories ON categories.id=categories_customers.category_id';
@@ -139,52 +170,19 @@ class CustomerSqlDataMapper extends SqlDataMapper implements ICustomerDataMapper
         }
 
         $statement = $this->writeConnection->prepare(
-            'UPDATE customers SET `name` = :name, email = :email, password = :password, password_sent = :password_sent WHERE id = :id'
+            'UPDATE customers SET `name` = :name, email = :email, password = :password WHERE id = :id'
         );
         $statement->bindValues(
             [
-                'name'          => $entity->getName(),
-                'email'         => $entity->getEmail(),
-                'password'      => $entity->getPassword(),
-                'password_sent' => $entity->getPasswordSent(),
-                'id'            => [$entity->getId(), \PDO::PARAM_INT],
+                'name'     => $entity->getName(),
+                'email'    => $entity->getEmail(),
+                'password' => $entity->getPassword(),
+                'id'       => [$entity->getId(), \PDO::PARAM_INT],
             ]
         );
         $statement->execute();
 
         $this->updateCategories($entity);
-    }
-
-    /**
-     * @param Entity $entity
-     */
-    private function updateCategories(Entity $entity)
-    {
-        foreach ($entity->getDeletedCategories() as $category) {
-            $statement = $this->writeConnection->prepare(
-                'DELETE FROM categories_customers WHERE customer_id = :customer_id'
-            );
-            $statement->bindValues(
-                [
-                    'customer_id' => [$entity->getId(), \PDO::PARAM_INT],
-                    'category_id' => [$category->getId(), \PDO::PARAM_INT],
-                ]
-            );
-            $statement->execute();
-        }
-
-        foreach ($entity->getNewCategories() as $category) {
-            $statement = $this->writeConnection->prepare(
-                'INSERT INTO categories_customers VALUES customer_id = :customer_id, category_id = :category_id'
-            );
-            $statement->bindValues(
-                [
-                    'customer_id' => [$entity->getId(), \PDO::PARAM_INT],
-                    'category_id' => [$category->getId(), \PDO::PARAM_INT],
-                ]
-            );
-            $statement->execute();
-        }
     }
 
     /**
@@ -198,9 +196,9 @@ class CustomerSqlDataMapper extends SqlDataMapper implements ICustomerDataMapper
 
         $categoryExploded = explode(',', $hash['categories']);
         foreach ($categoryExploded as $categoryData) {
-            list($id, $pos, $name) = explode('-', $categoryData);
+            list($id, $name) = explode('-', $categoryData);
 
-            $categories[] = new Category($id, $name, $pos);
+            $categories[] = new Category($id, $name);
         }
 
         return new Entity(
@@ -208,8 +206,7 @@ class CustomerSqlDataMapper extends SqlDataMapper implements ICustomerDataMapper
             $hash['name'],
             $hash['email'],
             $categories,
-            $hash['password'],
-            $hash['password_sent']
+            $hash['password']
         );
     }
 }

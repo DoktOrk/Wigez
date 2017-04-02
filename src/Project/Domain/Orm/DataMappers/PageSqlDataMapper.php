@@ -2,8 +2,8 @@
 
 namespace Project\Domain\Orm\DataMappers;
 
-use Project\Domain\Entities\Page as Entity;
 use Opulence\Orm\DataMappers\SqlDataMapper;
+use Project\Domain\Entities\Page as Entity;
 
 class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
 {
@@ -19,10 +19,12 @@ class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
         $statement = $this->writeConnection->prepare(
             'INSERT INTO pages (title, body) VALUES (:title, :body)'
         );
-        $statement->bindValues([
-            'title' => $entity->getTitle(),
-            'body' => $entity->getBody(),
-        ]);
+        $statement->bindValues(
+            [
+                'title' => $entity->getTitle(),
+                'body'  => $entity->getBody(),
+            ]
+        );
         $statement->execute();
     }
 
@@ -38,16 +40,18 @@ class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
         $statement = $this->writeConnection->prepare(
             'DELETE FROM pages WHERE id = :id'
         );
-        $statement->bindValues([
-            'id' => [$entity->getId(), \PDO::PARAM_INT]
-        ]);
+        $statement->bindValues(
+            [
+                'id' => [$entity->getId(), \PDO::PARAM_INT],
+            ]
+        );
         $statement->execute();
     }
 
     /**
      * @return array
      */
-    public function getAll() : array
+    public function getAll(): array
     {
         $sql = 'SELECT id, title, body FROM pages';
 
@@ -62,9 +66,9 @@ class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
      */
     public function getById($id)
     {
-        $sql = 'SELECT id, title, body FROM pages WHERE id = :id';
+        $sql        = 'SELECT id, title, body FROM pages WHERE id = :id';
         $parameters = [
-            'id' => [$id, \PDO::PARAM_INT]
+            'id' => [$id, \PDO::PARAM_INT],
         ];
 
         // The second-to-last parameter says that we want a single entity
@@ -79,9 +83,9 @@ class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
      */
     public function getByTitle(string $title)
     {
-        $sql = 'SELECT id, title, body FROM pages WHERE title = :title';
+        $sql        = 'SELECT id, title, body FROM pages WHERE title = :title';
         $parameters = [
-            'title' => $title
+            'title' => $title,
         ];
 
         return $this->read($sql, $parameters, self::VALUE_TYPE_ENTITY);
@@ -99,11 +103,13 @@ class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
         $statement = $this->writeConnection->prepare(
             'UPDATE pages SET title = :title, body = :body WHERE id = :id'
         );
-        $statement->bindValues([
-            'title' => $entity->getTitle(),
-            'body' => $entity->getBody(),
-            'id' => [$entity->getId(), \PDO::PARAM_INT]
-        ]);
+        $statement->bindValues(
+            [
+                'title' => $entity->getTitle(),
+                'body'  => $entity->getBody(),
+                'id'    => [$entity->getId(), \PDO::PARAM_INT],
+            ]
+        );
         $statement->execute();
     }
 

@@ -17,12 +17,11 @@ class CategorySqlDataMapper extends SqlDataMapper implements ICategoryDataMapper
         }
 
         $statement = $this->writeConnection->prepare(
-            'INSERT INTO categories (`name`, pos) VALUES (:name, :pos)'
+            'INSERT INTO categories (`name`) VALUES (:name)'
         );
         $statement->bindValues(
             [
                 'name' => $entity->getName(),
-                'pos'  => $entity->getPos(),
             ]
         );
         $statement->execute();
@@ -68,7 +67,7 @@ class CategorySqlDataMapper extends SqlDataMapper implements ICategoryDataMapper
     {
         $sqlParts = [];
 
-        $sqlParts[] = 'SELECT categories.id, categories.`name`, categories.pos';
+        $sqlParts[] = 'SELECT categories.id, categories.`name`';
         $sqlParts[] = 'FROM categories';
         $sqlParts[] = 'WHERE';
         $sqlParts[] = implode(', ', $where);
@@ -117,12 +116,11 @@ class CategorySqlDataMapper extends SqlDataMapper implements ICategoryDataMapper
         }
 
         $statement = $this->writeConnection->prepare(
-            'UPDATE categories SET `name` = :name, pos = :pos WHERE id = :id'
+            'UPDATE categories SET `name` = :name WHERE id = :id'
         );
         $statement->bindValues(
             [
                 'name' => $entity->getName(),
-                'pos'  => $entity->getPos(),
                 'id'   => [$entity->getId(), \PDO::PARAM_INT],
             ]
         );
@@ -138,8 +136,7 @@ class CategorySqlDataMapper extends SqlDataMapper implements ICategoryDataMapper
     {
         return new Entity(
             (int)$hash['id'],
-            $hash['name'],
-            $hash['pos']
+            $hash['name']
         );
     }
 }

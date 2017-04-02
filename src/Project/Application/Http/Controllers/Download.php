@@ -1,6 +1,7 @@
 <?php
 namespace Project\Application\Http\Controllers;
 
+use Opulence\Http\Responses\Response;
 use Opulence\Routing\Urls\UrlGenerator;
 use Project\Domain\Orm\DownloadRepo as Repo;
 use Project\Application\Grid\Factory\Download as GridFactory;
@@ -29,5 +30,29 @@ class Download extends CrudAbstract
     public function __construct(UrlGenerator $urlGenerator, GridFactory $gridFactory, Repo $repo)
     {
         parent::__construct($urlGenerator, $gridFactory, $repo);
+    }
+
+    /**
+     * @return Response
+     */
+    public function new(): Response
+    {
+        throw new \RuntimeException(sprintf('Route is not supported: %s.%s()', __CLASS__, __FILE__));
+    }
+
+    /**
+     * @return Response
+     */
+    public function edit(): Response
+    {
+        throw new \RuntimeException(sprintf('Route is not supported: %s.%s()', __CLASS__, __FILE__));
+    }
+
+    /**
+     * @return Response
+     */
+    public function delete(): Response
+    {
+        throw new \RuntimeException(sprintf('Route is not supported: %s.%s()', __CLASS__, __FILE__));
     }
 }

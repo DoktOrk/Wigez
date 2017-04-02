@@ -12,19 +12,14 @@ class Category implements IEntity
     /** @var string */
     protected $name;
 
-    /** @var int */
-    protected $pos;
-
     /**
      * @param int    $id
      * @param string $name
-     * @param int    $pos
      */
-    public function __construct(int $id, string $name, int $pos)
+    public function __construct(int $id, string $name)
     {
         $this->id   = $id;
         $this->name = $name;
-        $this->pos  = $pos;
     }
 
     /**
@@ -49,14 +44,6 @@ class Category implements IEntity
     public function getName(): string
     {
         return $this->name;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPos(): int
-    {
-        return $this->pos;
     }
 
     /**

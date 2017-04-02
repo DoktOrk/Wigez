@@ -12,7 +12,6 @@ class Category extends Base
 {
     const GROUP_ID = 'category-id';
     const GROUP_NAME = 'category-name';
-    const GROUP_POS = 'category-pos';
 
     const HEADER_ID = 'Id';
     const HEADER_NAME = 'Name';
@@ -20,7 +19,6 @@ class Category extends Base
 
     const GETTER_ID = 'getId';
     const GETTER_NAME = 'getName';
-    const GETTER_POS = 'getPos';
 
     /** @var array */
     protected $headerAttributes = [];
@@ -41,12 +39,10 @@ class Category extends Base
         $getters = [
             static::GROUP_ID   => static::GETTER_ID,
             static::GROUP_NAME => static::GETTER_NAME,
-            static::GROUP_POS  => static::GETTER_POS,
         ];
         $headers = [
             static::GROUP_ID   => static::HEADER_ID,
             static::GROUP_NAME => static::HEADER_NAME,
-            static::GROUP_POS  => static::HEADER_POS,
         ];
 
         $cellActions = $this->getCellActions();

@@ -2,8 +2,6 @@
 
 namespace Project\Application\Grid\Factory;
 
-use Grid\Action\Button;
-use Grid\Collection\Actions;
 use Grid\Factory;
 use Grid\Grid;
 use Opulence\Routing\Router;
@@ -55,8 +53,6 @@ class Download extends Base
             static::GROUP_DOWNLOADED_AT => [$this, 'getDownloadedAt'],
         ];
 
-        $cellActions = $this->getCellActions();
-
         $grid = Factory::createGrid(
             $pages,
             $getters,
@@ -64,45 +60,10 @@ class Download extends Base
             $this->headerAttributes,
             $this->bodyAttributes,
             $this->tableAttributes,
-            $this->gridAttributes,
-            $cellActions
+            $this->gridAttributes
         );
 
         return $grid;
-    }
-
-    /**
-     * @return Actions
-     */
-    protected function getCellActions(): Actions
-    {
-        $attributeCallbacks = $this->getAttributeCallbacks();
-
-        $editAttributes = [
-            static::ATTRIBUTE_CLASS => static::CLASS_PRIMARY,
-            static::ATTRIBUTE_HREF  => ROUTE_PAGES_EDIT,
-        ];
-
-        $deleteAttributes = [
-            static::ATTRIBUTE_CLASS => static::CLASS_DANGER,
-            static::ATTRIBUTE_HREF  => ROUTE_PAGES_DELETE,
-        ];
-
-        $cellActions   = new Actions();
-        $cellActions[] = new Button(
-            static::LABEL_EDIT,
-            Button::TAG_A,
-            $editAttributes,
-            $attributeCallbacks
-        );
-        $cellActions[] = new Button(
-            static::LABEL_DELETE,
-            Button::TAG_A,
-            $deleteAttributes,
-            $attributeCallbacks
-        );
-
-        return $cellActions;
     }
 
     /**

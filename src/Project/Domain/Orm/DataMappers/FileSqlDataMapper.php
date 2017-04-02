@@ -22,9 +22,9 @@ class FileSqlDataMapper extends SqlDataMapper implements IFileDataMapper
         );
         $statement->bindValues(
             [
-                'file' => $entity->getFile(),
-                'description'  => $entity->getDescription(),
-                'category_id' => $entity->getUploadedAt()->format(Entity::DATE_FORMAT)
+                'file'        => $entity->getFile(),
+                'description' => $entity->getDescription(),
+                'category_id' => $entity->getUploadedAt()->format(Entity::DATE_FORMAT),
             ]
         );
         $statement->execute();
@@ -71,7 +71,7 @@ class FileSqlDataMapper extends SqlDataMapper implements IFileDataMapper
         $sqlParts = [];
 
         $sqlParts[] = 'SELECT files.id, files.`file`, files.description, files.category_id, files.uploaded_at,';
-        $sqlParts[] = 'categories.`name`, categories.`pos`';
+        $sqlParts[] = '  categories.`name`';
         $sqlParts[] = 'FROM files';
         $sqlParts[] = 'INNER JOIN categories ON categories.id = files.category_id';
         $sqlParts[] = 'WHERE';
@@ -142,7 +142,7 @@ class FileSqlDataMapper extends SqlDataMapper implements IFileDataMapper
      */
     protected function loadEntity(array $hash)
     {
-        $category = new Category($hash['category_id'], $hash['name'], $hash['pos']);
+        $category = new Category($hash['category_id'], $hash['name']);
 
         return new Entity(
             (int)$hash['id'],
