@@ -9,6 +9,7 @@ use Grid\Collection\Cells;
 use Grid\Collection\Rows;
 use Grid\Row\Row;
 use Grid\Table\Table;
+use Opulence\Orm\IEntity;
 
 class Factory
 {
@@ -66,13 +67,7 @@ class Factory
         $tableBody = new Rows();
 
         foreach ($entities as $entity) {
-            $cells = new Cells();
-
-            foreach ($getters as $group => $getter) {
-                $content = is_callable($getter) ? $getter($entity) : (string)$entity->$getter();
-
-                $cells[] = new Cell($content, $group, $bodyAttributes, Cell::BODY);
-            }
+            $cells = static::createTableRowCell($getters, $bodyAttributes, $entity);
 
             $rowActions = $actions ? $actions->duplicate() : null;
 
@@ -83,6 +78,29 @@ class Factory
         }
 
         return $tableBody;
+    }
+
+    /**
+     * @param array   $getters
+     * @param array   $bodyAttributes
+     * @param IEntity $entity
+     *
+     * @return array|Cells
+     */
+    private static function createTableRowCell(
+        array $getters,
+        array $bodyAttributes,
+        IEntity $entity
+    ) {
+        $cells = new Cells();
+
+        foreach ($getters as $group => $getter) {
+            $content = is_callable($getter) ? $getter($entity) : (string)$entity->$getter();
+
+            $cells[] = new Cell($content, $group, $bodyAttributes, Cell::BODY);
+        }
+
+        return $cells;
     }
 
     /**
@@ -100,7 +118,7 @@ class Factory
         }
 
         if ($actions) {
-            $cells[] = new Cell(static::CELL_ACTIONS_CONTENT, static::CELL_ACTIONS_GROUP);
+            $cells[] = new Cell(static::CELL_ACTIONS_CONTENT, static::CELL_ACTIONS_GROUP, [], Cell::HEAD);
         }
 
         return $cells;
