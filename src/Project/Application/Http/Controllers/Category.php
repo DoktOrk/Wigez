@@ -2,8 +2,12 @@
 
 namespace Project\Application\Http\Controllers;
 
+use Opulence\Orm\IUnitOfWork;
 use Opulence\Routing\Urls\UrlGenerator;
 use Project\Application\Grid\Factory\Category as GridFactory;
+use Project\Application\Validation\Factory\Category as ValidatorFactory;
+use Project\Domain\Entities\Category as Entity;
+use Project\Domain\Entities\IStringerEntity;
 use Project\Domain\Orm\CategoryRepo as Repo;
 
 class Category extends CrudAbstract
@@ -20,17 +24,56 @@ class Category extends CrudAbstract
     /** @var UrlGenerator */
     protected $urlGenerator;
 
+    /** @var ValidatorFactory */
+    protected $validatorFactory;
+
     /**
-     * @param UrlGenerator $urlGenerator
-     * @param GridFactory  $gridFactory
-     * @param Repo         $repo
+     * Helps DIC figure out the dependencies
+     *
+     * @param UrlGenerator     $urlGenerator
+     * @param GridFactory      $gridFactory
+     * @param Repo             $repo
+     * @param ValidatorFactory $validatorFactory
+     * @param IUnitOfWork|null $unitOfWork
      */
-    public function __construct(UrlGenerator $urlGenerator, GridFactory $gridFactory, Repo $repo)
+    public function __construct(
+        UrlGenerator $urlGenerator,
+        GridFactory $gridFactory,
+        Repo $repo,
+        ValidatorFactory $validatorFactory,
+        IUnitOfWork $unitOfWork = null
+    ) {
+        parent::__construct($urlGenerator, $gridFactory, $repo, $validatorFactory, $unitOfWork);
+    }
+
+    /**
+     * @param int|null $id
+     *
+     * @return Entity
+     */
+    public function createEntity(int $id = null): IStringerEntity
     {
-        $this->urlGenerator = $urlGenerator;
+        $id   = (int)$id;
+        $name = '';
 
-        $this->gridFactory = $gridFactory;
+        $entity = new Entity($id, $name);
 
-        $this->repo = $repo;
+        return $entity;
+    }
+
+    /*
+     * @param Entity $entity
+     *
+     * @return Entity
+     */
+    public function fillEntity(IStringerEntity $entity): IStringerEntity
+    {
+        $post = $this->request->getPost()->getAll();
+
+        $name = isset($post['name']) ? (string)$post['name'] : '';
+
+        $entity->setName($name);
+
+        return $entity;
     }
 }

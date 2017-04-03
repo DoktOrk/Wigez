@@ -2,9 +2,7 @@
 
 namespace Project\Domain\Entities;
 
-use Opulence\Orm\IEntity;
-
-class Category implements IEntity
+class Category implements IStringerEntity
 {
     /** @var int */
     protected $id;
@@ -44,6 +42,18 @@ class Category implements IEntity
     public function getName(): string
     {
         return $this->name;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return Category
+     */
+    public function setName(string $name): Category
+    {
+        $this->name = $name;
+
+        return $this;
     }
 
     /**

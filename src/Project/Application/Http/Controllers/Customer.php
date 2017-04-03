@@ -1,8 +1,16 @@
 <?php
+
 namespace Project\Application\Http\Controllers;
 
+use Opulence\Http\Responses\Response;
+use Opulence\Orm\IUnitOfWork;
 use Opulence\Routing\Urls\UrlGenerator;
 use Project\Application\Grid\Factory\Customer as GridFactory;
+use Project\Application\Validation\Factory\Customer as ValidatorFactory;
+use Project\Domain\Entities\Category;
+use Project\Domain\Entities\Customer as Entity;
+use Project\Domain\Entities\IStringerEntity;
+use Project\Domain\Orm\CategoryRepo;
 use Project\Domain\Orm\CustomerRepo as Repo;
 
 class Customer extends CrudAbstract
@@ -10,24 +18,132 @@ class Customer extends CrudAbstract
     const ENTITY_SINGULAR = 'customer';
     const ENTITY_PLURAL   = 'customers';
 
+    const VAR_ALL_CATEGORIES     = 'allCategories';
+    const VAR_CURRENT_CATEGORIES = 'currentCategories';
+
     /** @var GridFactory */
     protected $gridFactory;
 
     /** @var Repo */
     protected $repo;
 
+    /** @var Entity */
+    protected $entity;
+
     /** @var UrlGenerator */
     protected $urlGenerator;
+
+    /** @var ValidatorFactory */
+    protected $validatorFactory;
+
+    /** @var CategoryRepo */
+    protected $categoryRepo;
 
     /**
      * Helps DIC figure out the dependencies
      *
-     * @param UrlGenerator $urlGenerator
-     * @param GridFactory  $gridFactory
-     * @param Repo         $repo
+     * @param UrlGenerator     $urlGenerator
+     * @param GridFactory      $gridFactory
+     * @param Repo             $repo
+     * @param ValidatorFactory $validatorFactory
+     * @param IUnitOfWork      $unitOfWork
+     * @param CategoryRepo     $categoryRepo
      */
-    public function __construct(UrlGenerator $urlGenerator, GridFactory $gridFactory, Repo $repo)
+    public function __construct(
+        UrlGenerator $urlGenerator,
+        GridFactory $gridFactory,
+        Repo $repo,
+        ValidatorFactory $validatorFactory,
+        IUnitOfWork $unitOfWork,
+        CategoryRepo $categoryRepo
+    ) {
+        $this->categoryRepo = $categoryRepo;
+
+        parent::__construct($urlGenerator, $gridFactory, $repo, $validatorFactory, $unitOfWork);
+    }
+
+    /**
+     * @return Response
+     */
+    public function new(): Response
     {
-        parent::__construct($urlGenerator, $gridFactory, $repo);
+        $this->createEntity();
+
+        $this->addCategories();
+
+        return parent::new();
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return Response
+     */
+    public function edit(int $id): Response
+    {
+        $this->retrieveEntity($id);
+
+        $this->addCategories();
+
+        return parent::edit($id);
+    }
+
+    protected function addCategories()
+    {
+        $categoryIds = [];
+        foreach ($this->entity->getCategories() as $category) {
+            $categoryIds[] = $category->getId();
+        }
+
+        $this->viewVarsExtra[static::VAR_CURRENT_CATEGORIES] = $categoryIds;
+        $this->viewVarsExtra[static::VAR_ALL_CATEGORIES]     = $this->categoryRepo->getAll();
+    }
+
+    /**
+     * @param int|null $id
+     *
+     * @return Entity
+     */
+    public function createEntity(int $id = null): IStringerEntity
+    {
+        $id         = (int)$id;
+        $name       = '';
+        $email      = '';
+        $password   = '';
+        $categories = [];
+
+        $this->entity = new Entity($id, $name, $email, $categories, $password);
+
+        return $this->entity;
+    }
+
+    /*
+     * @param Entity $entity
+     *
+     * @return Entity
+     */
+    public function fillEntity(IStringerEntity $entity): IStringerEntity
+    {
+        $post = $this->request->getPost()->getAll();
+
+        $name     = (string)$post['name'];
+        $email    = (string)$post['email'];
+        $password = (string)$post['password'];
+
+        $categories = [];
+        if (isset($post['categories'])) {
+            foreach ($post['categories'] as $categoryId) {
+                $categories[] = new Category((int)$categoryId, '');
+            }
+        }
+
+        $entity
+            ->setName($name)
+            ->setEmail($email)
+            ->setPassword($password)
+            ->setCategories($categories)
+        ;
+
+        return $entity;
     }
 }

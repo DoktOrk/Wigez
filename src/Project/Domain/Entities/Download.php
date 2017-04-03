@@ -3,9 +3,8 @@
 namespace Project\Domain\Entities;
 
 use DateTime;
-use Opulence\Orm\IEntity;
 
-class Download implements IEntity
+class Download implements IStringerEntity
 {
     const DATE_FORMAT = 'Y-m-d H:i:s';
 
@@ -73,5 +72,13 @@ class Download implements IEntity
     public function getDownloadedAt(): DateTime
     {
         return $this->downloadedAt;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString():string
+    {
+        return '#' . $this->getId();
     }
 }

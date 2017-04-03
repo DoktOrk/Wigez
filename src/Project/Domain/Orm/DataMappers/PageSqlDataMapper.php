@@ -26,6 +26,8 @@ class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
             ]
         );
         $statement->execute();
+
+        $entity->setId($this->writeConnection->lastInsertId());
     }
 
     /**
@@ -38,7 +40,7 @@ class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
         }
 
         $statement = $this->writeConnection->prepare(
-            'DELETE FROM pages WHERE id = :id'
+            'UPDATE pages SET deleted = 1 WHERE id = :id'
         );
         $statement->bindValues(
             [
@@ -53,10 +55,27 @@ class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
      */
     public function getAll(): array
     {
-        $sql = 'SELECT id, title, body FROM pages';
+        $sql = $this->getQuery();
 
-        // The last parameter says that we want a list of entities
         return $this->read($sql, [], self::VALUE_TYPE_ARRAY);
+    }
+
+    /**
+     * @param array $where
+     *
+     * @return string
+     */
+    private function getQuery(array $where = [1])
+    {
+        $sqlParts = [];
+
+        $sqlParts[] = 'SELECT pages.id, pages.title, pages.body';
+        $sqlParts[] = 'FROM pages';
+        $sqlParts[] = 'WHERE';
+        $sqlParts[] = implode(' AND ', $where);
+        $sqlParts[] = 'AND pages.deleted = 0';
+
+        return implode(' ', $sqlParts);
     }
 
     /**
@@ -66,13 +85,11 @@ class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
      */
     public function getById($id)
     {
-        $sql        = 'SELECT id, title, body FROM pages WHERE id = :id';
+        $sql        = $this->getQuery(['`id` = :id']);
         $parameters = [
             'id' => [$id, \PDO::PARAM_INT],
         ];
 
-        // The second-to-last parameter says that we want a single entity
-        // The last parameter says that we expect one and only one entity
         return $this->read($sql, $parameters, self::VALUE_TYPE_ENTITY, true);
     }
 
@@ -83,7 +100,7 @@ class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
      */
     public function getByTitle(string $title)
     {
-        $sql        = 'SELECT id, title, body FROM pages WHERE title = :title';
+        $sql        = $this->getQuery(['`title` = :title']);
         $parameters = [
             'title' => $title,
         ];

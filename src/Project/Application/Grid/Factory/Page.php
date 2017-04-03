@@ -10,13 +10,13 @@ use Opulence\Routing\Router;
 
 class Page extends Base
 {
-    const GROUP_ID = 'page-id';
+    const GROUP_ID    = 'page-id';
     const GROUP_TITLE = 'page-title';
 
-    const HEADER_ID = 'Id';
+    const HEADER_ID    = 'Id';
     const HEADER_TITLE = 'Title';
 
-    const GETTER_ID = 'getId';
+    const GETTER_ID    = 'getId';
     const GETTER_TITLE = 'getTitle';
 
     /** @var array */

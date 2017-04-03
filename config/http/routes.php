@@ -39,10 +39,10 @@ $router->group(['controllerNamespace' => 'Project\\Application\\Http\\Controller
                 $path = strtolower($controllerName);
 
                 $router->get("/${path}", "${controllerName}@show", [OPTIONS_NAME => "${route}"]);
-                $router->get("/${path}/new", "${controllerName}@create", [OPTIONS_NAME => "${route}-new"]);
-                $router->put("/${path}/new", "${controllerName}@new", [OPTIONS_NAME => "${route}-new"]);
+                $router->get("/${path}/new", "${controllerName}@new", [OPTIONS_NAME => "${route}-new"]);
+                $router->post("/${path}/new", "${controllerName}@create", [OPTIONS_NAME => "${route}-create"]);
                 $router->get("/${path}/:id/edit", "${controllerName}@edit", [OPTIONS_NAME => "${route}-edit"]);
-                $router->put("/${path}/:id/edit", "${controllerName}@update", [OPTIONS_NAME => "${route}-edit"]);
+                $router->put("/${path}/:id/edit", "${controllerName}@update", [OPTIONS_NAME => "${route}-update"]);
                 $router->get("/${path}/:id/delete", "${controllerName}@delete", [OPTIONS_NAME => "${route}-delete"]);
             }
         });

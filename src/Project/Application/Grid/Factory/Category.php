@@ -10,14 +10,14 @@ use Opulence\Routing\Router;
 
 class Category extends Base
 {
-    const GROUP_ID = 'category-id';
+    const GROUP_ID   = 'category-id';
     const GROUP_NAME = 'category-name';
 
-    const HEADER_ID = 'Id';
+    const HEADER_ID   = 'Id';
     const HEADER_NAME = 'Name';
-    const HEADER_POS = 'Pos';
+    const HEADER_POS  = 'Pos';
 
-    const GETTER_ID = 'getId';
+    const GETTER_ID   = 'getId';
     const GETTER_NAME = 'getName';
 
     /** @var array */
@@ -30,11 +30,11 @@ class Category extends Base
     protected $router;
 
     /**
-     * @param array $pages
+     * @param array $CATEGORIES
      *
      * @return Grid
      */
-    public function createGrid(array $pages): Grid
+    public function createGrid(array $CATEGORIES): Grid
     {
         $getters = [
             static::GROUP_ID   => static::GETTER_ID,
@@ -48,7 +48,7 @@ class Category extends Base
         $cellActions = $this->getCellActions();
 
         $grid = Factory::createGrid(
-            $pages,
+            $CATEGORIES,
             $getters,
             $headers,
             $this->headerAttributes,
@@ -70,12 +70,12 @@ class Category extends Base
 
         $editAttributes = [
             static::ATTRIBUTE_CLASS => static::CLASS_PRIMARY,
-            static::ATTRIBUTE_HREF  => ROUTE_PAGES_EDIT,
+            static::ATTRIBUTE_HREF  => ROUTE_CATEGORIES_EDIT,
         ];
 
         $deleteAttributes = [
             static::ATTRIBUTE_CLASS => static::CLASS_DANGER,
-            static::ATTRIBUTE_HREF  => ROUTE_PAGES_DELETE,
+            static::ATTRIBUTE_HREF  => ROUTE_CATEGORIES_DELETE,
         ];
 
         $cellActions   = new Actions();

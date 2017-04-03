@@ -21,10 +21,12 @@ class CategorySqlDataMapper extends SqlDataMapper implements ICategoryDataMapper
         );
         $statement->bindValues(
             [
-                'name' => $entity->getName(),
+                'name' => [$entity->getName(), \PDO::PARAM_STR],
             ]
         );
         $statement->execute();
+
+        $entity->setId($this->writeConnection->lastInsertId());
     }
 
     /**
@@ -37,7 +39,7 @@ class CategorySqlDataMapper extends SqlDataMapper implements ICategoryDataMapper
         }
 
         $statement = $this->writeConnection->prepare(
-            'DELETE FROM categories WHERE id = :id'
+            'UPDATE categories SET deleted = 1 WHERE id = :id'
         );
         $statement->bindValues(
             [
@@ -54,7 +56,6 @@ class CategorySqlDataMapper extends SqlDataMapper implements ICategoryDataMapper
     {
         $sql = $this->getQuery();
 
-        // The last parameter says that we want a list of entities
         return $this->read($sql, [], self::VALUE_TYPE_ARRAY);
     }
 
@@ -70,8 +71,8 @@ class CategorySqlDataMapper extends SqlDataMapper implements ICategoryDataMapper
         $sqlParts[] = 'SELECT categories.id, categories.`name`';
         $sqlParts[] = 'FROM categories';
         $sqlParts[] = 'WHERE';
-        $sqlParts[] = implode(', ', $where);
-        $sqlParts[] = 'GROUP BY categories.id';
+        $sqlParts[] = implode(' AND ', $where);
+        $sqlParts[] = 'AND categories.deleted = 0';
 
         return implode(' ', $sqlParts);
     }
@@ -88,8 +89,6 @@ class CategorySqlDataMapper extends SqlDataMapper implements ICategoryDataMapper
             'id' => [$id, \PDO::PARAM_INT],
         ];
 
-        // The second-to-last parameter says that we want a single entity
-        // The last parameter says that we expect one and only one entity
         return $this->read($sql, $parameters, self::VALUE_TYPE_ENTITY, true);
     }
 
@@ -100,7 +99,7 @@ class CategorySqlDataMapper extends SqlDataMapper implements ICategoryDataMapper
      */
     public function getByName(string $name)
     {
-        $parameters = ['name' => $name];
+        $parameters = ['name' => [$name, \PDO::PARAM_STR]];
         $sql        = $this->getQuery(['`name` = :name']);
 
         return $this->read($sql, $parameters, self::VALUE_TYPE_ENTITY);

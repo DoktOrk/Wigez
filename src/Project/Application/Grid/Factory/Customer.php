@@ -7,23 +7,23 @@ use Grid\Collection\Actions;
 use Grid\Factory;
 use Grid\Grid;
 use Opulence\Routing\Router;
+use Project\Domain\Entities\Customer as Entity;
 
 class Customer extends Base
 {
-    const GROUP_ID = 'customer-id';
-    const GROUP_NAME = 'customer-name';
-    const GROUP_EMAIL = 'customer-email';
-    const GROUP_PASSWORD = 'customer-password';
+    const GROUP_ID         = 'customer-id';
+    const GROUP_NAME       = 'customer-name';
+    const GROUP_EMAIL      = 'customer-email';
+    const GROUP_CATEGORIES = 'customer-categories';
 
-    const HEADER_ID = 'Id';
-    const HEADER_NAME = 'Name';
-    const HEADER_EMAIL = 'Email';
-    const HEADER_PASSWORD = 'Password';
+    const HEADER_ID         = 'Id';
+    const HEADER_NAME       = 'Name';
+    const HEADER_EMAIL      = 'Email';
+    const HEADER_CATEGORIES = 'Categories';
 
-    const GETTER_ID = 'getId';
-    const GETTER_NAME = 'getName';
+    const GETTER_ID    = 'getId';
+    const GETTER_NAME  = 'getName';
     const GETTER_EMAIL = 'getEmail';
-    const GETTER_PASSWORD = 'getPassword';
 
     /** @var array */
     protected $headerAttributes = [];
@@ -35,29 +35,29 @@ class Customer extends Base
     protected $router;
 
     /**
-     * @param array $pages
+     * @param array $entities
      *
      * @return Grid
      */
-    public function createGrid(array $pages): Grid
+    public function createGrid(array $entities): Grid
     {
-        $getters = [
-            static::GROUP_ID            => static::GETTER_ID,
-            static::GROUP_NAME          => static::GETTER_NAME,
-            static::GROUP_EMAIL         => static::GETTER_EMAIL,
-            static::GROUP_PASSWORD      => static::GETTER_PASSWORD,
-        ];
         $headers = [
-            static::GROUP_ID            => static::HEADER_ID,
-            static::GROUP_NAME          => static::HEADER_NAME,
-            static::GROUP_EMAIL         => static::HEADER_EMAIL,
-            static::GROUP_PASSWORD      => static::HEADER_PASSWORD,
+            static::GROUP_ID         => static::HEADER_ID,
+            static::GROUP_NAME       => static::HEADER_NAME,
+            static::GROUP_EMAIL      => static::HEADER_EMAIL,
+            static::GROUP_CATEGORIES => static::HEADER_CATEGORIES,
+        ];
+        $getters = [
+            static::GROUP_ID         => static::GETTER_ID,
+            static::GROUP_NAME       => static::GETTER_NAME,
+            static::GROUP_EMAIL      => static::GETTER_EMAIL,
+            static::GROUP_CATEGORIES => [$this, 'getCategoryNames'],
         ];
 
         $cellActions = $this->getCellActions();
 
         $grid = Factory::createGrid(
-            $pages,
+            $entities,
             $getters,
             $headers,
             $this->headerAttributes,
@@ -71,6 +71,22 @@ class Customer extends Base
     }
 
     /**
+     * @param Entity $entity
+     *
+     * @return string
+     */
+    public function getCategoryNames(Entity $entity): string
+    {
+        $categoryNames = [];
+
+        foreach ($entity->getCategories() as $category) {
+            $categoryNames[] = $category->getName();
+        }
+
+        return implode(', ', $categoryNames);
+    }
+
+    /**
      * @return Actions
      */
     protected function getCellActions(): Actions
@@ -79,12 +95,12 @@ class Customer extends Base
 
         $editAttributes = [
             static::ATTRIBUTE_CLASS => static::CLASS_PRIMARY,
-            static::ATTRIBUTE_HREF  => ROUTE_PAGES_EDIT,
+            static::ATTRIBUTE_HREF  => ROUTE_CUSTOMERS_EDIT,
         ];
 
         $deleteAttributes = [
             static::ATTRIBUTE_CLASS => static::CLASS_DANGER,
-            static::ATTRIBUTE_HREF  => ROUTE_PAGES_DELETE,
+            static::ATTRIBUTE_HREF  => ROUTE_CUSTOMERS_DELETE,
         ];
 
         $cellActions   = new Actions();

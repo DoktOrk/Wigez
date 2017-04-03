@@ -3,9 +3,8 @@
 namespace Project\Domain\Entities;
 
 use DateTime;
-use Opulence\Orm\IEntity;
 
-class File implements IEntity
+class File implements IStringerEntity
 {
     const DATE_FORMAT = 'Y-m-d';
 
@@ -64,25 +63,41 @@ class File implements IEntity
     /**
      * @return string
      */
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    /**
-     * @return string
-     */
     public function getFile(): string
     {
         return $this->file;
     }
 
     /**
-     * @return DateTime
+     * @param string $file
+     *
+     * @return File
      */
-    public function getUploadedAt(): DateTime
+    public function setFile(string $file): File
     {
-        return $this->uploadedAt;
+        $this->file = $file;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     *
+     * @return File
+     */
+    public function setDescription(string $description): File
+    {
+        $this->description = $description;
+
+        return $this;
     }
 
     /**
@@ -98,10 +113,46 @@ class File implements IEntity
     }
 
     /**
+     * @param Category $category
+     *
+     * @return File
+     */
+    public function setCategory(Category $category): File
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getUploadedAt(): DateTime
+    {
+        return $this->uploadedAt;
+    }
+
+    /**
+     * @param string $uploadedAt
+     *
+     * @return File
+     */
+    public function setUploadedAt(\DateTime $uploadedAt): File
+    {
+        $this->uploadedAt = $uploadedAt;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function __toString(): string
     {
+        if (!$this->file) {
+            return '#' . $this->getId();
+        }
+
         return $this->file;
     }
 }

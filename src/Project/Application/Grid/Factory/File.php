@@ -11,21 +11,21 @@ use Project\Domain\Entities\File as Entity;
 
 class File extends Base
 {
-    const GROUP_ID = 'file-id';
-    const GROUP_FILE = 'file-file';
-    const GROUP_CATEGORY = 'file-category';
+    const GROUP_ID          = 'file-id';
+    const GROUP_FILE        = 'file-file';
+    const GROUP_CATEGORY    = 'file-category';
     const GROUP_DESCRIPTION = 'file-description';
     const GROUP_UPLOADED_AT = 'file-uploaded-at';
 
-    const HEADER_ID = 'Id';
-    const HEADER_FILE = 'File';
-    const HEADER_CATEGORY = 'Category';
+    const HEADER_ID          = 'Id';
+    const HEADER_FILE        = 'File';
+    const HEADER_CATEGORY    = 'Category';
     const HEADER_DESCRIPTION = 'Description';
     const HEADER_UPLOADED_AT = 'Uploaded At';
 
-    const GETTER_ID = 'getId';
-    const GETTER_FILE = 'getFile';
-    const GETTER_CATEGORY = 'getCategory';
+    const GETTER_ID          = 'getId';
+    const GETTER_FILE        = 'getFile';
+    const GETTER_CATEGORY    = 'getCategory';
     const GETTER_DESCRIPTION = 'getDescription';
 
     /** @var array */
@@ -38,11 +38,11 @@ class File extends Base
     protected $router;
 
     /**
-     * @param array $pages
+     * @param array $FILES
      *
      * @return Grid
      */
-    public function createGrid(array $pages): Grid
+    public function createGrid(array $FILES): Grid
     {
         $headers = [
             static::GROUP_ID          => static::HEADER_ID,
@@ -62,7 +62,7 @@ class File extends Base
         $cellActions = $this->getCellActions();
 
         $grid = Factory::createGrid(
-            $pages,
+            $FILES,
             $getters,
             $headers,
             $this->headerAttributes,
@@ -94,12 +94,12 @@ class File extends Base
 
         $editAttributes = [
             static::ATTRIBUTE_CLASS => static::CLASS_PRIMARY,
-            static::ATTRIBUTE_HREF  => ROUTE_PAGES_EDIT,
+            static::ATTRIBUTE_HREF  => ROUTE_FILES_EDIT,
         ];
 
         $deleteAttributes = [
             static::ATTRIBUTE_CLASS => static::CLASS_DANGER,
-            static::ATTRIBUTE_HREF  => ROUTE_PAGES_DELETE,
+            static::ATTRIBUTE_HREF  => ROUTE_FILES_DELETE,
         ];
 
         $cellActions   = new Actions();

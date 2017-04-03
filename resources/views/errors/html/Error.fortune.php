@@ -7,6 +7,9 @@
         <% part("errorMessage") %>
         Something went wrong.  We will look into what happened.
         <% show %>
+        <pre>
+        <?php var_dump($__exception) ?>
+        </pre>
     </section>
 </div>
 <% endpart %>

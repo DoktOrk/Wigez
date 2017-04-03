@@ -17,18 +17,20 @@ class CustomerSqlDataMapper extends SqlDataMapper implements ICustomerDataMapper
             throw new \InvalidArgumentException(__CLASS__ . ':' . __FUNCTION__ . ' expects a Customer entity.');
         }
 
+        $values = [
+            'name'     => [$entity->getName(), \PDO::PARAM_STR],
+            'email'    => [$entity->getEmail(), \PDO::PARAM_STR],
+            'password' => [$entity->getPassword(), \PDO::PARAM_STR],
+        ];
         $statement = $this->writeConnection->prepare(
-            'INSERT INTO customers (`name`, email, password, password_sent) VALUES (:name, :email, :password, :password_sent)'
+            'INSERT INTO customers (`name`, email, password) VALUES (:name, :email, :password)'
         );
-        $statement->bindValues(
-            [
-                'name'          => $entity->getName(),
-                'email'         => $entity->getEmail(),
-                'password'      => $entity->getPassword(),
-                'password_sent' => $entity->getPasswordSent(),
-            ]
-        );
+        $statement->bindValues($values);
         $statement->execute();
+
+        $entity->setId($this->writeConnection->lastInsertId());
+
+        $this->updateCategories($entity);
     }
 
     /**
@@ -40,14 +42,13 @@ class CustomerSqlDataMapper extends SqlDataMapper implements ICustomerDataMapper
             throw new \InvalidArgumentException(__CLASS__ . ':' . __FUNCTION__ . ' expects a Customer entity.');
         }
 
+        $values = [
+            'id' => [$entity->getId(), \PDO::PARAM_INT],
+        ];
         $statement = $this->writeConnection->prepare(
-            'DELETE FROM customers WHERE id = :id'
+            'UPDATE customers SET deleted=1 WHERE id = :id'
         );
-        $statement->bindValues(
-            [
-                'id' => [$entity->getId(), \PDO::PARAM_INT],
-            ]
-        );
+        $statement->bindValues($values);
         $statement->execute();
 
         $this->updateCategories($entity);
@@ -59,28 +60,26 @@ class CustomerSqlDataMapper extends SqlDataMapper implements ICustomerDataMapper
     private function updateCategories(Entity $entity)
     {
         foreach ($entity->getDeletedCategories() as $category) {
+            $values = [
+                'customer_id' => [$entity->getId(), \PDO::PARAM_INT],
+                'category_id' => [$category->getId(), \PDO::PARAM_INT],
+            ];
             $statement = $this->writeConnection->prepare(
-                'DELETE FROM categories_customers WHERE customer_id = :customer_id'
+                'DELETE FROM categories_customers WHERE customer_id = :customer_id AND category_id = :category_id'
             );
-            $statement->bindValues(
-                [
-                    'customer_id' => [$entity->getId(), \PDO::PARAM_INT],
-                    'category_id' => [$category->getId(), \PDO::PARAM_INT],
-                ]
-            );
+            $statement->bindValues($values);
             $statement->execute();
         }
 
         foreach ($entity->getNewCategories() as $category) {
+            $values = [
+                'customer_id' => [$entity->getId(), \PDO::PARAM_INT],
+                'category_id' => [$category->getId(), \PDO::PARAM_INT],
+            ];
             $statement = $this->writeConnection->prepare(
-                'INSERT INTO categories_customers VALUES customer_id = :customer_id, category_id = :category_id'
+                'INSERT INTO categories_customers SET customer_id = :customer_id, category_id = :category_id'
             );
-            $statement->bindValues(
-                [
-                    'customer_id' => [$entity->getId(), \PDO::PARAM_INT],
-                    'category_id' => [$category->getId(), \PDO::PARAM_INT],
-                ]
-            );
+            $statement->bindValues($values);
             $statement->execute();
         }
     }
@@ -92,7 +91,6 @@ class CustomerSqlDataMapper extends SqlDataMapper implements ICustomerDataMapper
     {
         $sql = $this->getQuery();
 
-        // The last parameter says that we want a list of entities
         return $this->read($sql, [], self::VALUE_TYPE_ARRAY);
     }
 
@@ -109,9 +107,10 @@ class CustomerSqlDataMapper extends SqlDataMapper implements ICustomerDataMapper
         $sqlParts[] = '  GROUP_CONCAT(CONCAT(categories.`id`, \'-\', categories.`name`)) AS categories';
         $sqlParts[] = 'FROM customers';
         $sqlParts[] = 'LEFT JOIN categories_customers ON categories_customers.customer_id=customers.id';
-        $sqlParts[] = 'LEFT JOIN categories ON categories.id=categories_customers.category_id';
+        $sqlParts[] = 'LEFT JOIN categories ON categories.id=categories_customers.category_id AND categories.deleted=0';
         $sqlParts[] = 'WHERE';
-        $sqlParts[] = implode(', ', $where);
+        $sqlParts[] = implode(' AND ', $where);
+        $sqlParts[] = '  AND customers.deleted = 0';
         $sqlParts[] = 'GROUP BY customers.id';
 
         return implode(' ', $sqlParts);
@@ -124,13 +123,11 @@ class CustomerSqlDataMapper extends SqlDataMapper implements ICustomerDataMapper
      */
     public function getById($id)
     {
-        $sql        = $this->getQuery(['`id` = :id']);
+        $sql        = $this->getQuery(['customers.id = :customer_id']);
         $parameters = [
-            'id' => [$id, \PDO::PARAM_INT],
+            'customer_id' => [$id, \PDO::PARAM_INT],
         ];
 
-        // The second-to-last parameter says that we want a single entity
-        // The last parameter says that we expect one and only one entity
         return $this->read($sql, $parameters, self::VALUE_TYPE_ENTITY, true);
     }
 
@@ -141,7 +138,7 @@ class CustomerSqlDataMapper extends SqlDataMapper implements ICustomerDataMapper
      */
     public function getByName(string $name)
     {
-        $parameters = ['name' => $name];
+        $parameters = ['name' => [$name, \PDO::PARAM_STR]];
         $sql        = $this->getQuery(['`name` = :name']);
 
         return $this->read($sql, $parameters, self::VALUE_TYPE_ENTITY);
@@ -154,7 +151,7 @@ class CustomerSqlDataMapper extends SqlDataMapper implements ICustomerDataMapper
      */
     public function getByEmail(string $email)
     {
-        $parameters = ['email' => $email];
+        $parameters = ['email' => [$email, \PDO::PARAM_STR]];
         $sql        = $this->getQuery(['`email` = :email']);
 
         return $this->read($sql, $parameters, self::VALUE_TYPE_ENTITY);
@@ -169,17 +166,16 @@ class CustomerSqlDataMapper extends SqlDataMapper implements ICustomerDataMapper
             throw new \InvalidArgumentException(__CLASS__ . ':' . __FUNCTION__ . ' expects a Customer entity.');
         }
 
+        $values = [
+            'name'     => [$entity->getName(), \PDO::PARAM_STR],
+            'email'    => [$entity->getEmail(), \PDO::PARAM_STR],
+            'password' => [$entity->getPassword(), \PDO::PARAM_STR],
+            'id'       => [$entity->getId(), \PDO::PARAM_INT],
+        ];
         $statement = $this->writeConnection->prepare(
             'UPDATE customers SET `name` = :name, email = :email, password = :password WHERE id = :id'
         );
-        $statement->bindValues(
-            [
-                'name'     => $entity->getName(),
-                'email'    => $entity->getEmail(),
-                'password' => $entity->getPassword(),
-                'id'       => [$entity->getId(), \PDO::PARAM_INT],
-            ]
-        );
+        $statement->bindValues($values);
         $statement->execute();
 
         $this->updateCategories($entity);
@@ -195,10 +191,11 @@ class CustomerSqlDataMapper extends SqlDataMapper implements ICustomerDataMapper
         $categories = [];
 
         $categoryExploded = explode(',', $hash['categories']);
+        $categoryExploded = array_filter($categoryExploded);
         foreach ($categoryExploded as $categoryData) {
-            list($id, $name) = explode('-', $categoryData);
+            list($id, $name) = explode('-', $categoryData, 2);
 
-            $categories[] = new Category($id, $name);
+            $categories[] = new Category((int)$id, $name);
         }
 
         return new Entity(

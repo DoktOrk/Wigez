@@ -2,9 +2,7 @@
 
 namespace Project\Domain\Entities;
 
-use Opulence\Orm\IEntity;
-
-class Customer implements IEntity
+class Customer implements IStringerEntity
 {
     /** @var int */
     protected $id;
@@ -16,10 +14,10 @@ class Customer implements IEntity
     protected $email;
 
     /** @var Category[] */
-    protected $categories;
+    protected $categories = [];
 
     /** @var Category[] */
-    protected $origCategories;
+    protected $origCategories = [];
 
     /** @var string */
     protected $password;
@@ -43,6 +41,7 @@ class Customer implements IEntity
         $this->email          = $email;
         $this->password       = $password;
 
+        /** @var Category $category */
         foreach ($categories as $category) {
             $this->categories[$category->getId()] = $category;
         }
@@ -75,6 +74,18 @@ class Customer implements IEntity
     }
 
     /**
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function setName(string $name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getEmail(): string
@@ -83,10 +94,34 @@ class Customer implements IEntity
     }
 
     /**
+     * @param string $email
+     *
+     * @return $this
+     */
+    public function setEmail(string $email)
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
      * @return Category[]
      */
     public function getCategories(): array
     {
+        return $this->categories;
+    }
+
+    /**
+     * @param Category[] $categories
+     *
+     * @return array|Category[]
+     */
+    public function setCategories(array $categories)
+    {
+        $this->categories = $categories;
+
         return $this->categories;
     }
 
@@ -106,7 +141,7 @@ class Customer implements IEntity
             $deletedCategories[$id] = $category;
         }
 
-        return array($deletedCategories);
+        return $deletedCategories;
     }
 
     /**
@@ -135,6 +170,18 @@ class Customer implements IEntity
     public function getPassword(): string
     {
         return $this->password;
+    }
+
+    /**
+     * @param string $password
+     *
+     * @return $this
+     */
+    public function setPassword(string $password)
+    {
+        $this->password = $password;
+
+        return $this;
     }
 
     /**

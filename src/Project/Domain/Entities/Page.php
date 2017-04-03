@@ -2,9 +2,7 @@
 
 namespace Project\Domain\Entities;
 
-use Opulence\Orm\IEntity;
-
-class Page implements IEntity
+class Page implements IStringerEntity
 {
     /** @var int */
     protected $id;
@@ -54,10 +52,42 @@ class Page implements IEntity
     }
 
     /**
+     * @param string $title
+     *
+     * @return $this
+     */
+    public function setTitle(string $title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getBody(): string
     {
         return $this->body;
+    }
+
+    /**
+     * @param string $body
+     *
+     * @return $this
+     */
+    public function setBody(string $body)
+    {
+        $this->body = $body;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString():string
+    {
+        return $this->getTitle();
     }
 }

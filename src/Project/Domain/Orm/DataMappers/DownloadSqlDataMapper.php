@@ -23,12 +23,14 @@ class DownloadSqlDataMapper extends SqlDataMapper implements IDownloadDataMapper
         );
         $statement->bindValues(
             [
-                'file_id'       => $entity->getFile()->getId(),
-                'customer_id'   => $entity->getCustomer()->getId(),
-                'downloaded_at' => $entity->getDownloadedAt()->format(Entity::DATE_FORMAT),
+                'file_id'       => [$entity->getFile()->getId(), \PDO::PARAM_INT],
+                'customer_id'   => [$entity->getCustomer()->getId(), \PDO::PARAM_INT],
+                'downloaded_at' => [$entity->getDownloadedAt()->format(Entity::DATE_FORMAT), \PDO::PARAM_STR],
             ]
         );
         $statement->execute();
+
+        $entity->setId($this->writeConnection->lastInsertId());
     }
 
     /**
@@ -58,7 +60,6 @@ class DownloadSqlDataMapper extends SqlDataMapper implements IDownloadDataMapper
     {
         $sql = $this->getQuery();
 
-        // The last parameter says that we want a list of entities
         return $this->read($sql, [], self::VALUE_TYPE_ARRAY);
     }
 
@@ -90,13 +91,11 @@ class DownloadSqlDataMapper extends SqlDataMapper implements IDownloadDataMapper
      */
     public function getById($id)
     {
-        $sql        = $this->getQuery(['`file_downloads.id` = :file_downloads_id']);
+        $sql        = $this->getQuery(['file_downloads.id = :id']);
         $parameters = [
-            'file_downloads_id' => [$id, \PDO::PARAM_INT],
+            'id' => [$id, \PDO::PARAM_INT],
         ];
 
-        // The second-to-last parameter says that we want a single entity
-        // The last parameter says that we expect one and only one entity
         return $this->read($sql, $parameters, self::VALUE_TYPE_ENTITY, true);
     }
 
@@ -107,9 +106,9 @@ class DownloadSqlDataMapper extends SqlDataMapper implements IDownloadDataMapper
      */
     public function getByCustomerId(int $customerId)
     {
-        $sql        = $this->getQuery(['`customer_id` = :customer_id']);
+        $sql        = $this->getQuery(['customer_id = :customer_id']);
         $parameters = [
-            'customer_id' => $customerId,
+            'customer_id' => [$customerId, \PDO::PARAM_INT],
         ];
 
         return $this->read($sql, $parameters, self::VALUE_TYPE_ENTITY);
@@ -124,7 +123,7 @@ class DownloadSqlDataMapper extends SqlDataMapper implements IDownloadDataMapper
     {
         $sql        = $this->getQuery(['file_id = :file_id']);
         $parameters = [
-            'file_id' => $fileId,
+            'file_id' => [$fileId, \PDO::PARAM_INT],
         ];
 
         return $this->read($sql, $parameters, self::VALUE_TYPE_ENTITY);
@@ -144,9 +143,9 @@ class DownloadSqlDataMapper extends SqlDataMapper implements IDownloadDataMapper
         );
         $statement->bindValues(
             [
-                'file_id'       => $entity->getFile()->getId(),
-                'customer_id'   => $entity->getCustomer()->getId(),
-                'downloaded_at' => $entity->getDownloadedAt()->format(Entity::DATE_FORMAT),
+                'file_id'       => [$entity->getFile()->getId(), \PDO::PARAM_INT],
+                'customer_id'   => [$entity->getCustomer()->getId(), \PDO::PARAM_INT],
+                'downloaded_at' => [$entity->getDownloadedAt()->format(Entity::DATE_FORMAT), \PDO::PARAM_STR],
             ]
         );
         $statement->execute();
@@ -165,7 +164,8 @@ class DownloadSqlDataMapper extends SqlDataMapper implements IDownloadDataMapper
         return new Entity(
             (int)$hash['id'],
             $file,
-            $customer
+            $customer,
+            new \DateTime((string)$hash['downloaded_at'])
         );
     }
 }
