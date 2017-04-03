@@ -34,6 +34,10 @@
 
     <!-- Propeller admin theme css-->
     <link rel="stylesheet" type="text/css" href="/admin/themes/css/propeller-admin.css">
+
+    <link href="/admin/vendor/trumbowyg/ui/trumbowyg.min.css" rel="stylesheet">
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 </head>
 
 <body>
@@ -94,7 +98,7 @@
 
 
     <!-- Scripts Starts -->
-    <script src="/admin/js/jquery-1.12.2.min.js"></script>
+    <!-- include summernote css/js-->
     <script src="/admin/js/bootstrap.min.js"></script>
     <script src="/admin/js/propeller.min.js"></script>
     <!-- Scripts Ends -->

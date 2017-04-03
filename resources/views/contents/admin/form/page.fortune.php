@@ -17,11 +17,12 @@
     <!-- Body input -->
     <div class="form-group pmd-textfield pmd-textfield-floating-label">
         <label for="body" class="control-label">Body</label>
-        <textarea id="body" class="form-control" name="body" rows="15">{{ $entity->getBody() }}</textarea>
+        <textarea id="body" class="form-control wysiwyg" name="body" rows="15">{{ $entity->getBody() }}</textarea>
     </div>
 
     <!-- Controls -->
     <% include("./partials/admin/form/save", compact("showUrl")) %>
+    <% include("./partials/admin/form/editor") %>
 </form>
 
 <% endpart %>
