@@ -9,7 +9,7 @@
     {{! csrfInput() !}}
 
     <!-- Name input -->
-    <div class="form-group pmd-textfield pmd-textfield-floating-label">
+    <div class="form-group">
         <label for="name" class="control-label">
             Name
         </label>

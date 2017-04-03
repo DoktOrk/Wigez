@@ -14,7 +14,7 @@ class WebsiteBuilder implements IViewBuilder
      */
     public function build(IView $view) : IView
     {
-        $view->setVar('title', 'Home');
+        $view->setVar('title', 'Ecomp.co.hu - Ügyvitel, Import-Export, Tanácsadás, Szoftver');
 
         // Default to empty meta data
         $view->setVar('metaKeywords', []);

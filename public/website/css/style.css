@@ -1,0 +1,13 @@
+.intro-header {
+    background: url(/website/img/calculator-paperclip-pen-office-66862.jpeg) no-repeat center center;
+}
+
+.bordered-img-container img {
+    box-shadow: 5px 5px 10px #c0c0c0;
+}
+
+footer {
+    border-top: 1px solid #e7e7e7;
+    border-bottom: 1px solid #e7e7e7;
+    background-color: #fbfbfb;
+}

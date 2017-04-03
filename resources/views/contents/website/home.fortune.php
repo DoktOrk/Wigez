@@ -3,133 +3,95 @@
 <% part("content") %>
 
 <!-- Header -->
-<a name="about"></a>
+<a name="header"></a>
 <div class="intro-header">
     <div class="container">
-
         <div class="row">
             <div class="col-lg-12">
                 <div class="intro-message">
-                    <h1>Landing Page</h1>
-                    <h3>A Template by Start Bootstrap</h3>
-                    <hr class="intro-divider">
-                    <ul class="list-inline intro-social-buttons">
-                        <li>
-                            <a href="https://twitter.com/SBootstrap" class="btn btn-default btn-lg"><i class="fa fa-twitter fa-fw"></i> <span class="network-name">Twitter</span></a>
-                        </li>
-                        <li>
-                            <a href="https://github.com/IronSummitMedia/startbootstrap" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Github</span></a>
-                        </li>
-                        <li>
-                            <a href="#" class="btn btn-default btn-lg"><i class="fa fa-linkedin fa-fw"></i> <span class="network-name">Linkedin</span></a>
-                        </li>
-                    </ul>
+                    <h1>{{ $header->getTitle() }}</h1>
+                    {{! $header->getBody() !}}
                 </div>
             </div>
         </div>
-
     </div>
-    <!-- /.container -->
-
 </div>
-<!-- /.intro-header -->
 
-<!-- Page Content -->
-
-<a  name="services"></a>
+<!-- Ügyvitel -->
+<a name="ugyvitel"></a>
 <div class="content-section-a">
-
     <div class="container">
         <div class="row">
             <div class="col-lg-5 col-sm-6">
-                <hr class="section-heading-spacer">
-                <div class="clearfix"></div>
-                <h2 class="section-heading">Death to the Stock Photo:<br>Special Thanks</h2>
-                <p class="lead">A special thanks to <a target="_blank" href="http://join.deathtothestockphoto.com/">Death to the Stock Photo</a> for providing the photographs that you see in this template. Visit their website to become a member.</p>
+                {{! $ugyvitel->getBody() !}}
             </div>
-            <div class="col-lg-5 col-lg-offset-2 col-sm-6">
-                <img class="img-responsive" src="/website/img/ipad.png" alt="">
+            <div class="col-lg-5 col-lg-offset-2 col-sm-6 bordered-img-container">
+                <img class="img-responsive" src="/website/img/pexels-photo-237675.jpeg" alt="Ügyvitel">
             </div>
         </div>
-
     </div>
-    <!-- /.container -->
-
 </div>
-<!-- /.content-section-a -->
 
+<!-- Import-Export -->
+<a name="import-export"></a>
 <div class="content-section-b">
-
     <div class="container">
-
         <div class="row">
             <div class="col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6">
-                <hr class="section-heading-spacer">
-                <div class="clearfix"></div>
-                <h2 class="section-heading">3D Device Mockups<br>by PSDCovers</h2>
-                <p class="lead">Turn your 2D designs into high quality, 3D product shots in seconds using free Photoshop actions by <a target="_blank" href="http://www.psdcovers.com/">PSDCovers</a>! Visit their website to download some of their awesome, free photoshop actions!</p>
+                {{! $importExport->getBody() !}}
             </div>
-            <div class="col-lg-5 col-sm-pull-6  col-sm-6">
-                <img class="img-responsive" src="/website/img/dog.png" alt="">
+            <div class="col-lg-5 col-sm-pull-6 col-sm-6 bordered-img-container">
+                <img class="img-responsive" src="/website/img/pexels-photo-122164.jpeg" alt="Import-Export">
             </div>
         </div>
-
     </div>
-    <!-- /.container -->
-
 </div>
-<!-- /.content-section-b -->
 
+<!-- Tanácsadás -->
+<a name="tanacsadas"></a>
 <div class="content-section-a">
-
     <div class="container">
-
         <div class="row">
             <div class="col-lg-5 col-sm-6">
-                <hr class="section-heading-spacer">
-                <div class="clearfix"></div>
-                <h2 class="section-heading">Google Web Fonts and<br>Font Awesome Icons</h2>
-                <p class="lead">This template features the 'Lato' font, part of the <a target="_blank" href="http://www.google.com/fonts">Google Web Font library</a>, as well as <a target="_blank" href="http://fontawesome.io">icons from Font Awesome</a>.</p>
+                {{! $tanacsadas->getBody() !}}
             </div>
-            <div class="col-lg-5 col-lg-offset-2 col-sm-6">
-                <img class="img-responsive" src="/website/img/phones.png" alt="">
+            <div class="col-lg-5 col-lg-offset-2 col-sm-6 bordered-img-container">
+                <img class="img-responsive" src="/website/img/pexels-photo-288477.jpeg" alt="Tanácsadás">
             </div>
         </div>
-
     </div>
-    <!-- /.container -->
+</div>
+
+<!-- Szoftver -->
+<a name="szoftver"></a>
+<div class="content-section-b">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6">
+                {{! $szoftver->getBody() !}}
+            </div>
+            <div class="col-lg-5 col-sm-pull-6 col-sm-6 bordered-img-container">
+                <img class="img-responsive" src="/website/img/pexels-photo-173983.jpeg" alt="Szoftver">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Kapcsolat -->
+<a name="kapcsolat"></a>
+<div class="content-section-a">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-5 col-sm-6">
+                {{! $kapcsolat->getBody() !}}
+            </div>
+            <div class="col-lg-5 col-lg-offset-2 col-sm-6">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2695.5043252294363!2d19.037624316274556!3d47.49956880335754!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4741dc3d0dbf9fd1%3A0x5b446ebcd0645d53!2sBudapest%2C+F%C5%91+u.+8%2C+1011+Hungary!5e0!3m2!1sen!2sde!4v1491256323930" width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
 
 </div>
 <!-- /.content-section-a -->
-
-<a  name="contact"></a>
-<div class="banner">
-
-    <div class="container">
-
-        <div class="row">
-            <div class="col-lg-6">
-                <h2>Connect to Start Bootstrap:</h2>
-            </div>
-            <div class="col-lg-6">
-                <ul class="list-inline banner-social-buttons">
-                    <li>
-                        <a href="https://twitter.com/SBootstrap" class="btn btn-default btn-lg"><i class="fa fa-twitter fa-fw"></i> <span class="network-name">Twitter</span></a>
-                    </li>
-                    <li>
-                        <a href="https://github.com/IronSummitMedia/startbootstrap" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Github</span></a>
-                    </li>
-                    <li>
-                        <a href="#" class="btn btn-default btn-lg"><i class="fa fa-linkedin fa-fw"></i> <span class="network-name">Linkedin</span></a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-    </div>
-    <!-- /.container -->
-
-</div>
-<!-- /.banner -->
 
 <% endpart %>

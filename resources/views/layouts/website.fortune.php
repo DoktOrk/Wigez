@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hu">
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,8 +9,6 @@
     {{! charset("utf-8") !}}
     {{! pageTitle($title) !}}
     {{! css("http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,300,400,700") !}}
-    {{! css($css) !}}
-
 
     <!-- Bootstrap Core CSS -->
     <link href="/website/css/bootstrap.min.css" rel="stylesheet">
@@ -22,6 +20,7 @@
     <link href="/website/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
 
+    {{! css($css) !}}
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -38,25 +37,21 @@
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
+                <span class="sr-only">Navigáció</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand topnav" href="#">Start Bootstrap</a>
+            <a class="navbar-brand topnav" href="#">Ecomp.co.hu</a>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <a href="#about">About</a>
-                </li>
-                <li>
-                    <a href="#services">Services</a>
-                </li>
-                <li>
-                    <a href="#contact">Contact</a>
-                </li>
+                <li><a href="#main">Kezdőkép</a></li>
+                <li><a href="#ugyvitel">Ügyvitel</a></li>
+                <li><a href="#import-export">Import-Export</a></li>
+                <li><a href="#tanacsadas">Tanácsadás</a></li>
+                <li><a href="#szoftver">Szoftver</a></li>
+                <li><a href="#kapcsolat">Kapcsolat</a></li>
             </ul>
         </div>
         <!-- /.navbar-collapse -->
@@ -65,6 +60,7 @@
 </nav>
 
 <main class="main">
+    <a name="main"></a>
     <% show("content") %>
 </main>
 
@@ -75,23 +71,14 @@
         <div class="row">
             <div class="col-lg-12">
                 <ul class="list-inline">
-                    <li>
-                        <a href="#">Home</a>
-                    </li>
-                    <li class="footer-menu-divider">&sdot;</li>
-                    <li>
-                        <a href="#about">About</a>
-                    </li>
-                    <li class="footer-menu-divider">&sdot;</li>
-                    <li>
-                        <a href="#services">Services</a>
-                    </li>
-                    <li class="footer-menu-divider">&sdot;</li>
-                    <li>
-                        <a href="#contact">Contact</a>
-                    </li>
+                    <li><a href="#main">Kezdőkép</a></li>
+                    <li><a href="#ugyvitel">Ügyvitel</a></li>
+                    <li><a href="#import-export">Import-Export</a></li>
+                    <li><a href="#tanacsadas">Tanácsadás</a></li>
+                    <li><a href="#szoftver">Szoftver</a></li>
+                    <li><a href="#kapcsolat">Kapcsolat</a></li>
                 </ul>
-                <p class="copyright text-muted small">Copyright &copy; eCOMP Kft 2017. Minden jog fenntartva</p>
+                <p class="copyright text-muted small">Copyright &copy; e-comp Kft 2017. Minden jog fenntartva</p>
             </div>
         </div>
     </div>

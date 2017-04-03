@@ -9,13 +9,13 @@
     {{! csrfInput() !}}
 
     <!-- Title input -->
-    <div class="form-group pmd-textfield pmd-textfield-floating-label">
+    <div class="form-group">
         <label for="title" class="control-label">Title</label>
         <input type="text" id="title" name="title" class="form-control" value="{{ $entity->getTitle() }}">
     </div>
 
     <!-- Body input -->
-    <div class="form-group pmd-textfield pmd-textfield-floating-label">
+    <div class="form-group">
         <label for="body" class="control-label">Body</label>
         <textarea id="body" class="form-control wysiwyg" name="body" rows="15">{{ $entity->getBody() }}</textarea>
     </div>

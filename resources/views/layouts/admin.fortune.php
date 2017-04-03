@@ -35,8 +35,13 @@
     <!-- Propeller admin theme css-->
     <link rel="stylesheet" type="text/css" href="/admin/themes/css/propeller-admin.css">
 
+    <!-- Custom stlyes -->
+    <link href="/admin/css/style.css" rel="stylesheet">
+
+    <!-- Trumbowyg vendor styles -->
     <link href="/admin/vendor/trumbowyg/ui/trumbowyg.min.css" rel="stylesheet">
 
+    <!-- jQuery -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 </head>
 
