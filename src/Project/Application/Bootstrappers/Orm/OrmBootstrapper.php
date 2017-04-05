@@ -22,6 +22,7 @@ use Project\Domain\Entities\Customer;
 use Project\Domain\Entities\Download;
 use Project\Domain\Entities\File;
 use Project\Domain\Entities\Page;
+use Project\Domain\Entities\User;
 use Project\Domain\Orm\CategoryRepo;
 use Project\Domain\Orm\CustomerRepo;
 use Project\Domain\Orm\DataMappers\CategorySqlDataMapper;
@@ -29,9 +30,11 @@ use Project\Domain\Orm\DataMappers\CustomerSqlDataMapper;
 use Project\Domain\Orm\DataMappers\DownloadSqlDataMapper;
 use Project\Domain\Orm\DataMappers\FileSqlDataMapper;
 use Project\Domain\Orm\DataMappers\PageSqlDataMapper;
+use Project\Domain\Orm\DataMappers\UserSqlDataMapper;
 use Project\Domain\Orm\DownloadRepo;
 use Project\Domain\Orm\FileRepo;
 use Project\Domain\Orm\PageRepo;
+use Project\Domain\Orm\UserRepo;
 use RuntimeException;
 
 /**
@@ -45,7 +48,8 @@ class OrmBootstrapper extends Bootstrapper implements ILazyBootstrapper
         CustomerRepo::class => [CustomerSqlDataMapper::class, Customer::class],
         PageRepo::class     => [PageSqlDataMapper::class, Page::class],
         FileRepo::class     => [FileSqlDataMapper::class, File::class],
-        DownloadRepo::class     => [DownloadSqlDataMapper::class, Download::class],
+        DownloadRepo::class => [DownloadSqlDataMapper::class, Download::class],
+        UserRepo::class     => [UserSqlDataMapper::class, User::class],
     ];
 
     /**

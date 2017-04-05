@@ -2,77 +2,69 @@
 
 namespace Project\Application\Auth;
 
-use Opulence\Cryptography\Hashing\BcryptHasher;
-use Opulence\Databases\ConnectionPools\ConnectionPool;
-use Opulence\QueryBuilders\MySql\QueryBuilder;
 use Project\Application\Constant\Env;
+use Project\Domain\Entities\Customer;
+use Project\Domain\Entities\User;
+use Project\Domain\Orm\CustomerRepo;
+use Project\Domain\Orm\UserRepo;
 
 class Authenticator
 {
-    /** @var ConnectionPool */
-    protected $connectionPool;
+    /** @var UserRepo */
+    protected $userRepo;
 
-    /** @var BcryptHasher */
-    protected $bcryptHasher;
+    /** @var CustomerRepo */
+    protected $customerRepo;
 
     /**
      * Authenticator constructor.
      *
-     * @param ConnectionPool $connectionPool
-     * @param BcryptHasher $bcryptHasher
+     * @param UserRepo     $userRepo
+     * @param CustomerRepo $customerRepo
      */
-    public function __construct(ConnectionPool $connectionPool, BcryptHasher $bcryptHasher)
+    public function __construct(UserRepo $userRepo, CustomerRepo $customerRepo)
     {
-        $this->connectionPool = $connectionPool;
-        $this->bcryptHasher = $bcryptHasher;
+        $this->userRepo     = $userRepo;
+        $this->customerRepo = $customerRepo;
     }
 
     /**
-     * @param string $username
-     * @param string $oassword
+     * @param string $password
+     * @param string $storedPassword
      *
      * @return bool
      */
-    public function canLogin(string $username, string $oassword): bool
+    public function canLogin(string $password, string $storedPassword): bool
     {
-        $salt = getenv(Env::ENCRYPTION_KEY);
-
-        $hashedValue = $this->getUserPassword($username);
-        if (empty($hashedValue)) {
-            return false;
-        }
-
-        $hashedValue = $this->bcryptHasher->hash($oassword, [], $salt);
-
-        $verified = $this->bcryptHasher->verify($hashedValue, $oassword, $salt);
+        $verified = \password_verify($password, $storedPassword);
 
         return $verified;
     }
 
     /**
-     * @param string $username
+     * @param string $identifier
      *
      * @return string
      */
-    public function getUserPassword(string $username) :string
+    public function getUserPassword(string $identifier): string
     {
-        $readConnection = $this->connectionPool->getReadConnection();
+        /** @var User $entity */
+        $entity = $this->userRepo->find($identifier);
 
-        $query = (new QueryBuilder())->select('password')
-            ->from('users')
-            ->where('username = :username')
-            ->addNamedPlaceholderValue('username', $username);
+        return $entity ? $entity->getPassword() : '';
+    }
 
-        $statement = $readConnection->prepare($query->getSql());
-        $statement->bindValues($query->getParameters());
-        $statement->execute();
+    /**
+     * @param string $identifier
+     *
+     * @return string
+     */
+    public function getCustomerPassword(string $identifier): string
+    {
+        /** @var Customer $entity */
+        $entity = $this->customerRepo->find($identifier);
 
-        $row = $statement->fetch(\PDO::FETCH_ASSOC);
-        if (!isset($row['password'])) {
-            return '';
-        }
-
-        return $row['password'];
+        return $entity ? $entity->getPassword() : '';
     }
 }
 

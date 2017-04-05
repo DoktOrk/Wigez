@@ -138,8 +138,21 @@ class CustomerSqlDataMapper extends SqlDataMapper implements ICustomerDataMapper
      */
     public function getByName(string $name)
     {
-        $parameters = ['name' => [$name, \PDO::PARAM_STR]];
+        $parameters = ['customers.name' => [$name, \PDO::PARAM_STR]];
         $sql        = $this->getQuery(['`name` = :name']);
+
+        return $this->read($sql, $parameters, self::VALUE_TYPE_ENTITY);
+    }
+
+    /**
+     * @param string $identifier
+     *
+     * @return array|null
+     */
+    public function find(string $identifier)
+    {
+        $parameters = ['identifier' => [$identifier, \PDO::PARAM_STR]];
+        $sql        = $this->getQuery(['(customers.`name` = :identifier OR customers.`email` = :identifier)']);
 
         return $this->read($sql, $parameters, self::VALUE_TYPE_ENTITY);
     }
@@ -152,7 +165,7 @@ class CustomerSqlDataMapper extends SqlDataMapper implements ICustomerDataMapper
     public function getByEmail(string $email)
     {
         $parameters = ['email' => [$email, \PDO::PARAM_STR]];
-        $sql        = $this->getQuery(['`email` = :email']);
+        $sql        = $this->getQuery(['customers.`email` = :email']);
 
         return $this->read($sql, $parameters, self::VALUE_TYPE_ENTITY);
     }

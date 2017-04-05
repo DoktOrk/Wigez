@@ -128,7 +128,7 @@ class Customer extends CrudAbstract
 
         $name     = (string)$post['name'];
         $email    = (string)$post['email'];
-        $password = (string)$post['password'];
+        $password = \password_hash((string)$post['password'], PASSWORD_DEFAULT);
 
         $categories = [];
         if (isset($post['categories'])) {
