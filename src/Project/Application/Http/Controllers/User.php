@@ -18,10 +18,6 @@ class User extends Controller
     const POST_USERNAME = 'username';
     const POST_PASSWORD = 'password';
 
-    const SESSION_USERNAME    = 'username';
-    const SESSION_IS_USER     = 'is_user';
-    const SESSION_IS_CUSTOMER = 'is_customer';
-
     /** @var ISession */
     private $session;
 
@@ -72,11 +68,15 @@ class User extends Controller
     {
         $username = (string)$this->request->getInput(static::POST_USERNAME);
         $password = (string)$this->request->getInput(static::POST_PASSWORD);
+        if ($this->loginUser($username, $password)) {
+            $this->session->set(SESSION_USERNAME, $username);
 
-        if ($this->loginUser($username, $password) || $this->loginCustomer($username, $password)) {
-            $this->session->set(static::SESSION_USERNAME, $username);
+            $response = new RedirectResponse(PATH_ADMIN . PATH_PAGES);
+            $response->send();
+        } elseif ($this->loginCustomer($username, $password)) {
+            $this->session->set(SESSION_USERNAME, $username);
 
-            $response = new RedirectResponse(PATH_ADMIN . PATH_DASHBOARD, ResponseHeaders::HTTP_FOUND);
+            $response = new RedirectResponse(PATH_ADMIN . PATH_DOWNLOADS);
             $response->send();
         } else {
             $response = new RedirectResponse(PATH_LOGIN);
@@ -119,8 +119,8 @@ class User extends Controller
             return false;
         }
 
-        $this->session->set(static::SESSION_IS_USER, true);
-        $this->session->set(static::SESSION_IS_CUSTOMER, false);
+        $this->session->set(SESSION_IS_USER, true);
+        $this->session->set(SESSION_IS_CUSTOMER, false);
 
         return true;
     }
@@ -143,8 +143,8 @@ class User extends Controller
             return false;
         }
 
-        $this->session->set(static::SESSION_IS_USER, false);
-        $this->session->set(static::SESSION_IS_CUSTOMER, true);
+        $this->session->set(SESSION_IS_USER, false);
+        $this->session->set(SESSION_IS_CUSTOMER, true);
 
         return true;
     }

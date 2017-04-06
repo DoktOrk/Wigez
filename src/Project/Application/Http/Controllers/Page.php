@@ -4,11 +4,12 @@ namespace Project\Application\Http\Controllers;
 
 use Opulence\Orm\IUnitOfWork;
 use Opulence\Routing\Urls\UrlGenerator;
+use Opulence\Sessions\ISession;
 use Project\Application\Grid\Factory\Page as GridFactory;
 use Project\Application\Validation\Factory\Page as ValidatorFactory;
+use Project\Domain\Entities\IStringerEntity;
 use Project\Domain\Entities\Page as Entity;
 use Project\Domain\Orm\PageRepo as Repo;
-use Project\Domain\Entities\IStringerEntity;
 
 class Page extends CrudAbstract
 {
@@ -30,6 +31,7 @@ class Page extends CrudAbstract
     /**
      * Helps DIC figure out the dependencies
      *
+     * @param ISession              $session
      * @param UrlGenerator          $urlGenerator
      * @param GridFactory           $gridFactory
      * @param Repo                  $repo
@@ -37,13 +39,14 @@ class Page extends CrudAbstract
      * @param IUnitOfWork|null      $unitOfWork
      */
     public function __construct(
+        ISession $session,
         UrlGenerator $urlGenerator,
         GridFactory $gridFactory,
         Repo $repo,
         ValidatorFactory $validatorFactory = null,
         IUnitOfWork $unitOfWork = null
     ) {
-        parent::__construct($urlGenerator, $gridFactory, $repo, $validatorFactory, $unitOfWork);
+        parent::__construct($session, $urlGenerator, $gridFactory, $repo, $validatorFactory, $unitOfWork);
     }
 
     /**

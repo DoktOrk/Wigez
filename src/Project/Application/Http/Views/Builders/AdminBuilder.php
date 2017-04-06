@@ -28,7 +28,9 @@ class AdminBuilder implements IViewBuilder
     public function build(IView $view) : IView
     {
         $view->setVar('title', 'Admin');
-        $view->setVar('username', $this->session->get('username'));
+        $view->setVar('username', $this->session->get(SESSION_USERNAME));
+        $view->setVar('is_user', $this->session->get(SESSION_IS_USER));
+        $view->setVar('is_customer', $this->session->get(SESSION_IS_CUSTOMER));
 
         return $view;
     }

@@ -4,6 +4,7 @@ namespace Project\Application\Http\Controllers;
 
 use Opulence\Http\Responses\Response;
 use Opulence\Routing\Urls\UrlGenerator;
+use Opulence\Sessions\ISession;
 use Project\Application\Grid\Factory\Download as GridFactory;
 use Project\Domain\Entities\Customer;
 use Project\Domain\Entities\Download as Entity;
@@ -25,16 +26,20 @@ class Download extends CrudAbstract
     /** @var UrlGenerator */
     protected $urlGenerator;
 
+    /** @var array */
+    protected $customerAccess = ['show'];
+
     /**
      * Helps DIC figure out the dependencies
      *
+     * @param ISession      $session
      * @param UrlGenerator $urlGenerator
      * @param GridFactory  $gridFactory
      * @param Repo         $repo
      */
-    public function __construct(UrlGenerator $urlGenerator, GridFactory $gridFactory, Repo $repo)
+    public function __construct(ISession $session, UrlGenerator $urlGenerator, GridFactory $gridFactory, Repo $repo)
     {
-        parent::__construct($urlGenerator, $gridFactory, $repo);
+        parent::__construct($session, $urlGenerator, $gridFactory, $repo);
     }
 
     /**

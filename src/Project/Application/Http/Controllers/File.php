@@ -5,6 +5,7 @@ namespace Project\Application\Http\Controllers;
 use Opulence\Http\Responses\Response;
 use Opulence\Orm\IUnitOfWork;
 use Opulence\Routing\Urls\UrlGenerator;
+use Opulence\Sessions\ISession;
 use Project\Application\Grid\Factory\File as GridFactory;
 use Project\Application\Validation\Factory\File as ValidatorFactory;
 use Project\Domain\Entities\Category;
@@ -38,6 +39,7 @@ class File extends CrudAbstract
     /**
      * Helps DIC figure out the dependencies
      *
+     * @param ISession      $session
      * @param UrlGenerator     $urlGenerator
      * @param GridFactory      $gridFactory
      * @param Repo             $repo
@@ -46,6 +48,7 @@ class File extends CrudAbstract
      * @param CategoryRepo     $categoryRepo
      */
     public function __construct(
+        ISession $session,
         UrlGenerator $urlGenerator,
         GridFactory $gridFactory,
         Repo $repo,
@@ -55,7 +58,7 @@ class File extends CrudAbstract
     ) {
         $this->categoryRepo = $categoryRepo;
 
-        parent::__construct($urlGenerator, $gridFactory, $repo, $validatorFactory, $unitOfWork);
+        parent::__construct($session, $urlGenerator, $gridFactory, $repo, $validatorFactory, $unitOfWork);
     }
 
     /**

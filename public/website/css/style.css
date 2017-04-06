@@ -2,7 +2,11 @@
     background: url(/website/img/calculator-paperclip-pen-office-66862.jpeg) no-repeat center center;
 }
 
-.bordered-img-container img {
+.map-container {
+    text-align: right;
+}
+
+.bordered-img-container img, .map-container iframe {
     box-shadow: 5px 5px 10px #c0c0c0;
 }
 

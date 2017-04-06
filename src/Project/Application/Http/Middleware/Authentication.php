@@ -1,4 +1,5 @@
 <?php
+
 namespace Project\Application\Http\Middleware;
 
 use Closure;
@@ -10,9 +11,9 @@ use Opulence\Http\Responses\ResponseHeaders;
 class Authentication extends Session
 {
     // $next consists of the next middleware in the pipeline
-    public function handle(Request $request, Closure $next) : Response
+    public function handle(Request $request, Closure $next): Response
     {
-        if (!$this->session->get('username')) {
+        if (!$this->session->get(SESSION_USERNAME)) {
             return new RedirectResponse(PATH_LOGIN, ResponseHeaders::HTTP_TEMPORARY_REDIRECT);
         }
 

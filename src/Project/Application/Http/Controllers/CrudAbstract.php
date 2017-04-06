@@ -9,6 +9,7 @@ use Opulence\Orm\OrmException;
 use Opulence\Orm\Repositories\IRepository;
 use Opulence\Routing\Controller;
 use Opulence\Routing\Urls\UrlGenerator;
+use Opulence\Sessions\ISession;
 use Opulence\Validation\Factories\IValidatorFactory;
 use Opulence\Validation\IValidator;
 use Project\Application\Grid\Factory\IFactory;
@@ -65,7 +66,14 @@ abstract class CrudAbstract extends Controller
     /** @var array */
     protected $viewVarsExtra = [];
 
+    /** @var ISession */
+    protected $session;
+
+    /** @var array */
+    protected $customerAccess = [];
+
     /**
+     * @param ISession          $session
      * @param UrlGenerator      $urlGenerator
      * @param IFactory          $gridFactory
      * @param IRepository       $repo
@@ -73,21 +81,31 @@ abstract class CrudAbstract extends Controller
      * @param IUnitOfWork       $unitOfWork
      */
     public function __construct(
+        ISession $session,
         UrlGenerator $urlGenerator,
         IFactory $gridFactory,
         IRepository $repo,
         IValidatorFactory $validatorFactory = null,
         IUnitOfWork $unitOfWork = null
     ) {
-        $this->urlGenerator = $urlGenerator;
-
-        $this->gridFactory = $gridFactory;
-
-        $this->repo = $repo;
-
+        $this->session          = $session;
+        $this->urlGenerator     = $urlGenerator;
+        $this->gridFactory      = $gridFactory;
+        $this->repo             = $repo;
         $this->validatorFactory = $validatorFactory;
+        $this->unitOfWork       = $unitOfWork;
 
-        $this->unitOfWork = $unitOfWork;
+        $this->checkUser();
+    }
+
+    /**
+     * @return Response
+     */
+    public function checkUser()
+    {
+        if (count($this->customerAccess) === 0 && !$this->session->get(SESSION_IS_USER)) {
+            throw new \RuntimeException(sprintf('Route is not supported: %s.%s()', __CLASS__, __FILE__));
+        }
     }
 
     /**
@@ -194,6 +212,51 @@ abstract class CrudAbstract extends Controller
     }
 
     /**
+     * @return Response
+     */
+    public function createResponse(): Response
+    {
+        foreach ($this->viewVarsExtra as $viewKey => $viewValue) {
+            $this->view->setVar($viewKey, $viewValue);
+        }
+
+        return new Response($this->viewCompiler->compile($this->view));
+    }
+
+    /**
+     * @param int|null $id
+     *
+     * @return IStringerEntity
+     */
+    public function retrieveEntity(int $id = null): IStringerEntity
+    {
+        try {
+            /** @var IStringerEntity $entity */
+            $this->entity = $this->repo->getById($id);
+        } catch (OrmException $e) {
+            throw new \Exception('Retrieval errors aren\'t yet handled');
+            // return $this->createEntity();
+        }
+
+        return $this->entity;
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return Response
+     */
+    public function delete(int $id): Response
+    {
+        $this->entity = $this->createEntity($id);
+
+        $this->repo->delete($this->entity);
+        $this->unitOfWork->commit();
+
+        return $this->redirectToList(static::IS_EDIT_DELETE);
+    }
+
+    /**
      * @return bool
      */
     protected function validateForm(): bool
@@ -230,18 +293,6 @@ abstract class CrudAbstract extends Controller
         $response->send();
 
         return $response;
-    }
-
-    /**
-     * @return Response
-     */
-    public function createResponse(): Response
-    {
-        foreach ($this->viewVarsExtra as $viewKey => $viewValue) {
-            $this->view->setVar($viewKey, $viewValue);
-        }
-
-        return new Response($this->viewCompiler->compile($this->view));
     }
 
     /**
@@ -289,37 +340,4 @@ abstract class CrudAbstract extends Controller
      * @return IStringerEntity
      */
     abstract protected function fillEntity(IStringerEntity $entity): IStringerEntity;
-
-    /**
-     * @param int|null $id
-     *
-     * @return IStringerEntity
-     */
-    public function retrieveEntity(int $id = null): IStringerEntity
-    {
-        try {
-            /** @var IStringerEntity $entity */
-            $this->entity = $this->repo->getById($id);
-        } catch (OrmException $e) {
-            throw new \Exception('Retrieval errors aren\'t yet handled');
-            // return $this->createEntity();
-        }
-
-        return $this->entity;
-    }
-
-    /**
-     * @param int $id
-     *
-     * @return Response
-     */
-    public function delete(int $id): Response
-    {
-        $this->entity = $this->createEntity($id);
-
-        $this->repo->delete($this->entity);
-        $this->unitOfWork->commit();
-
-        return $this->redirectToList(static::IS_EDIT_DELETE);
-    }
 }

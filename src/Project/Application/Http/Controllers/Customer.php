@@ -5,6 +5,7 @@ namespace Project\Application\Http\Controllers;
 use Opulence\Http\Responses\Response;
 use Opulence\Orm\IUnitOfWork;
 use Opulence\Routing\Urls\UrlGenerator;
+use Opulence\Sessions\ISession;
 use Project\Application\Grid\Factory\Customer as GridFactory;
 use Project\Application\Validation\Factory\Customer as ValidatorFactory;
 use Project\Domain\Entities\Category;
@@ -42,6 +43,7 @@ class Customer extends CrudAbstract
     /**
      * Helps DIC figure out the dependencies
      *
+     * @param ISession          $session
      * @param UrlGenerator     $urlGenerator
      * @param GridFactory      $gridFactory
      * @param Repo             $repo
@@ -50,6 +52,7 @@ class Customer extends CrudAbstract
      * @param CategoryRepo     $categoryRepo
      */
     public function __construct(
+        ISession $session,
         UrlGenerator $urlGenerator,
         GridFactory $gridFactory,
         Repo $repo,
@@ -59,7 +62,7 @@ class Customer extends CrudAbstract
     ) {
         $this->categoryRepo = $categoryRepo;
 
-        parent::__construct($urlGenerator, $gridFactory, $repo, $validatorFactory, $unitOfWork);
+        parent::__construct($session, $urlGenerator, $gridFactory, $repo, $validatorFactory, $unitOfWork);
     }
 
     /**

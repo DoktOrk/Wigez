@@ -81,10 +81,12 @@
                         <li><a href="{{! route('logout') !}}">Logout</a></li>
                     </ul></div>
             </li>
+            <% if ($is_user) %>
             <li><a class="pmd-ripple-effect" href="{{! route('pages') !}}" tabindex="-1"><i class="material-icons media-left media-middle">text_format</i> <span class="media-body">Pages</span></a></li>
             <li><a class="pmd-ripple-effect" href="{{! route('categories') !}}" tabindex="-1"><i class="material-icons media-left media-middle">group_work</i> <span class="media-body">Categories</span></a></li>
             <li><a class="pmd-ripple-effect" href="{{! route('customers') !}}" tabindex="-1"><i class="material-icons media-left media-middle">person</i> <span class="media-body">Customers</span></a></li>
             <li><a class="pmd-ripple-effect" href="{{! route('files') !}}" tabindex="-1"><i class="material-icons media-left media-middle">attachment</i> <span class="media-body">Files</span></a></li>
+            <% endif %>
             <li><a class="pmd-ripple-effect" href="{{! route('downloads') !}}" tabindex="-1"><i class="material-icons media-left media-middle">file_download</i> <span class="media-body">Downloads</span></a></li>
         </ul>
     </aside><!-- End Left sidebar -->

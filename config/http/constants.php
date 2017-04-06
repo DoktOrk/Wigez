@@ -53,3 +53,7 @@ const ROUTE_DOWNLOADS = 'downloads';
 const PATH_DOWNLOADS = '/download';
 
 const OPTIONS_NAME = 'name';
+
+const SESSION_USERNAME    = 'username';
+const SESSION_IS_USER     = 'is_user';
+const SESSION_IS_CUSTOMER = 'is_customer';
