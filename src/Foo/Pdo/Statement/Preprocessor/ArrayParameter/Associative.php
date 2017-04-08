@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Foo\Pdo\Statement\Preprocessor\ArrayParameter;
 
+use Foo\Pdo\Statement\Preprocessor\ArrayParameter;
+
 class Associative
 {
     /**
@@ -21,7 +23,7 @@ class Associative
                 continue;
             }
 
-            $partials[$key] = $this->getQueryPartial($parameters, $key);
+            $partials[$key] = $this->getQueryPartial($parameters[$key], $key);
         }
 
         if (!$partials) {
@@ -35,26 +37,21 @@ class Associative
     }
 
     /**
-     * @param array  $parameters
+     * @param array  $parameterValues
      * @param string $key
      *
      * @return array
      */
-    private function getQueryPartial(array $parameters, string $key)
+    private function getQueryPartial(array $parameterValues, string $key)
     {
-        $values = $parameters[$key];
+        $paramType = $parameterValues[1] === ArrayParameter::PARAM_INT_ARRAY ? \PDO::PARAM_INT : \PDO::PARAM_STR;
 
-        $inQueryParts = array_fill(0, count($values), "${key}__expanded");
+        $queryPartial = [];
+        foreach ($parameterValues[0] as $index => $value) {
+            $queryPartial[$key . '__expanded' . $index] = [$value, $paramType];
+        }
 
-        array_walk(
-            $inQueryParts,
-            function (&$value, $key) {
-                $value = $value . $key;
-            }
-        );
-
-
-        return $inQueryParts;
+        return $queryPartial;
     }
 
     /**
@@ -68,9 +65,9 @@ class Associative
         foreach ($partials as $key => $inQueryParts) {
             $inQueryParts = array_map(
                 function ($value) {
-                    return ":$value";
+                    return ":{$value}";
                 },
-                $inQueryParts
+                array_keys($inQueryParts)
             );
             $inQuery      = implode(', ', $inQueryParts);
 
@@ -88,9 +85,7 @@ class Associative
      */
     private function injectParameterPartials(array $parameters, array $partials)
     {
-        foreach ($partials as $origKey => $newKeys) {
-            $replacement = array_combine($newKeys, $parameters[$origKey]);
-
+        foreach ($partials as $origKey => $replacement) {
             $parameters = $this->arraySpliceAssoc(
                 $parameters,
                 $origKey,

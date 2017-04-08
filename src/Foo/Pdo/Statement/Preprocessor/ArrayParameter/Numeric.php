@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Foo\Pdo\Statement\Preprocessor\ArrayParameter;
 
+use Foo\Pdo\Statement\Preprocessor\ArrayParameter;
+
 class Numeric
 {
     /**
@@ -42,9 +44,11 @@ class Numeric
      */
     private function getInQueryPartial(array $parameters, int $key)
     {
-        $values = $parameters[$key];
+        $values    = $parameters[$key][0];
 
-        $queryParts = array_fill(0, count($values), '?');
+        $paramType = $parameters[$key][1] === ArrayParameter::PARAM_INT_ARRAY ? \PDO::PARAM_INT : \PDO::PARAM_STR;
+
+        $queryParts = array_fill(0, count($values), ['?', $paramType]);
 
         return $queryParts;
     }
@@ -64,7 +68,14 @@ class Numeric
             if ($index == $lastIndex) {
                 $query .= $queryPart;
             } elseif (array_key_exists($index, $partials)) {
-                $query .= $queryPart . implode(', ', $partials[$index]);
+                $partialIndex = array_map(
+                    function (array $valueArray) {
+                        return $valueArray[0];
+                    },
+                    $partials[$index]
+                );
+
+                $query .= $queryPart . implode(', ', $partialIndex);
             } else {
                 $query .= $queryPart . '?';
             }
@@ -82,15 +93,19 @@ class Numeric
     private function injectParameterPartials(array $parameters, array $partials)
     {
         $newParameters = [];
-        foreach ($parameters as $index => $value) {
-            if (!array_key_exists($index, $partials)) {
-                $newParameters[] = $value;
+        foreach ($parameters as $parameterKey => $parameter) {
+            if (!array_key_exists($parameterKey, $partials)) {
+                if (is_numeric($parameterKey)) {
+                    $newParameters[] = $parameter;
+                } else {
+                    $newParameters[$parameterKey] = $parameter;
+                }
 
                 continue;
             }
 
-            foreach ($parameters[$index] as $inArrayValue) {
-                $newParameters[] = $inArrayValue;
+            foreach ($partials[$parameterKey] as $partialKey => $partialValues) {
+                $newParameters[] = [$parameter[0][$partialKey], $partialValues[1]];
             }
         }
 

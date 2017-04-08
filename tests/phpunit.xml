@@ -11,6 +11,7 @@
     <testsuites>
         <testsuite name="Foo Suite">
             <directory>./unit/Foo</directory>
+            <directory>./integration/Foo</directory>
         </testsuite>
     </testsuites>
     <filter>
