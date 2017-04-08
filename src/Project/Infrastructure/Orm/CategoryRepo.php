@@ -1,6 +1,6 @@
 <?php
 
-namespace Project\Domain\Orm;
+namespace Project\Infrastructure\Orm;
 
 use Opulence\Orm\Repositories\Repository;
 use Project\Domain\Entities\Customer;

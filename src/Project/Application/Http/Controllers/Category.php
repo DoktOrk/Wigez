@@ -9,7 +9,7 @@ use Project\Application\Grid\Factory\Category as GridFactory;
 use Project\Application\Validation\Factory\Category as ValidatorFactory;
 use Project\Domain\Entities\Category as Entity;
 use Project\Domain\Entities\IStringerEntity;
-use Project\Domain\Orm\CategoryRepo as Repo;
+use Project\Infrastructure\Orm\CategoryRepo as Repo;
 
 class Category extends CrudAbstract
 {

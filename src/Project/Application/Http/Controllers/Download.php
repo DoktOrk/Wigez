@@ -10,7 +10,7 @@ use Project\Domain\Entities\Customer;
 use Project\Domain\Entities\Download as Entity;
 use Project\Domain\Entities\File;
 use Project\Domain\Entities\IStringerEntity;
-use Project\Domain\Orm\DownloadRepo as Repo;
+use Project\Infrastructure\Orm\DownloadRepo as Repo;
 
 class Download extends CrudAbstract
 {

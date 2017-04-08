@@ -9,7 +9,7 @@ use Project\Application\Grid\Factory\Page as GridFactory;
 use Project\Application\Validation\Factory\Page as ValidatorFactory;
 use Project\Domain\Entities\IStringerEntity;
 use Project\Domain\Entities\Page as Entity;
-use Project\Domain\Orm\PageRepo as Repo;
+use Project\Infrastructure\Orm\PageRepo as Repo;
 
 class Page extends CrudAbstract
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Project\Domain\Orm\DataMappers;
+namespace Project\Infrastructure\Orm\DataMappers;
 
 use Opulence\Orm\DataMappers\SqlDataMapper;
 use Project\Domain\Entities\Category;

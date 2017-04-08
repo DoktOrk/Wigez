@@ -11,8 +11,8 @@ use Project\Application\Validation\Factory\Customer as ValidatorFactory;
 use Project\Domain\Entities\Category;
 use Project\Domain\Entities\Customer as Entity;
 use Project\Domain\Entities\IStringerEntity;
-use Project\Domain\Orm\CategoryRepo;
-use Project\Domain\Orm\CustomerRepo as Repo;
+use Project\Infrastructure\Orm\CategoryRepo;
+use Project\Infrastructure\Orm\CustomerRepo as Repo;
 
 class Customer extends CrudAbstract
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Project\Domain\Orm\DataMappers;
+namespace Project\Infrastructure\Orm\DataMappers;
 
 use Opulence\Orm\DataMappers\SqlDataMapper;
-use Project\Domain\Entities\Page as Entity;
+use Project\Domain\Entities\Category as Entity;
 
-class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
+class CategorySqlDataMapper extends SqlDataMapper implements ICategoryDataMapper
 {
     /**
      * @param Entity $entity
@@ -13,16 +13,15 @@ class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
     public function add($entity)
     {
         if (!$entity instanceof Entity) {
-            throw new \InvalidArgumentException(__CLASS__ . ':' . __FUNCTION__ . ' expects a Page entity.');
+            throw new \InvalidArgumentException(__CLASS__ . ':' . __FUNCTION__ . ' expects a Customer entity.');
         }
 
         $statement = $this->writeConnection->prepare(
-            'INSERT INTO pages (title, body) VALUES (:title, :body)'
+            'INSERT INTO categories (`name`) VALUES (:name)'
         );
         $statement->bindValues(
             [
-                'title' => $entity->getTitle(),
-                'body'  => $entity->getBody(),
+                'name' => [$entity->getName(), \PDO::PARAM_STR],
             ]
         );
         $statement->execute();
@@ -36,11 +35,11 @@ class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
     public function delete($entity)
     {
         if (!$entity instanceof Entity) {
-            throw new \InvalidArgumentException(__CLASS__ . ':' . __FUNCTION__ . ' expects a Page entity.');
+            throw new \InvalidArgumentException(__CLASS__ . ':' . __FUNCTION__ . ' expects a Customer entity.');
         }
 
         $statement = $this->writeConnection->prepare(
-            'UPDATE pages SET deleted = 1 WHERE id = :id'
+            'UPDATE categories SET deleted = 1 WHERE id = :id'
         );
         $statement->bindValues(
             [
@@ -62,18 +61,24 @@ class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
 
     /**
      * @param array $where
+     * @param bool  $joinCustomer
      *
      * @return string
      */
-    private function getQuery(array $where = [1])
+    private function getQuery(array $where = [1], bool $joinCustomer = false)
     {
         $sqlParts = [];
 
-        $sqlParts[] = 'SELECT pages.id, pages.title, pages.body';
-        $sqlParts[] = 'FROM pages';
+        $sqlParts[] = 'SELECT categories.id, categories.`name`';
+        $sqlParts[] = 'FROM categories';
+
+        if ($joinCustomer) {
+            $sqlParts[] = 'INNER JOIN categories_customers ON categories.id = categories_customers.category_id';
+        }
+
         $sqlParts[] = 'WHERE';
         $sqlParts[] = implode(' AND ', $where);
-        $sqlParts[] = 'AND pages.deleted = 0';
+        $sqlParts[] = 'AND categories.deleted = 0';
 
         return implode(' ', $sqlParts);
     }
@@ -94,18 +99,29 @@ class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
     }
 
     /**
-     * @param string $title
+     * @param string $name
      *
      * @return array|null
      */
-    public function getByTitle(string $title)
+    public function getByName(string $name)
     {
-        $sql        = $this->getQuery(['`title` = :title']);
-        $parameters = [
-            'title' => $title,
-        ];
+        $parameters = ['name' => [$name, \PDO::PARAM_STR]];
+        $sql        = $this->getQuery(['`name` = :name']);
 
         return $this->read($sql, $parameters, self::VALUE_TYPE_ENTITY);
+    }
+
+    /**
+     * @param int $customerId
+     *
+     * @return array|null
+     */
+    public function getByCustomerId(int $customerId)
+    {
+        $parameters = ['customer_id' => [$customerId, \PDO::PARAM_INT]];
+        $sql        = $this->getQuery(['customer_id = :customer_id'], true);
+
+        return $this->read($sql, $parameters, self::VALUE_TYPE_ARRAY);
     }
 
     /**
@@ -114,17 +130,16 @@ class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
     public function update($entity)
     {
         if (!$entity instanceof Entity) {
-            throw new \InvalidArgumentException(__CLASS__ . ':' . __FUNCTION__ . ' expects a Page entity.');
+            throw new \InvalidArgumentException(__CLASS__ . ':' . __FUNCTION__ . ' expects a Customer entity.');
         }
 
         $statement = $this->writeConnection->prepare(
-            'UPDATE pages SET title = :title, body = :body WHERE id = :id'
+            'UPDATE categories SET `name` = :name WHERE id = :id'
         );
         $statement->bindValues(
             [
-                'title' => $entity->getTitle(),
-                'body'  => $entity->getBody(),
-                'id'    => [$entity->getId(), \PDO::PARAM_INT],
+                'name' => $entity->getName(),
+                'id'   => [$entity->getId(), \PDO::PARAM_INT],
             ]
         );
         $statement->execute();
@@ -139,8 +154,7 @@ class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
     {
         return new Entity(
             (int)$hash['id'],
-            $hash['title'],
-            $hash['body']
+            $hash['name']
         );
     }
 }

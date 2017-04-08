@@ -3,7 +3,7 @@ namespace Project\Application\Http\Controllers;
 
 use Opulence\Http\Responses\Response;
 use Opulence\Routing\Controller;
-use Project\Domain\Orm\PageRepo as Repo;
+use Project\Infrastructure\Orm\PageRepo as Repo;
 
 /**
  * Defines an example controller

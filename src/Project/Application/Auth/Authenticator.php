@@ -2,11 +2,10 @@
 
 namespace Project\Application\Auth;
 
-use Project\Application\Constant\Env;
 use Project\Domain\Entities\Customer;
 use Project\Domain\Entities\User;
-use Project\Domain\Orm\CustomerRepo;
-use Project\Domain\Orm\UserRepo;
+use Project\Infrastructure\Orm\CustomerRepo;
+use Project\Infrastructure\Orm\UserRepo;
 
 class Authenticator
 {

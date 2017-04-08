@@ -1,6 +1,6 @@
 <?php
 
-namespace Project\Domain\Orm\DataMappers;
+namespace Project\Infrastructure\Orm\DataMappers;
 
 use Foo\Pdo\Statement\IPreprocessor;
 use Opulence\Databases\IConnection;

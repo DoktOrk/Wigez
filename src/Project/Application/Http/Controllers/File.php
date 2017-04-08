@@ -11,8 +11,8 @@ use Project\Application\Validation\Factory\File as ValidatorFactory;
 use Project\Domain\Entities\Category;
 use Project\Domain\Entities\File as Entity;
 use Project\Domain\Entities\IStringerEntity;
-use Project\Domain\Orm\CategoryRepo;
-use Project\Domain\Orm\FileRepo as Repo;
+use Project\Infrastructure\Orm\CategoryRepo;
+use Project\Infrastructure\Orm\FileRepo as Repo;
 
 class File extends CrudAbstract
 {

@@ -1,19 +1,19 @@
 <?php
 
-namespace Project\Domain\Orm;
+namespace Project\Infrastructure\Orm;
 
 use Opulence\Orm\Repositories\Repository;
 
-class UserRepo extends Repository
+class CustomerRepo extends Repository
 {
     /**
-     * @param string $username
+     * @param string $name
      *
      * @return object|\object[]
      */
-    public function getByUsername(string $username)
+    public function getByName(string $name)
     {
-        return $this->getFromDataMapper('getByUsername', [$username]);
+        return $this->getFromDataMapper('getByName', [$name]);
     }
     
     /**

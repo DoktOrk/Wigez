@@ -1,11 +1,11 @@
 <?php
 
-namespace Project\Domain\Orm\DataMappers;
+namespace Project\Infrastructure\Orm\DataMappers;
 
 use Opulence\Orm\DataMappers\SqlDataMapper;
-use Project\Domain\Entities\Category as Entity;
+use Project\Domain\Entities\Page as Entity;
 
-class CategorySqlDataMapper extends SqlDataMapper implements ICategoryDataMapper
+class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
 {
     /**
      * @param Entity $entity
@@ -13,15 +13,16 @@ class CategorySqlDataMapper extends SqlDataMapper implements ICategoryDataMapper
     public function add($entity)
     {
         if (!$entity instanceof Entity) {
-            throw new \InvalidArgumentException(__CLASS__ . ':' . __FUNCTION__ . ' expects a Customer entity.');
+            throw new \InvalidArgumentException(__CLASS__ . ':' . __FUNCTION__ . ' expects a Page entity.');
         }
 
         $statement = $this->writeConnection->prepare(
-            'INSERT INTO categories (`name`) VALUES (:name)'
+            'INSERT INTO pages (title, body) VALUES (:title, :body)'
         );
         $statement->bindValues(
             [
-                'name' => [$entity->getName(), \PDO::PARAM_STR],
+                'title' => $entity->getTitle(),
+                'body'  => $entity->getBody(),
             ]
         );
         $statement->execute();
@@ -35,11 +36,11 @@ class CategorySqlDataMapper extends SqlDataMapper implements ICategoryDataMapper
     public function delete($entity)
     {
         if (!$entity instanceof Entity) {
-            throw new \InvalidArgumentException(__CLASS__ . ':' . __FUNCTION__ . ' expects a Customer entity.');
+            throw new \InvalidArgumentException(__CLASS__ . ':' . __FUNCTION__ . ' expects a Page entity.');
         }
 
         $statement = $this->writeConnection->prepare(
-            'UPDATE categories SET deleted = 1 WHERE id = :id'
+            'UPDATE pages SET deleted = 1 WHERE id = :id'
         );
         $statement->bindValues(
             [
@@ -61,24 +62,18 @@ class CategorySqlDataMapper extends SqlDataMapper implements ICategoryDataMapper
 
     /**
      * @param array $where
-     * @param bool  $joinCustomer
      *
      * @return string
      */
-    private function getQuery(array $where = [1], bool $joinCustomer = false)
+    private function getQuery(array $where = [1])
     {
         $sqlParts = [];
 
-        $sqlParts[] = 'SELECT categories.id, categories.`name`';
-        $sqlParts[] = 'FROM categories';
-
-        if ($joinCustomer) {
-            $sqlParts[] = 'INNER JOIN categories_customers ON categories.id = categories_customers.category_id';
-        }
-
+        $sqlParts[] = 'SELECT pages.id, pages.title, pages.body';
+        $sqlParts[] = 'FROM pages';
         $sqlParts[] = 'WHERE';
         $sqlParts[] = implode(' AND ', $where);
-        $sqlParts[] = 'AND categories.deleted = 0';
+        $sqlParts[] = 'AND pages.deleted = 0';
 
         return implode(' ', $sqlParts);
     }
@@ -99,29 +94,18 @@ class CategorySqlDataMapper extends SqlDataMapper implements ICategoryDataMapper
     }
 
     /**
-     * @param string $name
+     * @param string $title
      *
      * @return array|null
      */
-    public function getByName(string $name)
+    public function getByTitle(string $title)
     {
-        $parameters = ['name' => [$name, \PDO::PARAM_STR]];
-        $sql        = $this->getQuery(['`name` = :name']);
+        $sql        = $this->getQuery(['`title` = :title']);
+        $parameters = [
+            'title' => $title,
+        ];
 
         return $this->read($sql, $parameters, self::VALUE_TYPE_ENTITY);
-    }
-
-    /**
-     * @param int $customerId
-     *
-     * @return array|null
-     */
-    public function getByCustomerId(int $customerId)
-    {
-        $parameters = ['customer_id' => [$customerId, \PDO::PARAM_INT]];
-        $sql        = $this->getQuery(['customer_id = :customer_id'], true);
-
-        return $this->read($sql, $parameters, self::VALUE_TYPE_ARRAY);
     }
 
     /**
@@ -130,16 +114,17 @@ class CategorySqlDataMapper extends SqlDataMapper implements ICategoryDataMapper
     public function update($entity)
     {
         if (!$entity instanceof Entity) {
-            throw new \InvalidArgumentException(__CLASS__ . ':' . __FUNCTION__ . ' expects a Customer entity.');
+            throw new \InvalidArgumentException(__CLASS__ . ':' . __FUNCTION__ . ' expects a Page entity.');
         }
 
         $statement = $this->writeConnection->prepare(
-            'UPDATE categories SET `name` = :name WHERE id = :id'
+            'UPDATE pages SET title = :title, body = :body WHERE id = :id'
         );
         $statement->bindValues(
             [
-                'name' => $entity->getName(),
-                'id'   => [$entity->getId(), \PDO::PARAM_INT],
+                'title' => $entity->getTitle(),
+                'body'  => $entity->getBody(),
+                'id'    => [$entity->getId(), \PDO::PARAM_INT],
             ]
         );
         $statement->execute();
@@ -154,7 +139,8 @@ class CategorySqlDataMapper extends SqlDataMapper implements ICategoryDataMapper
     {
         return new Entity(
             (int)$hash['id'],
-            $hash['name']
+            $hash['title'],
+            $hash['body']
         );
     }
 }

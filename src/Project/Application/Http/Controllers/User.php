@@ -9,8 +9,8 @@ use Opulence\Routing\Controller;
 use Opulence\Sessions\ISession;
 use Project\Application\Auth\Authenticator;
 use Project\Domain\Entities\Customer;
-use Project\Domain\Orm\CategoryRepo;
-use Project\Domain\Orm\CustomerRepo;
+use Project\Infrastructure\Orm\CategoryRepo;
+use Project\Infrastructure\Orm\CustomerRepo;
 
 class User extends Controller
 {
