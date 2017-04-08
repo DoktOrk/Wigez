@@ -2,10 +2,10 @@
 
 namespace Project\Application\Grid\Factory;
 
-use Grid\Action\Button;
-use Grid\Collection\Actions;
-use Grid\Factory;
-use Grid\Grid;
+use Foo\Grid\Action\Button;
+use Foo\Grid\Collection\Actions;
+use Foo\Grid\Factory;
+use Foo\Grid\Grid;
 use Opulence\Routing\Router;
 use Project\Domain\Entities\File as Entity;
 

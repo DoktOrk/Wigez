@@ -13,7 +13,7 @@ class PreprocessorTest extends \PHPUnit\Framework\TestCase
 
     public function setUp()
     {
-        $this->sut = (new Factory())->getInstance();
+        $this->sut = Factory::getPreprocessor();
     }
 
     public function testArrayParameterWorks()

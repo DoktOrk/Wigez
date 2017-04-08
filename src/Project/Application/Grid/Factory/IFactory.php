@@ -2,7 +2,7 @@
 
 namespace Project\Application\Grid\Factory;
 
-use Grid\Grid;
+use Foo\Grid\Grid;
 
 interface IFactory
 {

@@ -16,10 +16,6 @@
         "src/Foo",
         "tests/src/Foo"
       ],
-      "Grid\\": [
-        "src/Grid",
-        "tests/src/Grid"
-      ],
       "Project\\": [
         "src/Project",
         "tests/src/Project"

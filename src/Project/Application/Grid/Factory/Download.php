@@ -2,8 +2,8 @@
 
 namespace Project\Application\Grid\Factory;
 
-use Grid\Factory;
-use Grid\Grid;
+use Foo\Grid\Factory;
+use Foo\Grid\Grid;
 use Opulence\Routing\Router;
 use Project\Domain\Entities\Download as Entity;
 
