@@ -64,6 +64,34 @@ class File extends CrudAbstract
     /**
      * @return Response
      */
+    public function show(): Response
+    {
+        if ($this->session->get(SESSION_IS_USER)) {
+            return parent::show();
+        }
+
+        return $this->showLimited();
+    }
+
+    /**
+     * @return Response
+     */
+    public function showLimited(): Response
+    {
+        $pages = $this->repo->getByCategories($this->session->get(SESSION_CATEGORIES));
+        $grid  = $this->gridFactory->createGrid($pages);
+
+        $this->view = $this->viewFactory->createView(static::VIEW_LIST);
+        $this->view->setVar(static::VAR_TITLE, sprintf(static::TITLE_SHOW, static::ENTITY_PLURAL));
+        $this->view->setVar(static::VAR_GRID, $grid);
+        $this->view->setVar(static::VAR_CREATE_URL, $this->getCreateUrl());
+
+        return $this->createResponse();
+    }
+
+    /**
+     * @return Response
+     */
     public function new(): Response
     {
         $this->addAllCategories();

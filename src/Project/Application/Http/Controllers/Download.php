@@ -26,13 +26,10 @@ class Download extends CrudAbstract
     /** @var UrlGenerator */
     protected $urlGenerator;
 
-    /** @var array */
-    protected $customerAccess = ['show'];
-
     /**
      * Helps DIC figure out the dependencies
      *
-     * @param ISession      $session
+     * @param ISession     $session
      * @param UrlGenerator $urlGenerator
      * @param GridFactory  $gridFactory
      * @param Repo         $repo

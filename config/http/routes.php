@@ -22,7 +22,14 @@ $router->group(['controllerNamespace' => 'Project\\Application\\Http\\Controller
     /** @see \Project\Application\Http\Controllers\User::logoutAction() */
     $router->get(PATH_LOGOUT, 'User@logoutAction', [OPTIONS_NAME => ROUTE_LOGOUT]);
 
-    $router->group(['path' => PATH_ADMIN, 'middleware' => 'Project\\Application\\Http\\Middleware\\Authentication'],
+    $router->group(
+        [
+            'path' => PATH_ADMIN,
+            'middleware' => [
+                'Project\\Application\\Http\\Middleware\\Authentication',
+                'Project\\Application\\Http\\Middleware\\Authorization',
+            ]
+        ],
         function (Router $router) {
             $entities = [
                 'pages'      => 'Page',

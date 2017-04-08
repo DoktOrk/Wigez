@@ -2,6 +2,8 @@
 
 namespace Project\Application\Bootstrappers\Orm;
 
+use Foo\Pdo\Statement\IPreprocessor;
+use Foo\Pdo\Statement\Preprocessor\Factory;
 use Opulence\Databases\ConnectionPools\ConnectionPool;
 use Opulence\Databases\IConnection;
 use Opulence\Ioc\Bootstrappers\Bootstrapper;
@@ -86,6 +88,7 @@ class OrmBootstrapper extends Bootstrapper implements ILazyBootstrapper
                 $changeTracker,
                 $container->resolve(IConnection::class)
             );
+            $container->bindFactory(IPreprocessor::class, [Factory::class, 'getPreprocessor']);
             $this->bindRepositories($container, $unitOfWork);
             $container->bindInstance(IIdAccessorRegistry::class, $idAccessorRegistry);
             $container->bindInstance(IIdGeneratorRegistry::class, $idGeneratorRegistry);
@@ -125,6 +128,7 @@ class OrmBootstrapper extends Bootstrapper implements ILazyBootstrapper
     private function bindRepositories(IContainer $container, IUnitOfWork $unitOfWork)
     {
         $connectionPool = $container->resolve(ConnectionPool::class);
+        $preprocessor   = Factory::getPreprocessor();
 
         $readConnection  = $connectionPool->getReadConnection();
         $writeConnection = $connectionPool->getWriteConnection();
@@ -139,6 +143,7 @@ class OrmBootstrapper extends Bootstrapper implements ILazyBootstrapper
                     $classes[1],
                     $readConnection,
                     $writeConnection,
+                    $preprocessor,
                     $unitOfWork
                 )
             );
@@ -152,6 +157,7 @@ class OrmBootstrapper extends Bootstrapper implements ILazyBootstrapper
      * @param string      $entityClass
      * @param IConnection $readConnection
      * @param IConnection $writeConnection
+     * @param IPreprocessor $preprocessor
      * @param IUnitOfWork $unitOfWork
      *
      * @return \Closure
@@ -163,6 +169,7 @@ class OrmBootstrapper extends Bootstrapper implements ILazyBootstrapper
         string $entityClass,
         IConnection $readConnection,
         IConnection $writeConnection,
+        IPreprocessor $preprocessor,
         IUnitOfWork $unitOfWork
     ) {
         return function () use (
@@ -172,9 +179,10 @@ class OrmBootstrapper extends Bootstrapper implements ILazyBootstrapper
             $entityClass,
             $readConnection,
             $writeConnection,
+            $preprocessor,
             $unitOfWork
         ) {
-            $dataMapper = new $dataMapperClass($readConnection, $writeConnection);
+            $dataMapper = new $dataMapperClass($readConnection, $writeConnection, $preprocessor);
 
             return new $repoClass($entityClass, $dataMapper, $unitOfWork);
         };

@@ -8,7 +8,9 @@ use Opulence\Http\Responses\ResponseHeaders;
 use Opulence\Routing\Controller;
 use Opulence\Sessions\ISession;
 use Project\Application\Auth\Authenticator;
+use Project\Domain\Entities\Customer;
 use Project\Domain\Orm\CategoryRepo;
+use Project\Domain\Orm\CustomerRepo;
 
 class User extends Controller
 {
@@ -27,18 +29,27 @@ class User extends Controller
     /** @var CategoryRepo */
     private $categoryRepo;
 
+    /** @var CustomerRepo */
+    private $customerRepo;
+
     /**
      * User constructor.
      *
      * @param ISession      $session
      * @param Authenticator $authenticator
      * @param CategoryRepo  $categoryRepo
+     * @param CustomerRepo  $customerRepo
      */
-    public function __construct(ISession $session, Authenticator $authenticator, CategoryRepo $categoryRepo)
-    {
+    public function __construct(
+        ISession $session,
+        Authenticator $authenticator,
+        CategoryRepo $categoryRepo,
+        CustomerRepo $customerRepo
+    ) {
         $this->session       = $session;
         $this->authenticator = $authenticator;
         $this->categoryRepo  = $categoryRepo;
+        $this->customerRepo  = $customerRepo;
     }
 
     /**
@@ -74,9 +85,15 @@ class User extends Controller
             $response = new RedirectResponse(PATH_ADMIN . PATH_PAGES);
             $response->send();
         } elseif ($this->loginCustomer($username, $password)) {
-            $this->session->set(SESSION_USERNAME, $username);
+            /** @var Customer $customer */
+            $customer = $this->customerRepo->find($username);
 
-            $response = new RedirectResponse(PATH_ADMIN . PATH_DOWNLOADS);
+            $categories = $this->categoryRepo->getByCustomer($customer);
+
+            $this->session->set(SESSION_USERNAME, $username);
+            $this->session->set(SESSION_CATEGORIES, $categories);
+
+            $response = new RedirectResponse(PATH_ADMIN . PATH_FILES);
             $response->send();
         } else {
             $response = new RedirectResponse(PATH_LOGIN);

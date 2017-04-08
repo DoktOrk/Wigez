@@ -3,17 +3,17 @@
 namespace Project\Domain\Orm;
 
 use Opulence\Orm\Repositories\Repository;
-use Project\Domain\Entities\Category;
+use Project\Domain\Entities\Customer;
 
 class CategoryRepo extends Repository
 {
     /**
-     * @param Category $category
+     * @param Customer $category
      *
      * @return object|\object[]
      */
-    public function getByCustomer(Category $category)
+    public function getByCustomer(Customer $customer)
     {
-        return $this->getFromDataMapper('getByCategoryId', [$category->getId()]);
+        return $this->getFromDataMapper('getByCustomerId', [$customer->getId()]);
     }
 }

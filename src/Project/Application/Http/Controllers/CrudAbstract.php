@@ -94,18 +94,6 @@ abstract class CrudAbstract extends Controller
         $this->repo             = $repo;
         $this->validatorFactory = $validatorFactory;
         $this->unitOfWork       = $unitOfWork;
-
-        $this->checkUser();
-    }
-
-    /**
-     * @return Response
-     */
-    public function checkUser()
-    {
-        if (count($this->customerAccess) === 0 && !$this->session->get(SESSION_IS_USER)) {
-            throw new \RuntimeException(sprintf('Route is not supported: %s.%s()', __CLASS__, __FILE__));
-        }
     }
 
     /**

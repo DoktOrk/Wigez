@@ -11,16 +11,16 @@ use Foo\Pdo\Statement\Preprocessor\ArrayParameter\Numeric;
 class Factory
 {
     /** @var Preprocessor */
-    protected $instance;
+    protected static $instance;
 
-    public function getInstance()
+    public static function getPreprocessor()
     {
-        if ($this->instance instanceof Preprocessor) {
-            return $this->instance;
+        if (self::$instance instanceof Preprocessor) {
+            return self::$instance;
         }
 
-        $this->instance = new Preprocessor(new ArrayParameter(new Numeric(), new Associative()));
+        self::$instance = new Preprocessor(new ArrayParameter(new Numeric(), new Associative()));
 
-        return $this->instance;
+        return self::$instance;
     }
 }

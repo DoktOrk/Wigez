@@ -61,15 +61,21 @@ class CategorySqlDataMapper extends SqlDataMapper implements ICategoryDataMapper
 
     /**
      * @param array $where
+     * @param bool  $joinCustomer
      *
      * @return string
      */
-    private function getQuery(array $where = [1])
+    private function getQuery(array $where = [1], bool $joinCustomer = false)
     {
         $sqlParts = [];
 
         $sqlParts[] = 'SELECT categories.id, categories.`name`';
         $sqlParts[] = 'FROM categories';
+
+        if ($joinCustomer) {
+            $sqlParts[] = 'INNER JOIN categories_customers ON categories.id = categories_customers.category_id';
+        }
+
         $sqlParts[] = 'WHERE';
         $sqlParts[] = implode(' AND ', $where);
         $sqlParts[] = 'AND categories.deleted = 0';
@@ -103,6 +109,19 @@ class CategorySqlDataMapper extends SqlDataMapper implements ICategoryDataMapper
         $sql        = $this->getQuery(['`name` = :name']);
 
         return $this->read($sql, $parameters, self::VALUE_TYPE_ENTITY);
+    }
+
+    /**
+     * @param int $customerId
+     *
+     * @return array|null
+     */
+    public function getByCustomerId(int $customerId)
+    {
+        $parameters = ['customer_id' => [$customerId, \PDO::PARAM_INT]];
+        $sql        = $this->getQuery(['customer_id = :customer_id'], true);
+
+        return $this->read($sql, $parameters, self::VALUE_TYPE_ARRAY);
     }
 
     /**

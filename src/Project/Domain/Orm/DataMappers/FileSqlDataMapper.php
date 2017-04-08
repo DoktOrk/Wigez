@@ -2,11 +2,11 @@
 
 namespace Project\Domain\Orm\DataMappers;
 
-use Opulence\Orm\DataMappers\SqlDataMapper;
+use Foo\Pdo\Statement\Preprocessor\ArrayParameter;
 use Project\Domain\Entities\Category;
 use Project\Domain\Entities\File as Entity;
 
-class FileSqlDataMapper extends SqlDataMapper implements IFileDataMapper
+class FileSqlDataMapper extends ExtendedSqlDataMapper implements IFileDataMapper
 {
     /**
      * @param Entity $entity
@@ -17,7 +17,7 @@ class FileSqlDataMapper extends SqlDataMapper implements IFileDataMapper
             throw new \InvalidArgumentException(__CLASS__ . ':' . __FUNCTION__ . ' expects a Customer entity.');
         }
 
-        $values = [
+        $values    = [
             'file'        => [$entity->getFile(), \PDO::PARAM_STR],
             'description' => [$entity->getDescription(), \PDO::PARAM_STR],
             'category_id' => [$entity->getCategory()->getId(), \PDO::PARAM_INT],
@@ -63,27 +63,6 @@ class FileSqlDataMapper extends SqlDataMapper implements IFileDataMapper
     }
 
     /**
-     * @param array $where
-     *
-     * @return string
-     */
-    private function getQuery(array $where = [1])
-    {
-        $sqlParts = [];
-
-        $sqlParts[] = 'SELECT files.id, files.`file`, files.description, files.uploaded_at,';
-        $sqlParts[] = '  categories.`name`, categories.id AS category_id';
-        $sqlParts[] = 'FROM files';
-        $sqlParts[] = 'LEFT JOIN categories ON categories.id = files.category_id AND categories.deleted = 0';
-        $sqlParts[] = 'WHERE';
-        $sqlParts[] = implode(', ', $where);
-        $sqlParts[] = '  AND files.deleted = 0';
-        $sqlParts[] = 'GROUP BY files.id';
-
-        return implode(' ', $sqlParts);
-    }
-
-    /**
      * @param int|string $id
      *
      * @return array|null
@@ -99,18 +78,20 @@ class FileSqlDataMapper extends SqlDataMapper implements IFileDataMapper
     }
 
     /**
-     * @param int $categoryId
+     * @param array $categoryIds
      *
      * @return array|null
      */
-    public function getByCategoryId(int $categoryId)
+    public function getByCategoryIds(array $categoryIds)
     {
-        $sql        = $this->getQuery(['categories.id = :category_id']);
-        $parameters = [
-            'category_id' => [$categoryId, \PDO::PARAM_INT],
+        $sql         = $this->getQuery(['categories.id IN (:category_ids)']);
+        $parameters  = [
+            'category_ids' => [$categoryIds, ArrayParameter::PARAM_INT_ARRAY],
         ];
 
-        return $this->read($sql, $parameters, self::VALUE_TYPE_ENTITY);
+        $this->preprocessor->process($sql, $parameters);
+
+        return $this->read($sql, $parameters, self::VALUE_TYPE_ARRAY);
     }
 
     /**
@@ -122,7 +103,7 @@ class FileSqlDataMapper extends SqlDataMapper implements IFileDataMapper
             throw new \InvalidArgumentException(__CLASS__ . ':' . __FUNCTION__ . ' expects a Customer entity.');
         }
 
-        $values = [
+        $values    = [
             'file'        => [$entity->getFile(), \PDO::PARAM_STR],
             'description' => [$entity->getDescription(), \PDO::PARAM_STR],
             'uploaded_at' => [$entity->getUploadedAt()->format(Entity::DATE_FORMAT), \PDO::PARAM_STR],
@@ -152,5 +133,26 @@ class FileSqlDataMapper extends SqlDataMapper implements IFileDataMapper
             $category,
             new \DateTime($hash['uploaded_at'])
         );
+    }
+
+    /**
+     * @param array $where
+     *
+     * @return string
+     */
+    private function getQuery(array $where = [1])
+    {
+        $sqlParts = [];
+
+        $sqlParts[] = 'SELECT files.id, files.`file`, files.description, files.uploaded_at,';
+        $sqlParts[] = '  categories.`name`, categories.id AS category_id';
+        $sqlParts[] = 'FROM files';
+        $sqlParts[] = 'LEFT JOIN categories ON categories.id = files.category_id AND categories.deleted = 0';
+        $sqlParts[] = 'WHERE';
+        $sqlParts[] = implode(', ', $where);
+        $sqlParts[] = '  AND files.deleted = 0';
+        $sqlParts[] = 'GROUP BY files.id';
+
+        return implode(' ', $sqlParts);
     }
 }
