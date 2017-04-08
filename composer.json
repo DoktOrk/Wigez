@@ -12,23 +12,27 @@
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "Project\\": [
-        "src/Project",
-        "tests/src/Project"
+      "Foo\\": [
+        "src/Foo",
+        "tests/src/Foo"
       ],
       "Grid\\": [
         "src/Grid",
         "tests/src/Grid"
+      ],
+      "Project\\": [
+        "src/Project",
+        "tests/src/Project"
       ]
     }
   },
   "require": {
     "php": "^7.0",
     "monolog/monolog": "1.22.0",
-    "opulence/opulence": "1.0.*"
+    "opulence/opulence": "1.0.*",
+    "phpunit/phpunit": "^6.1"
   },
   "require-dev": {
-    "phpunit/phpunit": "5.6.*"
   },
   "extra": {
     "branch-alias": {
