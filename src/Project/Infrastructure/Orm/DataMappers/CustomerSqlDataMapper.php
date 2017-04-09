@@ -3,6 +3,8 @@
 namespace Project\Infrastructure\Orm\DataMappers;
 
 use Opulence\Orm\DataMappers\SqlDataMapper;
+use Opulence\QueryBuilders\MySql\QueryBuilder;
+use Opulence\QueryBuilders\MySql\SelectQuery;
 use Project\Domain\Entities\Category;
 use Project\Domain\Entities\Customer as Entity;
 
@@ -17,15 +19,18 @@ class CustomerSqlDataMapper extends SqlDataMapper implements ICustomerDataMapper
             throw new \InvalidArgumentException(__CLASS__ . ':' . __FUNCTION__ . ' expects a Customer entity.');
         }
 
-        $values = [
-            'name'     => [$entity->getName(), \PDO::PARAM_STR],
-            'email'    => [$entity->getEmail(), \PDO::PARAM_STR],
-            'password' => [$entity->getPassword(), \PDO::PARAM_STR],
-        ];
-        $statement = $this->writeConnection->prepare(
-            'INSERT INTO customers (`name`, email, password) VALUES (:name, :email, :password)'
-        );
-        $statement->bindValues($values);
+        $query = (new QueryBuilder())
+            ->insert(
+                'customers',
+                [
+                    'name'     => [$entity->getName(), \PDO::PARAM_STR],
+                    'email'    => [$entity->getEmail(), \PDO::PARAM_STR],
+                    'password' => [$entity->getPassword(), \PDO::PARAM_STR],
+                ]
+            );
+
+        $statement = $this->writeConnection->prepare($query->getSql());
+        $statement->bindValues($query->getParameters());
         $statement->execute();
 
         $entity->setId($this->writeConnection->lastInsertId());
@@ -42,46 +47,16 @@ class CustomerSqlDataMapper extends SqlDataMapper implements ICustomerDataMapper
             throw new \InvalidArgumentException(__CLASS__ . ':' . __FUNCTION__ . ' expects a Customer entity.');
         }
 
-        $values = [
-            'id' => [$entity->getId(), \PDO::PARAM_INT],
-        ];
-        $statement = $this->writeConnection->prepare(
-            'UPDATE customers SET deleted=1 WHERE id = :id'
-        );
-        $statement->bindValues($values);
+        $query = (new QueryBuilder())
+            ->update('customers', 'customers', ['deleted' => [1, \PDO::PARAM_INT]])
+            ->where('id = ?')
+            ->addUnnamedPlaceholderValue( $entity->getId(), \PDO::PARAM_INT);
+
+        $statement = $this->writeConnection->prepare($query->getSql());
+        $statement->bindValues($query->getParameters());
         $statement->execute();
 
         $this->updateCategories($entity);
-    }
-
-    /**
-     * @param Entity $entity
-     */
-    private function updateCategories(Entity $entity)
-    {
-        foreach ($entity->getDeletedCategories() as $category) {
-            $values = [
-                'customer_id' => [$entity->getId(), \PDO::PARAM_INT],
-                'category_id' => [$category->getId(), \PDO::PARAM_INT],
-            ];
-            $statement = $this->writeConnection->prepare(
-                'DELETE FROM categories_customers WHERE customer_id = :customer_id AND category_id = :category_id'
-            );
-            $statement->bindValues($values);
-            $statement->execute();
-        }
-
-        foreach ($entity->getNewCategories() as $category) {
-            $values = [
-                'customer_id' => [$entity->getId(), \PDO::PARAM_INT],
-                'category_id' => [$category->getId(), \PDO::PARAM_INT],
-            ];
-            $statement = $this->writeConnection->prepare(
-                'INSERT INTO categories_customers SET customer_id = :customer_id, category_id = :category_id'
-            );
-            $statement->bindValues($values);
-            $statement->execute();
-        }
     }
 
     /**
@@ -89,59 +64,37 @@ class CustomerSqlDataMapper extends SqlDataMapper implements ICustomerDataMapper
      */
     public function getAll(): array
     {
-        $sql = $this->getQuery();
+        $query = $this->getBaseQuery();
 
-        return $this->read($sql, [], self::VALUE_TYPE_ARRAY);
-    }
-
-    /**
-     * @param array $where
-     *
-     * @return string
-     */
-    private function getQuery(array $where = [1])
-    {
-        $sqlParts = [];
-
-        $sqlParts[] = 'SELECT customers.id, customers.`name`, customers.email, customers.`password`,';
-        $sqlParts[] = '  GROUP_CONCAT(CONCAT(categories.`id`, \'-\', categories.`name`)) AS categories';
-        $sqlParts[] = 'FROM customers';
-        $sqlParts[] = 'LEFT JOIN categories_customers ON categories_customers.customer_id=customers.id';
-        $sqlParts[] = 'LEFT JOIN categories ON categories.id=categories_customers.category_id AND categories.deleted=0';
-        $sqlParts[] = 'WHERE';
-        $sqlParts[] = implode(' AND ', $where);
-        $sqlParts[] = '  AND customers.deleted = 0';
-        $sqlParts[] = 'GROUP BY customers.id';
-
-        return implode(' ', $sqlParts);
+        return $this->read($query->getSql(), [], self::VALUE_TYPE_ARRAY);
     }
 
     /**
      * @param int|string $id
      *
-     * @return array|null
+     * @return Entity|null
      */
     public function getById($id)
     {
-        $sql        = $this->getQuery(['customers.id = :customer_id']);
-        $parameters = [
-            'customer_id' => [$id, \PDO::PARAM_INT],
-        ];
+        $query = $this->getBaseQuery()->andWhere('customers.id = :customer_id');
 
-        return $this->read($sql, $parameters, self::VALUE_TYPE_ENTITY, true);
+        $parameters = ['customer_id' => [$id, \PDO::PARAM_INT]];
+
+        return $this->read($query->getSql(), $parameters, self::VALUE_TYPE_ENTITY, true);
     }
 
     /**
      * @param string $name
      *
-     * @return array|null
+     * @return Entity|null
      */
     public function getByName(string $name)
     {
-        $parameters = ['customers.name' => [$name, \PDO::PARAM_STR]];
-        $sql        = $this->getQuery(['`name` = :name']);
+        $query = $this->getBaseQuery()->andWhere('name = :name');
 
-        return $this->read($sql, $parameters, self::VALUE_TYPE_ENTITY);
+        $parameters = ['customers.name' => [$name, \PDO::PARAM_STR]];
+
+        return $this->read($query->getSql(), $parameters, self::VALUE_TYPE_ENTITY);
     }
 
     /**
@@ -151,23 +104,25 @@ class CustomerSqlDataMapper extends SqlDataMapper implements ICustomerDataMapper
      */
     public function find(string $identifier)
     {
-        $parameters = ['identifier' => [$identifier, \PDO::PARAM_STR]];
-        $sql        = $this->getQuery(['(customers.`name` = :identifier OR customers.`email` = :identifier)']);
+        $query = $this->getBaseQuery()->andWhere('(customers.`name` = :identifier OR customers.`email` = :identifier)');
 
-        return $this->read($sql, $parameters, self::VALUE_TYPE_ENTITY);
+        $parameters = ['identifier' => [$identifier, \PDO::PARAM_STR]];
+
+        return $this->read($query->getSql(), $parameters, self::VALUE_TYPE_ENTITY);
     }
 
     /**
      * @param string $email
      *
-     * @return array|null
+     * @return Entity|null
      */
     public function getByEmail(string $email)
     {
-        $parameters = ['email' => [$email, \PDO::PARAM_STR]];
-        $sql        = $this->getQuery(['customers.`email` = :email']);
+        $query = $this->getBaseQuery()->andWhere('customers.email = :email');
 
-        return $this->read($sql, $parameters, self::VALUE_TYPE_ENTITY);
+        $parameters = ['email' => [$email, \PDO::PARAM_STR]];
+
+        return $this->read($query->getSql(), $parameters, self::VALUE_TYPE_ENTITY);
     }
 
     /**
@@ -179,16 +134,21 @@ class CustomerSqlDataMapper extends SqlDataMapper implements ICustomerDataMapper
             throw new \InvalidArgumentException(__CLASS__ . ':' . __FUNCTION__ . ' expects a Customer entity.');
         }
 
-        $values = [
-            'name'     => [$entity->getName(), \PDO::PARAM_STR],
-            'email'    => [$entity->getEmail(), \PDO::PARAM_STR],
-            'password' => [$entity->getPassword(), \PDO::PARAM_STR],
-            'id'       => [$entity->getId(), \PDO::PARAM_INT],
-        ];
-        $statement = $this->writeConnection->prepare(
-            'UPDATE customers SET `name` = :name, email = :email, password = :password WHERE id = :id'
-        );
-        $statement->bindValues($values);
+        $query = (new QueryBuilder())
+            ->update(
+                'customers',
+                'customers',
+                [
+                    'name'     => [$entity->getName(), \PDO::PARAM_STR],
+                    'email'    => [$entity->getEmail(), \PDO::PARAM_STR],
+                    'password' => [$entity->getPassword(), \PDO::PARAM_STR],
+                ]
+            )
+            ->where('id = ?')
+            ->addUnnamedPlaceholderValue($entity->getId(), \PDO::PARAM_INT);
+
+        $statement = $this->writeConnection->prepare($query->getSql());
+        $statement->bindValues($query->getParameters());
         $statement->execute();
 
         $this->updateCategories($entity);
@@ -218,5 +178,69 @@ class CustomerSqlDataMapper extends SqlDataMapper implements ICustomerDataMapper
             $categories,
             $hash['password']
         );
+    }
+
+    /**
+     * @param Entity $entity
+     */
+    private function updateCategories(Entity $entity)
+    {
+        foreach ($entity->getDeletedCategories() as $category) {
+            $query = (new QueryBuilder)->delete('categories_customers')
+                ->where('customer_id = :customer_id')
+                ->andWhere('category_id = :category_id')
+                ->addNamedPlaceholderValue('customer_id', $entity->getId(), \PDO::PARAM_INT)
+                ->addNamedPlaceholderValue('category_id', $category->getId(), \PDO::PARAM_INT);
+
+            $statement = $this->writeConnection->prepare($query->getSql());
+            $statement->bindValues($query->getParameters());
+            $statement->execute();
+        }
+
+        foreach ($entity->getNewCategories() as $category) {
+            $query = (new QueryBuilder())
+                ->insert(
+                    'categories_customers',
+                    [
+                        'customer_id' => [$entity->getId(), \PDO::PARAM_INT],
+                        'category_id' => [$category->getId(), \PDO::PARAM_INT],
+                    ]
+                );
+
+            $statement = $this->writeConnection->prepare($query->getSql());
+            $statement->bindValues($query->getParameters());
+            $statement->execute();
+        }
+    }
+
+    /**
+     * @return SelectQuery
+     */
+    private function getBaseQuery()
+    {
+        /** @var SelectQuery $query */
+        $query = (new QueryBuilder())
+            ->select(
+                'customers.id',
+                'customers.name',
+                'customers.email',
+                'customers.password',
+                'GROUP_CONCAT(CONCAT(categories.`id`, \'-\', categories.`name`)) AS categories'
+            )
+            ->from('customers')
+            ->leftJoin(
+                'categories_customers',
+                'categories_customers',
+                'categories_customers.customer_id=customers.id'
+            )
+            ->leftJoin(
+                'categories',
+                'categories',
+                'categories.id=categories_customers.category_id AND categories.deleted=0'
+            )
+            ->where('customers.deleted = 0')
+            ->groupBy('customers.id');
+
+        return $query;
     }
 }

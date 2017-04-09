@@ -3,6 +3,8 @@
 namespace Project\Infrastructure\Orm\DataMappers;
 
 use Foo\Pdo\Statement\Preprocessor\ArrayParameter;
+use Opulence\QueryBuilders\MySql\QueryBuilder;
+use Opulence\QueryBuilders\MySql\SelectQuery;
 use Project\Domain\Entities\Category;
 use Project\Domain\Entities\File as Entity;
 
@@ -17,16 +19,19 @@ class FileSqlDataMapper extends ExtendedSqlDataMapper implements IFileDataMapper
             throw new \InvalidArgumentException(__CLASS__ . ':' . __FUNCTION__ . ' expects a Customer entity.');
         }
 
-        $values    = [
-            'file'        => [$entity->getFile(), \PDO::PARAM_STR],
-            'description' => [$entity->getDescription(), \PDO::PARAM_STR],
-            'category_id' => [$entity->getCategory()->getId(), \PDO::PARAM_INT],
-            'uploaded_at' => [$entity->getUploadedAt()->format(Entity::DATE_FORMAT), \PDO::PARAM_STR],
-        ];
-        $statement = $this->writeConnection->prepare(
-            'INSERT INTO files (`file`, description, category_id, uploaded_at) VALUES (:file, :description, :category_id, :uploaded_at)'
-        );
-        $statement->bindValues($values);
+        $query = (new QueryBuilder())
+            ->insert(
+                'files',
+                [
+                    'file'        => [$entity->getFile(), \PDO::PARAM_STR],
+                    'description' => [$entity->getDescription(), \PDO::PARAM_STR],
+                    'category_id' => [$entity->getCategory()->getId(), \PDO::PARAM_INT],
+                    'uploaded_at' => [$entity->getUploadedAt()->format(Entity::DATE_FORMAT), \PDO::PARAM_STR],
+                ]
+            );
+
+        $statement = $this->writeConnection->prepare($query->getSql());
+        $statement->bindValues($query->getParameters());
         $statement->execute();
 
         $entity->setId($this->writeConnection->lastInsertId());
@@ -41,14 +46,13 @@ class FileSqlDataMapper extends ExtendedSqlDataMapper implements IFileDataMapper
             throw new \InvalidArgumentException(__CLASS__ . ':' . __FUNCTION__ . ' expects a Customer entity.');
         }
 
-        $values = [
-            'id' => [$entity->getId(), \PDO::PARAM_INT],
-        ];
+        $query = (new QueryBuilder())
+            ->update('files', 'files', ['deleted' => [1, \PDO::PARAM_INT]])
+            ->where('id = ?')
+            ->addUnnamedPlaceholderValue($entity->getId(), \PDO::PARAM_INT);
 
-        $statement = $this->writeConnection->prepare(
-            'UPDATE files SET deleted = 1 WHERE id = :id'
-        );
-        $statement->bindValues($values);
+        $statement = $this->writeConnection->prepare($query->getSql());
+        $statement->bindValues($query->getParameters());
         $statement->execute();
     }
 
@@ -57,9 +61,9 @@ class FileSqlDataMapper extends ExtendedSqlDataMapper implements IFileDataMapper
      */
     public function getAll(): array
     {
-        $sql = $this->getQuery();
+        $query = $this->getBaseQuery();
 
-        return $this->read($sql, [], self::VALUE_TYPE_ARRAY);
+        return $this->read($query->getSql(), [], self::VALUE_TYPE_ARRAY);
     }
 
     /**
@@ -69,12 +73,13 @@ class FileSqlDataMapper extends ExtendedSqlDataMapper implements IFileDataMapper
      */
     public function getById($id)
     {
-        $sql        = $this->getQuery(['files.id = :id']);
+        $query = $this->getBaseQuery()->andWhere('files.id = :file_id');
+
         $parameters = [
-            'id' => [$id, \PDO::PARAM_INT],
+            'file_id' => [$id, \PDO::PARAM_INT],
         ];
 
-        return $this->read($sql, $parameters, self::VALUE_TYPE_ENTITY, true);
+        return $this->read($query->getSql(), $parameters, self::VALUE_TYPE_ENTITY, true);
     }
 
     /**
@@ -84,10 +89,12 @@ class FileSqlDataMapper extends ExtendedSqlDataMapper implements IFileDataMapper
      */
     public function getByCategoryIds(array $categoryIds)
     {
-        $sql         = $this->getQuery(['categories.id IN (:category_ids)']);
-        $parameters  = [
+        $query = $this->getBaseQuery()->andWhere('categories.id IN (:category_ids)');
+
+        $parameters = [
             'category_ids' => [$categoryIds, ArrayParameter::PARAM_INT_ARRAY],
         ];
+        $sql        = $query->getSql();
 
         $this->preprocessor->process($sql, $parameters);
 
@@ -103,17 +110,22 @@ class FileSqlDataMapper extends ExtendedSqlDataMapper implements IFileDataMapper
             throw new \InvalidArgumentException(__CLASS__ . ':' . __FUNCTION__ . ' expects a Customer entity.');
         }
 
-        $values    = [
-            'file'        => [$entity->getFile(), \PDO::PARAM_STR],
-            'description' => [$entity->getDescription(), \PDO::PARAM_STR],
-            'uploaded_at' => [$entity->getUploadedAt()->format(Entity::DATE_FORMAT), \PDO::PARAM_STR],
-            'category_id' => [$entity->getCategory()->getId(), \PDO::PARAM_INT],
-            'id'          => [$entity->getId(), \PDO::PARAM_INT],
-        ];
-        $statement = $this->writeConnection->prepare(
-            'UPDATE files SET `file` = :file, description = :description, uploaded_at = :uploaded_at, category_id = :category_id WHERE id = :id'
-        );
-        $statement->bindValues($values);
+        $query = (new QueryBuilder())
+            ->update(
+                'files',
+                'files',
+                [
+                    'file'        => [$entity->getFile(), \PDO::PARAM_STR],
+                    'description' => [$entity->getDescription(), \PDO::PARAM_STR],
+                    'uploaded_at' => [$entity->getUploadedAt()->format(Entity::DATE_FORMAT), \PDO::PARAM_STR],
+                    'category_id' => [$entity->getCategory()->getId(), \PDO::PARAM_INT],
+                ]
+            )
+            ->where('id = ?')
+            ->addUnnamedPlaceholderValue($entity->getId(), \PDO::PARAM_INT);
+
+        $statement = $this->writeConnection->prepare($query->getSql());
+        $statement->bindValues($query->getParameters());
         $statement->execute();
     }
 
@@ -136,23 +148,29 @@ class FileSqlDataMapper extends ExtendedSqlDataMapper implements IFileDataMapper
     }
 
     /**
-     * @param array $where
-     *
-     * @return string
+     * @return SelectQuery
      */
-    private function getQuery(array $where = [1])
+    private function getBaseQuery()
     {
-        $sqlParts = [];
+        /** @var SelectQuery $query */
+        $query = (new QueryBuilder())
+            ->select(
+                'files.id',
+                'files.file',
+                'files.description',
+                'files.uploaded_at',
+                'categories.name',
+                'categories.id AS category_id'
+            )
+            ->from('files')
+            ->leftJoin(
+                'categories',
+                'categories',
+                'categories.id = files.category_id AND categories.deleted =0'
+            )
+            ->where('files.deleted = 0')
+            ->groupBy('files.id');
 
-        $sqlParts[] = 'SELECT files.id, files.`file`, files.description, files.uploaded_at,';
-        $sqlParts[] = '  categories.`name`, categories.id AS category_id';
-        $sqlParts[] = 'FROM files';
-        $sqlParts[] = 'LEFT JOIN categories ON categories.id = files.category_id AND categories.deleted = 0';
-        $sqlParts[] = 'WHERE';
-        $sqlParts[] = implode(', ', $where);
-        $sqlParts[] = '  AND files.deleted = 0';
-        $sqlParts[] = 'GROUP BY files.id';
-
-        return implode(' ', $sqlParts);
+        return $query;
     }
 }

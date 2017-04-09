@@ -3,6 +3,8 @@
 namespace Project\Infrastructure\Orm\DataMappers;
 
 use Opulence\Orm\DataMappers\SqlDataMapper;
+use Opulence\QueryBuilders\MySql\QueryBuilder;
+use Opulence\QueryBuilders\MySql\SelectQuery;
 use Project\Domain\Entities\User as Entity;
 
 class UserSqlDataMapper extends SqlDataMapper implements IUserDataMapper
@@ -16,15 +18,18 @@ class UserSqlDataMapper extends SqlDataMapper implements IUserDataMapper
             throw new \InvalidArgumentException(__CLASS__ . ':' . __FUNCTION__ . ' expects a Customer entity.');
         }
 
-        $values = [
-            'username' => [$entity->getUsername(), \PDO::PARAM_STR],
-            'email'    => [$entity->getEmail(), \PDO::PARAM_STR],
-            'password' => [$entity->getPassword(), \PDO::PARAM_STR],
-        ];
-        $statement = $this->writeConnection->prepare(
-            'INSERT INTO users (`username`, email, password) VALUES (:username, :email, :password)'
-        );
-        $statement->bindValues($values);
+        $query = (new QueryBuilder())
+            ->insert(
+                'users',
+                [
+                    'username' => [$entity->getUsername(), \PDO::PARAM_STR],
+                    'email'    => [$entity->getEmail(), \PDO::PARAM_STR],
+                    'password' => [$entity->getPassword(), \PDO::PARAM_STR],
+                ]
+            );
+
+        $statement = $this->writeConnection->prepare($query->getSql());
+        $statement->bindValues($query->getParameters());
         $statement->execute();
 
         $entity->setId($this->writeConnection->lastInsertId());
@@ -39,13 +44,13 @@ class UserSqlDataMapper extends SqlDataMapper implements IUserDataMapper
             throw new \InvalidArgumentException(__CLASS__ . ':' . __FUNCTION__ . ' expects a Customer entity.');
         }
 
-        $values = [
-            'id' => [$entity->getId(), \PDO::PARAM_INT],
-        ];
-        $statement = $this->writeConnection->prepare(
-            'UPDATE users SET deleted=1 WHERE id = :id'
-        );
-        $statement->bindValues($values);
+        $query = (new QueryBuilder())
+            ->update('users', 'users', ['deleted' => [1, \PDO::PARAM_INT]])
+            ->where('id = ?')
+            ->addUnnamedPlaceholderValue($entity->getId(), \PDO::PARAM_INT);
+
+        $statement = $this->writeConnection->prepare($query->getSql());
+        $statement->bindValues($query->getParameters());
         $statement->execute();
     }
 
@@ -54,42 +59,23 @@ class UserSqlDataMapper extends SqlDataMapper implements IUserDataMapper
      */
     public function getAll(): array
     {
-        $sql = $this->getQuery();
+        $query = $this->getBaseQuery();
 
-        return $this->read($sql, [], self::VALUE_TYPE_ARRAY);
-    }
-
-    /**
-     * @param array $where
-     *
-     * @return string
-     */
-    private function getQuery(array $where = [1])
-    {
-        $sqlParts = [];
-
-        $sqlParts[] = 'SELECT users.id, users.`username`, users.email, users.`password`';
-        $sqlParts[] = 'FROM users';
-        $sqlParts[] = 'WHERE';
-        $sqlParts[] = implode(' AND ', $where);
-        $sqlParts[] = '  AND users.deleted = 0';
-
-        return implode(' ', $sqlParts);
+        return $this->read($query->getSql(), [], self::VALUE_TYPE_ARRAY);
     }
 
     /**
      * @param int|string $id
      *
-     * @return array|null
+     * @return Entity|null
      */
     public function getById($id)
     {
-        $sql        = $this->getQuery(['users.id = :user_id']);
-        $parameters = [
-            'user_id' => [$id, \PDO::PARAM_INT],
-        ];
+        $query = $this->getBaseQuery()->andWhere('users.id = :user_id');
 
-        return $this->read($sql, $parameters, self::VALUE_TYPE_ENTITY, true);
+        $parameters = ['user_id' => [$id, \PDO::PARAM_INT]];
+
+        return $this->read($query->getSql(), $parameters, self::VALUE_TYPE_ENTITY, true);
     }
 
     /**
@@ -99,36 +85,39 @@ class UserSqlDataMapper extends SqlDataMapper implements IUserDataMapper
      */
     public function find(string $identifier)
     {
-        $parameters = ['identifier' => [$identifier, \PDO::PARAM_STR]];
-        $sql        = $this->getQuery(['(username = :identifier OR email = :identifier)']);
+        $query = $this->getBaseQuery()->andWhere('(username = :identifier OR email = :identifier)');
 
-        return $this->read($sql, $parameters, self::VALUE_TYPE_ENTITY);
+        $parameters = ['identifier' => [$identifier, \PDO::PARAM_STR]];
+
+        return $this->read($query->getSql(), $parameters, self::VALUE_TYPE_ENTITY);
     }
 
     /**
      * @param string $username
      *
-     * @return array|null
+     * @return Entity|null
      */
     public function getByUsername(string $username)
     {
-        $parameters = ['username' => [$username, \PDO::PARAM_STR]];
-        $sql        = $this->getQuery(['`username` = :username']);
+        $query = $this->getBaseQuery()->andWhere('`username` = :username');
 
-        return $this->read($sql, $parameters, self::VALUE_TYPE_ENTITY);
+        $parameters = ['username' => [$username, \PDO::PARAM_STR]];
+
+        return $this->read($query->getSql(), $parameters, self::VALUE_TYPE_ENTITY, true);
     }
 
     /**
      * @param string $email
      *
-     * @return array|null
+     * @return Entity|null
      */
     public function getByEmail(string $email)
     {
-        $parameters = ['email' => [$email, \PDO::PARAM_STR]];
-        $sql        = $this->getQuery(['`email` = :email']);
+        $query = $this->getBaseQuery()->andWhere('email = :email');
 
-        return $this->read($sql, $parameters, self::VALUE_TYPE_ENTITY);
+        $parameters = ['email' => [$email, \PDO::PARAM_STR]];
+
+        return $this->read($query->getSql(), $parameters, self::VALUE_TYPE_ENTITY, true);
     }
 
     /**
@@ -140,16 +129,21 @@ class UserSqlDataMapper extends SqlDataMapper implements IUserDataMapper
             throw new \InvalidArgumentException(__CLASS__ . ':' . __FUNCTION__ . ' expects a Customer entity.');
         }
 
-        $values = [
-            'username' => [$entity->getUsername(), \PDO::PARAM_STR],
-            'email'    => [$entity->getEmail(), \PDO::PARAM_STR],
-            'password' => [$entity->getPassword(), \PDO::PARAM_STR],
-            'id'       => [$entity->getId(), \PDO::PARAM_INT],
-        ];
-        $statement = $this->writeConnection->prepare(
-            'UPDATE users SET `username` = :username, email = :email, password = :password WHERE id = :id'
-        );
-        $statement->bindValues($values);
+        $query = (new QueryBuilder())
+            ->update(
+                'users',
+                'users',
+                [
+                    'username' => [$entity->getUsername(), \PDO::PARAM_STR],
+                    'email'    => [$entity->getEmail(), \PDO::PARAM_STR],
+                    'password' => [$entity->getPassword(), \PDO::PARAM_STR],
+                ]
+            )
+            ->where('id = ?')
+            ->addUnnamedPlaceholderValue($entity->getId(), \PDO::PARAM_INT);
+
+        $statement = $this->writeConnection->prepare($query->getSql());
+        $statement->bindValues($query->getParameters());
         $statement->execute();
     }
 
@@ -166,5 +160,19 @@ class UserSqlDataMapper extends SqlDataMapper implements IUserDataMapper
             $hash['email'],
             $hash['password']
         );
+    }
+
+    /**
+     * @return SelectQuery
+     */
+    private function getBaseQuery()
+    {
+        /** @var SelectQuery $query */
+        $query = (new QueryBuilder())
+            ->select('users.id', 'users.username', 'users.email', 'users.password')
+            ->from('users')
+            ->where('users.deleted = 0');
+
+        return $query;
     }
 }

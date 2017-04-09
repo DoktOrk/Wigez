@@ -3,6 +3,8 @@
 namespace Project\Infrastructure\Orm\DataMappers;
 
 use Opulence\Orm\DataMappers\SqlDataMapper;
+use Opulence\QueryBuilders\MySql\QueryBuilder;
+use Opulence\QueryBuilders\MySql\SelectQuery;
 use Project\Domain\Entities\Page as Entity;
 
 class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
@@ -16,15 +18,17 @@ class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
             throw new \InvalidArgumentException(__CLASS__ . ':' . __FUNCTION__ . ' expects a Page entity.');
         }
 
-        $statement = $this->writeConnection->prepare(
-            'INSERT INTO pages (title, body) VALUES (:title, :body)'
-        );
-        $statement->bindValues(
-            [
-                'title' => $entity->getTitle(),
-                'body'  => $entity->getBody(),
-            ]
-        );
+        $query = (new QueryBuilder())
+            ->insert(
+                'pages',
+                [
+                    'title' => $entity->getTitle(),
+                    'body'  => $entity->getBody(),
+                ]
+            );
+
+        $statement = $this->writeConnection->prepare($query->getSql());
+        $statement->bindValues($query->getParameters());
         $statement->execute();
 
         $entity->setId($this->writeConnection->lastInsertId());
@@ -39,14 +43,13 @@ class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
             throw new \InvalidArgumentException(__CLASS__ . ':' . __FUNCTION__ . ' expects a Page entity.');
         }
 
-        $statement = $this->writeConnection->prepare(
-            'UPDATE pages SET deleted = 1 WHERE id = :id'
-        );
-        $statement->bindValues(
-            [
-                'id' => [$entity->getId(), \PDO::PARAM_INT],
-            ]
-        );
+        $query = (new QueryBuilder())
+            ->update('pages', 'pages', ['deleted' => [1, \PDO::PARAM_INT]])
+            ->where('id = ?')
+            ->addUnnamedPlaceholderValue($entity->getId(), \PDO::PARAM_INT);
+
+        $statement = $this->writeConnection->prepare($query->getSql());
+        $statement->bindValues($query->getParameters());
         $statement->execute();
     }
 
@@ -55,42 +58,25 @@ class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
      */
     public function getAll(): array
     {
-        $sql = $this->getQuery();
+        $query = $this->getBaseQuery();
 
-        return $this->read($sql, [], self::VALUE_TYPE_ARRAY);
-    }
-
-    /**
-     * @param array $where
-     *
-     * @return string
-     */
-    private function getQuery(array $where = [1])
-    {
-        $sqlParts = [];
-
-        $sqlParts[] = 'SELECT pages.id, pages.title, pages.body';
-        $sqlParts[] = 'FROM pages';
-        $sqlParts[] = 'WHERE';
-        $sqlParts[] = implode(' AND ', $where);
-        $sqlParts[] = 'AND pages.deleted = 0';
-
-        return implode(' ', $sqlParts);
+        return $this->read($query->getSql(), [], self::VALUE_TYPE_ARRAY);
     }
 
     /**
      * @param int|string $id
      *
-     * @return array|null
+     * @return Entity|null
      */
     public function getById($id)
     {
-        $sql        = $this->getQuery(['`id` = :id']);
+        $query = $this->getBaseQuery()->andWhere('pages.id = :page_id');
+
         $parameters = [
-            'id' => [$id, \PDO::PARAM_INT],
+            'page_id' => [$id, \PDO::PARAM_INT],
         ];
 
-        return $this->read($sql, $parameters, self::VALUE_TYPE_ENTITY, true);
+        return $this->read($query->getSql(), $parameters, self::VALUE_TYPE_ENTITY, true);
     }
 
     /**
@@ -100,12 +86,13 @@ class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
      */
     public function getByTitle(string $title)
     {
-        $sql        = $this->getQuery(['`title` = :title']);
+        $query = $this->getBaseQuery()->andWhere('title = :title');
+
         $parameters = [
             'title' => $title,
         ];
 
-        return $this->read($sql, $parameters, self::VALUE_TYPE_ENTITY);
+        return $this->read($query->getSql(), $parameters, self::VALUE_TYPE_ENTITY, true);
     }
 
     /**
@@ -117,16 +104,20 @@ class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
             throw new \InvalidArgumentException(__CLASS__ . ':' . __FUNCTION__ . ' expects a Page entity.');
         }
 
-        $statement = $this->writeConnection->prepare(
-            'UPDATE pages SET title = :title, body = :body WHERE id = :id'
-        );
-        $statement->bindValues(
-            [
-                'title' => $entity->getTitle(),
-                'body'  => $entity->getBody(),
-                'id'    => [$entity->getId(), \PDO::PARAM_INT],
-            ]
-        );
+        $query = (new QueryBuilder())
+            ->update(
+                'pages',
+                'pages',
+                [
+                    'title' => [$entity->getTitle(), \PDO::PARAM_STR],
+                    'body'  => [$entity->getBody(), \PDO::PARAM_STR],
+                ]
+            )
+            ->where('id = ?')
+            ->addUnnamedPlaceholderValue($entity->getId(), \PDO::PARAM_INT);
+
+        $statement = $this->writeConnection->prepare($query->getSql());
+        $statement->bindValues($query->getParameters());
         $statement->execute();
     }
 
@@ -142,5 +133,23 @@ class PageSqlDataMapper extends SqlDataMapper implements IPageDataMapper
             $hash['title'],
             $hash['body']
         );
+    }
+
+    /**
+     * @return SelectQuery
+     */
+    private function getBaseQuery()
+    {
+        /** @var SelectQuery $query */
+        $query = (new QueryBuilder())
+            ->select(
+                'pages.id',
+                'pages.title',
+                'pages.body'
+            )
+            ->from('pages')
+            ->where('pages.deleted = 0');
+
+        return $query;
     }
 }
