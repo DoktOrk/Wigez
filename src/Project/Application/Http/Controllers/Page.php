@@ -2,6 +2,7 @@
 
 namespace Project\Application\Http\Controllers;
 
+use Foo\I18n\ITranslator;
 use Opulence\Orm\IUnitOfWork;
 use Opulence\Routing\Urls\UrlGenerator;
 use Opulence\Sessions\ISession;
@@ -15,6 +16,9 @@ class Page extends CrudAbstract
 {
     const ENTITY_SINGULAR = 'page';
     const ENTITY_PLURAL   = 'pages';
+
+    const ENTITY_TITLE_SINGULAR = 'application:page';
+    const ENTITY_TITLE_PLURAL   = 'application:pages';
 
     /** @var GridFactory */
     protected $gridFactory;
@@ -35,6 +39,7 @@ class Page extends CrudAbstract
      * @param UrlGenerator          $urlGenerator
      * @param GridFactory           $gridFactory
      * @param Repo                  $repo
+     * @param ITranslator           $translator
      * @param ValidatorFactory|null $validatorFactory
      * @param IUnitOfWork|null      $unitOfWork
      */
@@ -43,10 +48,11 @@ class Page extends CrudAbstract
         UrlGenerator $urlGenerator,
         GridFactory $gridFactory,
         Repo $repo,
+        ITranslator $translator,
         ValidatorFactory $validatorFactory = null,
         IUnitOfWork $unitOfWork = null
     ) {
-        parent::__construct($session, $urlGenerator, $gridFactory, $repo, $validatorFactory, $unitOfWork);
+        parent::__construct($session, $urlGenerator, $gridFactory, $repo, $translator, $validatorFactory, $unitOfWork);
     }
 
     /**

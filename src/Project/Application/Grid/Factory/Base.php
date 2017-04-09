@@ -2,6 +2,9 @@
 
 namespace Project\Application\Grid\Factory;
 
+use Foo\Grid\Action\Button;
+use Foo\Grid\Collection\Actions;
+use Foo\I18n\ITranslator;
 use Opulence\Orm\IEntity;
 use Opulence\Routing\Urls\UrlGenerator;
 
@@ -13,11 +16,14 @@ abstract class Base implements IFactory
     const CLASS_PRIMARY = 'btn btn-primary';
     const CLASS_DANGER  = 'btn btn-danger';
 
-    const LABEL_EDIT   = 'Edit';
-    const LABEL_DELETE = 'Delete';
+    const LABEL_EDIT   = 'grid:editItem';
+    const LABEL_DELETE = 'grid:deleteItem';
 
     /** @var UrlGenerator */
     protected $urlGenerator;
+
+    /** @var ITranslator */
+    protected $translator;
 
     /** @var array */
     protected $tableAttributes = [
@@ -30,13 +36,16 @@ abstract class Base implements IFactory
     ];
 
     /**
-     * Page constructor.
+     * Base constructor.
      *
      * @param UrlGenerator $urlGenerator
+     * @param ITranslator  $translator
      */
-    public function __construct(UrlGenerator $urlGenerator)
+    public function __construct(UrlGenerator $urlGenerator, ITranslator $translator)
     {
         $this->urlGenerator = $urlGenerator;
+
+        $this->translator = $translator;
     }
 
     /**

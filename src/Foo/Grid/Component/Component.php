@@ -3,6 +3,7 @@
 namespace Foo\Grid\Component;
 
 use Foo\Grid\Helper\StringHelper;
+use Foo\I18n\ITranslator;
 
 class Component implements IComponent
 {
@@ -20,16 +21,27 @@ class Component implements IComponent
     /** @var string */
     protected $indentation = '';
 
+    /** @var ITranslator */
+    protected $translator;
+
     /**
-     * @param string|IComponent $content
-     * @param string            $tag
-     * @param array             $attributes
+     * Component constructor.
+     *
+     * @param string           $content
+     * @param string|null      $tag
+     * @param array            $attributes
+     * @param ITranslator|null $translator
      */
-    public function __construct($content = '', string $tag = null, array $attributes = [])
-    {
+    public function __construct(
+        $content = '',
+        string $tag = null,
+        array $attributes = [],
+        ITranslator $translator = null
+    ) {
         $this->content    = $content;
         $this->tag        = $tag;
         $this->attributes = $attributes;
+        $this->translator = $translator;
     }
 
     /**
@@ -76,11 +88,29 @@ class Component implements IComponent
     }
 
     /**
+     * @param ITranslator $translator
+     */
+    public function setTranslator(ITranslator $translator)
+    {
+        $this->translator = $translator;
+    }
+
+    /**
      * @return string
      */
     public function __toString(): string
     {
-        return StringHelper::wrapInTag((string)$this->content, $this->tag, $this->attributes);
+        $content = $this->content;
+
+        if ($this->translator) {
+            $content = $this->translator->translate($this->content);
+
+            if (substr($content, 0, 2) === '{{') {
+                $content = $this->content;
+            }
+        }
+
+        return StringHelper::wrapInTag($content, $this->tag, $this->attributes);
     }
 }
 

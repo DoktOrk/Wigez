@@ -10,31 +10,31 @@
 
     <!-- Name input -->
     <div class="form-group">
-        <label for="name" class="control-label">Name</label>
+        <label for="name" class="control-label">{{ tr("application:customerName") }}</label>
         <input type="text" id="name" name="name" class="form-control" value="{{ $entity->getName() }}">
     </div>
 
     <!-- E-mail input -->
     <div class="form-group">
-        <label for="email" class="control-label">E-mail</label>
+        <label for="email" class="control-label">{{ tr("application:customerEmail") }}</label>
         <input type="email" id="email" name="email" class="form-control" value="{{ $entity->getEmail() }}">
     </div>
 
     <!-- Password input -->
     <div class="form-group">
-        <label for="password" class="control-label">Password</label>
+        <label for="password" class="control-label">{{ tr("application:customerPassword") }}</label>
         <input type="password" id="password" name="password" class="form-control" autocomplete="off" value="">
     </div>
 
     <div class="form-group">
-        <label for="password_confirmed" class="control-label">Confirm Password</label>
+        <label for="password_confirmed" class="control-label">{{ tr("application:customerConfirmPassword") }}</label>
         <input type="password" id="password_confirmed" name="password_confirmed" class="form-control" value=""
                autocomplete="off">
     </div>
 
     <!-- Category select -->
     <div class="form-group">
-        <h3 class="control-label">Categories</h3>
+        <h3 class="control-label">{{ tr("application:customerCategories") }}</h3>
         <div class="pmd-card-body">
             <% foreach ($allCategories as $category) %>
             <div class="checkbox pmd-default-theme">

@@ -2,6 +2,7 @@
 
 namespace Project\Application\Http\Controllers;
 
+use Foo\I18n\ITranslator;
 use Opulence\Http\Responses\Response;
 use Opulence\Orm\IUnitOfWork;
 use Opulence\Routing\Urls\UrlGenerator;
@@ -18,6 +19,9 @@ class Customer extends CrudAbstract
 {
     const ENTITY_SINGULAR = 'customer';
     const ENTITY_PLURAL   = 'customers';
+
+    const ENTITY_TITLE_SINGULAR = 'application:customer';
+    const ENTITY_TITLE_PLURAL   = 'application:customers';
 
     const VAR_ALL_CATEGORIES     = 'allCategories';
     const VAR_CURRENT_CATEGORIES = 'currentCategories';
@@ -47,6 +51,7 @@ class Customer extends CrudAbstract
      * @param UrlGenerator     $urlGenerator
      * @param GridFactory      $gridFactory
      * @param Repo             $repo
+     * @param ITranslator      $translator
      * @param ValidatorFactory $validatorFactory
      * @param IUnitOfWork      $unitOfWork
      * @param CategoryRepo     $categoryRepo
@@ -56,13 +61,14 @@ class Customer extends CrudAbstract
         UrlGenerator $urlGenerator,
         GridFactory $gridFactory,
         Repo $repo,
+        ITranslator $translator,
         ValidatorFactory $validatorFactory,
         IUnitOfWork $unitOfWork,
         CategoryRepo $categoryRepo
     ) {
         $this->categoryRepo = $categoryRepo;
 
-        parent::__construct($session, $urlGenerator, $gridFactory, $repo, $validatorFactory, $unitOfWork);
+        parent::__construct($session, $urlGenerator, $gridFactory, $repo, $translator, $validatorFactory, $unitOfWork);
     }
 
     /**

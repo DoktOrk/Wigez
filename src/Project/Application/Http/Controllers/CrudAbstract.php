@@ -2,6 +2,7 @@
 
 namespace Project\Application\Http\Controllers;
 
+use Foo\I18n\ITranslator;
 use Opulence\Http\Responses\RedirectResponse;
 use Opulence\Http\Responses\Response;
 use Opulence\Orm\IUnitOfWork;
@@ -33,9 +34,12 @@ abstract class CrudAbstract extends Controller
     const ENTITY_SINGULAR = '';
     const ENTITY_PLURAL   = '';
 
-    const TITLE_SHOW = 'List %s';
-    const TITLE_EDIT = 'Edit %s: "%s"';
-    const TITLE_NEW  = 'Create new %s';
+    const ENTITY_TITLE_SINGULAR = '';
+    const ENTITY_TITLE_PLURAL   = '';
+
+    const TITLE_SHOW = 'grid:titleList';
+    const TITLE_NEW  = 'form:titleNew';
+    const TITLE_EDIT = 'form:titleEdit';
 
     const IS_EDIT_UPDATE = true;
     const IS_EDIT_CREATE = false;
@@ -79,11 +83,15 @@ abstract class CrudAbstract extends Controller
     /** @var array */
     protected $customerAccess = [];
 
+    /** @var ITranslator */
+    protected $translator;
+
     /**
      * @param ISession          $session
      * @param UrlGenerator      $urlGenerator
      * @param IFactory          $gridFactory
      * @param IRepository       $repo
+     * @param ITranslator       $translator
      * @param IValidatorFactory $validatorFactory
      * @param IUnitOfWork       $unitOfWork
      */
@@ -92,6 +100,7 @@ abstract class CrudAbstract extends Controller
         UrlGenerator $urlGenerator,
         IFactory $gridFactory,
         IRepository $repo,
+        ITranslator $translator,
         IValidatorFactory $validatorFactory = null,
         IUnitOfWork $unitOfWork = null
     ) {
@@ -101,6 +110,7 @@ abstract class CrudAbstract extends Controller
         $this->repo             = $repo;
         $this->validatorFactory = $validatorFactory;
         $this->unitOfWork       = $unitOfWork;
+        $this->translator       = $translator;
     }
 
     /**
@@ -110,9 +120,10 @@ abstract class CrudAbstract extends Controller
     {
         $pages = $this->repo->getAll();
         $grid  = $this->gridFactory->createGrid($pages);
+        $title = $this->translator->translate(static::TITLE_SHOW, static::ENTITY_TITLE_PLURAL);
 
         $this->view = $this->viewFactory->createView(static::VIEW_LIST);
-        $this->view->setVar(static::VAR_TITLE, sprintf(static::TITLE_SHOW, static::ENTITY_PLURAL));
+        $this->view->setVar(static::VAR_TITLE, $title);
         $this->view->setVar(static::VAR_GRID, $grid);
         $this->view->setVar(static::VAR_CREATE_URL, $this->getCreateUrl());
         $this->view->setVar(static::VAR_MSG_ERROR, $this->session->get(static::SESSION_ERROR));
@@ -128,10 +139,11 @@ abstract class CrudAbstract extends Controller
     {
         $this->entity = $this->createEntity();
 
-        $url = $this->urlGenerator->createFromName(sprintf('%s-new', static::ENTITY_PLURAL));
+        $url   = $this->urlGenerator->createFromName(sprintf('%s-new', static::ENTITY_PLURAL));
+        $title = $this->translator->translate(static::TITLE_NEW, static::ENTITY_TITLE_SINGULAR);
 
         $this->view = $this->viewFactory->createView(sprintf(static::VIEW_FORM, static::ENTITY_SINGULAR));
-        $this->view->setVar(static::VAR_TITLE, sprintf(static::TITLE_NEW, static::ENTITY_SINGULAR));
+        $this->view->setVar(static::VAR_TITLE, $title);
         $this->view->setVar(static::VAR_ROUTE, $url);
         $this->view->setVar(static::VAR_ENTITY, $this->entity);
         $this->view->setVar(static::VAR_SHOW_URL, $this->getShowUrl());
@@ -178,8 +190,10 @@ abstract class CrudAbstract extends Controller
 
         $entityName = (string)$this->entity;
 
+        $title = $this->translator->translate(static::TITLE_EDIT, static::ENTITY_TITLE_SINGULAR, $entityName);
+
         $this->view = $this->viewFactory->createView(sprintf(static::VIEW_FORM, static::ENTITY_SINGULAR));
-        $this->view->setVar(static::VAR_TITLE, sprintf(static::TITLE_EDIT, static::ENTITY_SINGULAR, $entityName));
+        $this->view->setVar(static::VAR_TITLE, $title);
         $this->view->setVar(static::VAR_ROUTE, $this->getEditUrl($id));
         $this->view->setVar(static::VAR_ENTITY, $this->entity);
         $this->view->setVar(static::VAR_SHOW_URL, $this->getShowUrl());

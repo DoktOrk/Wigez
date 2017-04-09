@@ -4,6 +4,7 @@ namespace Foo\Grid\Action;
 
 use Foo\Grid\Component\Component;
 use Foo\Grid\Component\IComponent;
+use Foo\I18n\ITranslator;
 use Opulence\Orm\IEntity;
 
 class Button extends Component implements IAction
@@ -18,20 +19,22 @@ class Button extends Component implements IAction
     protected $attributeCallbacks = [];
 
     /**
-     * @param string|IComponent $content
+     * @param IComponent|string $content
      * @param string            $tag
      * @param array             $attributes
      * @param array             $attributeCallbacks
+     * @param ITranslator|null  $translator
      */
     public function __construct(
         $content,
         string $tag = self::TAG_A,
         array $attributes = [],
-        array $attributeCallbacks = []
+        array $attributeCallbacks = [],
+        ITranslator $translator = null
     ) {
         $this->attributeCallbacks = $attributeCallbacks;
 
-        parent::__construct($content, $tag, $attributes);
+        parent::__construct($content, $tag, $attributes, $translator);
     }
 
     /**
@@ -69,7 +72,7 @@ class Button extends Component implements IAction
      */
     public function duplicate(): IAction
     {
-        return new Button($this->content, $this->tag, $this->attributes, $this->attributeCallbacks);
+        return new Button($this->content, $this->tag, $this->attributes, $this->attributeCallbacks, $this->translator);
     }
 }
 

@@ -7,6 +7,7 @@ use Foo\Grid\Collection\Filters;
 use Foo\Grid\Component\Component;
 use Foo\Grid\Helper\StringHelper;
 use Foo\Grid\Table\ITable;
+use Foo\I18n\ITranslator;
 
 class Grid extends Component implements IGrid
 {
@@ -88,6 +89,18 @@ class Grid extends Component implements IGrid
 
         $this->indentation = str_repeat($whitespace, $num);
         $this->whitespace  = $whitespace;
+    }
+
+    /**
+     * @param ITranslator $translator
+     */
+    public function setTranslator(ITranslator $translator)
+    {
+        $this->table->setTranslator($translator);
+
+        if ($this->filters) {
+            $this->filters->setTranslator($translator);
+        }
     }
 
     /**

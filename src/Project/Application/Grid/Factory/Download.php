@@ -14,10 +14,10 @@ class Download extends Base
     const GROUP_CUSTOMER      = 'download-customer';
     const GROUP_DOWNLOADED_AT = 'download-downloaded-at';
 
-    const HEADER_ID            = 'Id';
-    const HEADER_FILE          = 'File';
-    const HEADER_CUSTOMER      = 'Customer';
-    const HEADER_DOWNLOADED_AT = 'Downloaded At';
+    const HEADER_ID            = 'application:downloadId';
+    const HEADER_FILE          = 'application:downloadFile';
+    const HEADER_CUSTOMER      = 'application:downloadCustomer';
+    const HEADER_DOWNLOADED_AT = 'application:downloadDownloadedAt';
 
     const GETTER_ID            = 'getId';
     const GETTER_FILE          = 'getFile';
@@ -60,7 +60,10 @@ class Download extends Base
             $this->headerAttributes,
             $this->bodyAttributes,
             $this->tableAttributes,
-            $this->gridAttributes
+            $this->gridAttributes,
+            null,
+            null,
+            $this->translator
         );
 
         return $grid;

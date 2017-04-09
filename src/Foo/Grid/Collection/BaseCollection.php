@@ -7,6 +7,7 @@ use Countable;
 use Foo\Grid\Component\Component;
 use Foo\Grid\Component\IComponent;
 use Foo\Grid\Helper\StringHelper;
+use Foo\I18n\ITranslator;
 use InvalidArgumentException;
 use Iterator;
 use LogicException;
@@ -141,6 +142,16 @@ class BaseCollection extends Component implements ArrayAccess, Countable, Iterat
         }
 
         $this->indentation = str_repeat($num, $whitespace);
+    }
+
+    /**
+     * @param ITranslator $translator
+     */
+    public function setTranslator(ITranslator $translator)
+    {
+        foreach ($this->components as $component) {
+            $component->setTranslator($translator);
+        }
     }
 
     /**

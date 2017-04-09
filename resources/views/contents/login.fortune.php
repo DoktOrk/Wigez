@@ -8,7 +8,7 @@
             <form method="post" action="{{! route('login-post') !}}">
                 {{! csrfInput() !}}
                 <div class="pmd-card-title card-header-border text-center">
-                    <h3>Sign In</h3>
+                    <h3>{{ tr("form:signIn") }}</h3>
                 </div>
 
                 <div class="pmd-card-body">
@@ -16,7 +16,7 @@
                         again.
                     </div>
                     <div class="form-group pmd-textfield pmd-textfield-floating-label">
-                        <label for="login-username" class="control-label pmd-input-group-label">Username</label>
+                        <label for="login-username" class="control-label pmd-input-group-label">{{ tr("form:username") }}</label>
                         <div class="input-group">
                             <div class="input-group-addon"><i class="material-icons md-dark pmd-sm">perm_identity</i>
                             </div>
@@ -26,7 +26,7 @@
                     </div>
 
                     <div class="form-group pmd-textfield pmd-textfield-floating-label">
-                        <label for="login-password" class="control-label pmd-input-group-label">Password</label>
+                        <label for="login-password" class="control-label pmd-input-group-label">{{ tr("form:password") }}</label>
                         <div class="input-group">
                             <div class="input-group-addon"><i class="material-icons md-dark pmd-sm">lock_outline</i>
                             </div>
@@ -36,7 +36,7 @@
                     </div>
                 </div>
                 <div class="pmd-card-footer card-footer-no-border card-footer-p16 text-center">
-                    <button type="submit" class="btn pmd-ripple-effect btn-primary btn-block">Login</button>
+                    <button type="submit" class="btn pmd-ripple-effect btn-primary btn-block">{{ tr("form:login") }}</button>
                 </div>
             </form>
         </div>

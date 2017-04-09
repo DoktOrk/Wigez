@@ -17,11 +17,11 @@ class File extends Base
     const GROUP_DESCRIPTION = 'file-description';
     const GROUP_UPLOADED_AT = 'file-uploaded-at';
 
-    const HEADER_ID          = 'Id';
-    const HEADER_FILE        = 'File';
-    const HEADER_CATEGORY    = 'Category';
-    const HEADER_DESCRIPTION = 'Description';
-    const HEADER_UPLOADED_AT = 'Uploaded At';
+    const HEADER_ID          = 'application:fileId';
+    const HEADER_FILE        = 'application:fileFile';
+    const HEADER_CATEGORY    = 'application:fileCategory';
+    const HEADER_DESCRIPTION = 'application:fileDescription';
+    const HEADER_UPLOADED_AT = 'application:fileUploadedAt';
 
     const GETTER_ID          = 'getId';
     const GETTER_FILE        = 'getFile';
@@ -69,7 +69,9 @@ class File extends Base
             $this->bodyAttributes,
             $this->tableAttributes,
             $this->gridAttributes,
-            $cellActions
+            $cellActions,
+            null,
+            $this->translator
         );
 
         return $grid;
@@ -107,13 +109,15 @@ class File extends Base
             static::LABEL_EDIT,
             Button::TAG_A,
             $editAttributes,
-            $attributeCallbacks
+            $attributeCallbacks,
+            $this->translator
         );
         $cellActions[] = new Button(
             static::LABEL_DELETE,
             Button::TAG_A,
             $deleteAttributes,
-            $attributeCallbacks
+            $attributeCallbacks,
+            $this->translator
         );
 
         return $cellActions;

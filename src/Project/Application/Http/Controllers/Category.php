@@ -2,6 +2,7 @@
 
 namespace Project\Application\Http\Controllers;
 
+use Foo\I18n\ITranslator;
 use Opulence\Orm\IUnitOfWork;
 use Opulence\Routing\Urls\UrlGenerator;
 use Opulence\Sessions\ISession;
@@ -15,6 +16,9 @@ class Category extends CrudAbstract
 {
     const ENTITY_SINGULAR = 'category';
     const ENTITY_PLURAL   = 'categories';
+
+    const ENTITY_TITLE_SINGULAR = 'application:category';
+    const ENTITY_TITLE_PLURAL   = 'application:categories';
 
     /** @var GridFactory */
     protected $gridFactory;
@@ -43,10 +47,11 @@ class Category extends CrudAbstract
         UrlGenerator $urlGenerator,
         GridFactory $gridFactory,
         Repo $repo,
+        ITranslator $translator,
         ValidatorFactory $validatorFactory,
         IUnitOfWork $unitOfWork = null
     ) {
-        parent::__construct($session, $urlGenerator, $gridFactory, $repo, $validatorFactory, $unitOfWork);
+        parent::__construct($session, $urlGenerator, $gridFactory, $repo, $translator, $validatorFactory, $unitOfWork);
     }
 
     /**

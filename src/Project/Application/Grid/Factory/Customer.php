@@ -16,10 +16,10 @@ class Customer extends Base
     const GROUP_EMAIL      = 'customer-email';
     const GROUP_CATEGORIES = 'customer-categories';
 
-    const HEADER_ID         = 'Id';
-    const HEADER_NAME       = 'Name';
-    const HEADER_EMAIL      = 'Email';
-    const HEADER_CATEGORIES = 'Categories';
+    const HEADER_ID         = 'application:customerId';
+    const HEADER_NAME       = 'application:customerName';
+    const HEADER_EMAIL      = 'application:customerEmail';
+    const HEADER_CATEGORIES = 'application:customerCategories';
 
     const GETTER_ID    = 'getId';
     const GETTER_NAME  = 'getName';
@@ -64,7 +64,9 @@ class Customer extends Base
             $this->bodyAttributes,
             $this->tableAttributes,
             $this->gridAttributes,
-            $cellActions
+            $cellActions,
+            null,
+            $this->translator
         );
 
         return $grid;
@@ -108,13 +110,15 @@ class Customer extends Base
             static::LABEL_EDIT,
             Button::TAG_A,
             $editAttributes,
-            $attributeCallbacks
+            $attributeCallbacks,
+            $this->translator
         );
         $cellActions[] = new Button(
             static::LABEL_DELETE,
             Button::TAG_A,
             $deleteAttributes,
-            $attributeCallbacks
+            $attributeCallbacks,
+            $this->translator
         );
 
         return $cellActions;

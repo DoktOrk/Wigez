@@ -1,4 +1,6 @@
 <?php
+
+use Foo\I18n\Bootstrapper\I18nBootstrapper;
 use Opulence\Framework\Cryptography\Bootstrappers\CryptographyBootstrapper;
 use Project\Application\Bootstrappers\Cache\RedisBootstrapper;
 use Project\Application\Bootstrappers\Databases\SqlBootstrapper;
@@ -19,5 +21,6 @@ return [
     RedisBootstrapper::class,
     OrmBootstrapper::class,
     TranslationBootstrapper::class,
-    ValidatorBootstrapper::class
+    ValidatorBootstrapper::class,
+    I18nBootstrapper::class,
 ];

@@ -13,8 +13,8 @@ class Page extends Base
     const GROUP_ID    = 'page-id';
     const GROUP_TITLE = 'page-title';
 
-    const HEADER_ID    = 'Id';
-    const HEADER_TITLE = 'Title';
+    const HEADER_ID    = 'application:pageId';
+    const HEADER_TITLE = 'application:pageTitle';
 
     const GETTER_ID    = 'getId';
     const GETTER_TITLE = 'getTitle';
@@ -48,7 +48,9 @@ class Page extends Base
             $this->bodyAttributes,
             $this->tableAttributes,
             $this->gridAttributes,
-            $cellActions
+            $cellActions,
+            null,
+            $this->translator
         );
 
         return $grid;
@@ -76,13 +78,15 @@ class Page extends Base
             static::LABEL_EDIT,
             Button::TAG_A,
             $editAttributes,
-            $attributeCallbacks
+            $attributeCallbacks,
+            $this->translator
         );
         $cellActions[] = new Button(
             static::LABEL_DELETE,
             Button::TAG_A,
             $deleteAttributes,
-            $attributeCallbacks
+            $attributeCallbacks,
+            $this->translator
         );
 
         return $cellActions;

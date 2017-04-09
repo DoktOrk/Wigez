@@ -13,9 +13,8 @@ class Category extends Base
     const GROUP_ID   = 'category-id';
     const GROUP_NAME = 'category-name';
 
-    const HEADER_ID   = 'Id';
-    const HEADER_NAME = 'Name';
-    const HEADER_POS  = 'Pos';
+    const HEADER_ID   = 'application:categoryId';
+    const HEADER_NAME = 'application:categoryName';
 
     const GETTER_ID   = 'getId';
     const GETTER_NAME = 'getName';
@@ -55,7 +54,9 @@ class Category extends Base
             $this->bodyAttributes,
             $this->tableAttributes,
             $this->gridAttributes,
-            $cellActions
+            $cellActions,
+            null,
+            $this->translator
         );
 
         return $grid;
@@ -83,13 +84,15 @@ class Category extends Base
             static::LABEL_EDIT,
             Button::TAG_A,
             $editAttributes,
-            $attributeCallbacks
+            $attributeCallbacks,
+            $this->translator
         );
         $cellActions[] = new Button(
             static::LABEL_DELETE,
             Button::TAG_A,
             $deleteAttributes,
-            $attributeCallbacks
+            $attributeCallbacks,
+            $this->translator
         );
 
         return $cellActions;

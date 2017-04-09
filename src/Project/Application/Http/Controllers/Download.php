@@ -2,6 +2,7 @@
 
 namespace Project\Application\Http\Controllers;
 
+use Foo\I18n\ITranslator;
 use Opulence\Http\Responses\Response;
 use Opulence\Routing\Urls\UrlGenerator;
 use Opulence\Sessions\ISession;
@@ -16,6 +17,9 @@ class Download extends CrudAbstract
 {
     const ENTITY_SINGULAR = 'download';
     const ENTITY_PLURAL   = 'downloads';
+
+    const ENTITY_TITLE_SINGULAR = 'application:download';
+    const ENTITY_TITLE_PLURAL   = 'application:downloads';
 
     /** @var GridFactory */
     protected $gridFactory;
@@ -33,10 +37,16 @@ class Download extends CrudAbstract
      * @param UrlGenerator $urlGenerator
      * @param GridFactory  $gridFactory
      * @param Repo         $repo
+     * @param ITranslator  $translator
      */
-    public function __construct(ISession $session, UrlGenerator $urlGenerator, GridFactory $gridFactory, Repo $repo)
-    {
-        parent::__construct($session, $urlGenerator, $gridFactory, $repo);
+    public function __construct(
+        ISession $session,
+        UrlGenerator $urlGenerator,
+        GridFactory $gridFactory,
+        Repo $repo,
+        ITranslator $translator
+    ) {
+        parent::__construct($session, $urlGenerator, $gridFactory, $repo, $translator);
     }
 
     /**

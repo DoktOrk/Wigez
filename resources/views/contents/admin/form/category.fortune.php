@@ -11,7 +11,7 @@
     <!-- Name input -->
     <div class="form-group">
         <label for="name" class="control-label">
-            Name
+            {{ tr("application:categoryName") }}
         </label>
         <input type="text" id="name" name="name" class="form-control" value="{{ $entity->getName() }}">
     </div>

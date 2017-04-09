@@ -9,23 +9,25 @@ use Foo\Grid\Collection\Cells;
 use Foo\Grid\Collection\Rows;
 use Foo\Grid\Row\Row;
 use Foo\Grid\Table\Table;
+use Foo\I18n\ITranslator;
 use Opulence\Orm\IEntity;
 
 class Factory
 {
-    const CELL_ACTIONS_CONTENT = 'Actions';
+    const CELL_ACTIONS_CONTENT = 'grid:actions';
     const CELL_ACTIONS_GROUP   = 'actions';
 
     /**
-     * @param array        $entities
-     * @param array        $getters
-     * @param array        $headers
-     * @param array        $headerAttributes
-     * @param array        $bodyAttributes
-     * @param array        $tableAttributes
-     * @param array        $gridAttributes
-     * @param Actions|null $gridActions
-     * @param Actions|null $cellActions
+     * @param array            $entities
+     * @param array            $getters
+     * @param array            $headers
+     * @param array            $headerAttributes
+     * @param array            $bodyAttributes
+     * @param array            $tableAttributes
+     * @param array            $gridAttributes
+     * @param Actions|null     $cellActions
+     * @param Actions|null     $gridActions
+     * @param ITranslator|null $translator
      *
      * @return Grid
      */
@@ -38,7 +40,8 @@ class Factory
         array $tableAttributes = [],
         array $gridAttributes = [],
         Actions $cellActions = null,
-        Actions $gridActions = null
+        Actions $gridActions = null,
+        ITranslator $translator = null
     ) {
         $tableBody   = static::createTableBody($entities, $getters, $bodyAttributes, $cellActions);
         $tableHeader = static::createTableHeader($headers, $headerAttributes, $cellActions);
@@ -46,6 +49,12 @@ class Factory
         $table = new Table($tableBody, $tableHeader, $tableAttributes);
 
         $grid = new Grid($table, null, $gridActions, $gridAttributes);
+
+        $grid->setIndentation(8);
+
+        if ($translator) {
+            $grid->setTranslator($translator);
+        }
 
         return $grid;
     }

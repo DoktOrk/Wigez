@@ -78,17 +78,17 @@
                     <div class="media-right media-middle"><i class="dic-more-vert dic"></i></div>
                 </a>
                 <div class="pmd-dropdown-menu-container"><div class="pmd-dropdown-menu-bg"></div><ul class="dropdown-menu">
-                        <li><a href="{{! route('logout') !}}">Logout</a></li>
+                        <li><a href="{{! route('logout') !}}">{{ tr("application:logout") }}</a></li>
                     </ul></div>
             </li>
             <% if ($is_user) %>
-            <li><a class="pmd-ripple-effect" href="{{! route('pages') !}}" tabindex="-1"><i class="material-icons media-left media-middle">text_format</i> <span class="media-body">Pages</span></a></li>
-            <li><a class="pmd-ripple-effect" href="{{! route('categories') !}}" tabindex="-1"><i class="material-icons media-left media-middle">group_work</i> <span class="media-body">Categories</span></a></li>
-            <li><a class="pmd-ripple-effect" href="{{! route('customers') !}}" tabindex="-1"><i class="material-icons media-left media-middle">person</i> <span class="media-body">Customers</span></a></li>
+            <li><a class="pmd-ripple-effect" href="{{! route('pages') !}}" tabindex="-1"><i class="material-icons media-left media-middle">text_format</i> <span class="media-body">{{ tr("application:pages") }}</span></a></li>
+            <li><a class="pmd-ripple-effect" href="{{! route('categories') !}}" tabindex="-1"><i class="material-icons media-left media-middle">group_work</i> <span class="media-body">{{ tr("application:categories") }}</span></a></li>
+            <li><a class="pmd-ripple-effect" href="{{! route('customers') !}}" tabindex="-1"><i class="material-icons media-left media-middle">person</i> <span class="media-body">{{ tr("application:customers") }}</span></a></li>
             <% endif %>
-            <li><a class="pmd-ripple-effect" href="{{! route('files') !}}" tabindex="-1"><i class="material-icons media-left media-middle">attachment</i> <span class="media-body">Files</span></a></li>
+            <li><a class="pmd-ripple-effect" href="{{! route('files') !}}" tabindex="-1"><i class="material-icons media-left media-middle">attachment</i> <span class="media-body">{{ tr("application:files") }}</span></a></li>
             <% if ($is_user) %>
-            <li><a class="pmd-ripple-effect" href="{{! route('downloads') !}}" tabindex="-1"><i class="material-icons media-left media-middle">file_download</i> <span class="media-body">Downloads</span></a></li>
+            <li><a class="pmd-ripple-effect" href="{{! route('downloads') !}}" tabindex="-1"><i class="material-icons media-left media-middle">file_download</i> <span class="media-body">{{ tr("application:downloads") }}</span></a></li>
             <% endif %>
         </ul>
     </aside><!-- End Left sidebar -->

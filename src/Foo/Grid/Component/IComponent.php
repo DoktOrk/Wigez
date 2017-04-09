@@ -2,6 +2,8 @@
 
 namespace Foo\Grid\Component;
 
+use Foo\I18n\ITranslator;
+
 interface IComponent
 {
     /**
@@ -14,4 +16,9 @@ interface IComponent
      * @param string $whitespace
      */
     public function setIndentation(int $num, string $whitespace = ' ');
+
+    /**
+     * @param ITranslator $translator
+     */
+    public function setTranslator(ITranslator $translator);
 }

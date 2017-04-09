@@ -2,6 +2,7 @@
 
 namespace Project\Application\Http\Controllers;
 
+use Foo\I18n\ITranslator;
 use Opulence\Http\Responses\Response;
 use Opulence\Orm\IUnitOfWork;
 use Opulence\Routing\Urls\UrlGenerator;
@@ -18,6 +19,9 @@ class File extends CrudAbstract
 {
     const ENTITY_SINGULAR = 'file';
     const ENTITY_PLURAL   = 'files';
+
+    const ENTITY_TITLE_SINGULAR = 'application:file';
+    const ENTITY_TITLE_PLURAL   = 'application:files';
 
     const VAR_CATEGORIES = 'categories';
 
@@ -43,6 +47,7 @@ class File extends CrudAbstract
      * @param UrlGenerator     $urlGenerator
      * @param GridFactory      $gridFactory
      * @param Repo             $repo
+     * @param ITranslator      $translator
      * @param ValidatorFactory $validatorFactory
      * @param IUnitOfWork      $unitOfWork
      * @param CategoryRepo     $categoryRepo
@@ -52,13 +57,14 @@ class File extends CrudAbstract
         UrlGenerator $urlGenerator,
         GridFactory $gridFactory,
         Repo $repo,
+        ITranslator $translator,
         ValidatorFactory $validatorFactory,
         IUnitOfWork $unitOfWork,
         CategoryRepo $categoryRepo
     ) {
         $this->categoryRepo = $categoryRepo;
 
-        parent::__construct($session, $urlGenerator, $gridFactory, $repo, $validatorFactory, $unitOfWork);
+        parent::__construct($session, $urlGenerator, $gridFactory, $repo, $translator, $validatorFactory, $unitOfWork);
     }
 
     /**

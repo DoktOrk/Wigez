@@ -10,21 +10,21 @@
 
     <!-- File input -->
     <div class="form-group">
-        <label for="file" class="control-label">File</label>
+        <label for="file" class="control-label">{{ tr("application:fileFile") }}</label>
         <input type="file" id="file" name="file" class="form-control" value="{{ $entity->getFile() }}">
         <p class="help-block">Example block-level help text here.</p>
     </div>
 
     <!-- Description input -->
     <div class="form-group">
-        <label for="description" class="control-label">Description</label>
+        <label for="description" class="control-label">{{ tr("application:fileDescription") }}</label>
         <textarea type="text" id="description" name="description" class="form-control"
                   rows="15">{{ $entity->getDescription() }}</textarea>
     </div>
 
     <!-- Category select -->
     <div class="form-group">
-        <label for="category" class="control-label">Category</label>
+        <label for="category" class="control-label">{{ tr("application:fileCategory") }}</label>
         <select type="text" id="category" name="category" class="form-control">
             <% if ($entity->getCategory()->getId() === 0) %>
             <option disabled="disabled" selected="selected">Choose a category</option>

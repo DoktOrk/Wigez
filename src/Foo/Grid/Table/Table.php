@@ -5,6 +5,7 @@ namespace Foo\Grid\Table;
 use Foo\Grid\Collection\Cells;
 use Foo\Grid\Collection\Rows;
 use Foo\Grid\Component\Component;
+use Foo\I18n\ITranslator;
 
 class Table extends Component implements ITable
 {
@@ -69,6 +70,16 @@ class Table extends Component implements ITable
         }
 
         $this->indentation = str_repeat($whitespace, $num);
+    }
+
+    /**
+     * @param ITranslator $translator
+     */
+    public function setTranslator(ITranslator $translator)
+    {
+        foreach ($this->headers as $header) {
+            $header->setTranslator($translator);
+        }
     }
 
     /**
