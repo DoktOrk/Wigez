@@ -1,5 +1,5 @@
 <?php
-namespace Project\Application\Http;
+namespace Integration\Project\Application\Http;
 
 use Opulence\Applications\Tasks\Dispatchers\ITaskDispatcher;
 use Opulence\Applications\Tasks\TaskTypes;

@@ -1,5 +1,8 @@
 <?php
-namespace Project\Application\Http;
+
+namespace Integration\Project\Application\Http;
+
+require_once __DIR__ . '/IntegrationTestCase.php';
 
 /**
  * Defines the home tests
@@ -14,7 +17,8 @@ class HomeTest extends IntegrationTestCase
         $this->get('/doesNotExist')
             ->go()
             ->assertResponse
-            ->isNotFound();
+            ->isNotFound()
+        ;
     }
 
     /**
@@ -27,7 +31,8 @@ class HomeTest extends IntegrationTestCase
             ->assertResponse
             ->isOK();
 
-        $this->assertView->varEquals('title', 'Home')
+        $this->assertView
+            ->varEquals('title', 'Ecomp.co.hu - Ügyvitel, Import-Export, Tanácsadás, Szoftver')
             ->varEquals('metaKeywords', [])
             ->varEquals('metaDescription', '')
             ->varEquals('css', '/website/css/style.css');

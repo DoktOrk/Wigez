@@ -10,13 +10,13 @@
         verbose="true">
     <testsuites>
         <testsuite name="Foo Suite">
-            <directory>./unit/Foo</directory>
-            <directory>./integration/Foo</directory>
+            <directory>./unit</directory>
+            <directory>./integration</directory>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">../src/Foo</directory>
+            <directory suffix=".php">../src</directory>
         </whitelist>
     </filter>
 </phpunit>
