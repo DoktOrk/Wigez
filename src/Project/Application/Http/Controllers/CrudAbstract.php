@@ -20,13 +20,15 @@ abstract class CrudAbstract extends Controller
     const VIEW_LIST = 'contents/admin/grid';
     const VIEW_FORM = 'contents/admin/form/%s';
 
-    const VAR_TITLE      = 'title';
-    const VAR_GRID       = 'grid';
-    const VAR_ROUTE      = 'route';
-    const VAR_ENTITY     = 'entity';
-    const VAR_SHOW_URL   = 'showUrl';
-    const VAR_CREATE_URL = 'createUrl';
-    const VAR_METHOD     = 'method';
+    const VAR_TITLE       = 'title';
+    const VAR_GRID        = 'grid';
+    const VAR_ROUTE       = 'route';
+    const VAR_ENTITY      = 'entity';
+    const VAR_SHOW_URL    = 'showUrl';
+    const VAR_CREATE_URL  = 'createUrl';
+    const VAR_METHOD      = 'method';
+    const VAR_MSG_ERROR   = 'errorMessages';
+    const VAR_MSG_SUCCESS = 'successMessages';
 
     const ENTITY_SINGULAR = '';
     const ENTITY_PLURAL   = '';
@@ -41,6 +43,11 @@ abstract class CrudAbstract extends Controller
 
     const METHOD_POST = 'POST';
     const METHOD_PUT  = 'PUT';
+
+    const SESSION_ERROR   = 'error';
+    const SESSION_SUCCESS = 'success';
+
+    const INPUT_CONTINUE = 'continue';
 
     /** @var IFactory */
     protected $gridFactory;
@@ -108,6 +115,8 @@ abstract class CrudAbstract extends Controller
         $this->view->setVar(static::VAR_TITLE, sprintf(static::TITLE_SHOW, static::ENTITY_PLURAL));
         $this->view->setVar(static::VAR_GRID, $grid);
         $this->view->setVar(static::VAR_CREATE_URL, $this->getCreateUrl());
+        $this->view->setVar(static::VAR_MSG_ERROR, $this->session->get(static::SESSION_ERROR));
+        $this->view->setVar(static::VAR_MSG_SUCCESS, $this->session->get(static::SESSION_SUCCESS));
 
         return $this->createResponse();
     }
@@ -127,6 +136,8 @@ abstract class CrudAbstract extends Controller
         $this->view->setVar(static::VAR_ENTITY, $this->entity);
         $this->view->setVar(static::VAR_SHOW_URL, $this->getShowUrl());
         $this->view->setVar(static::VAR_METHOD, static::METHOD_POST);
+        $this->view->setVar(static::VAR_MSG_ERROR, $this->session->get(static::SESSION_ERROR));
+        $this->view->setVar(static::VAR_MSG_SUCCESS, $this->session->get(static::SESSION_SUCCESS));
 
         return $this->createResponse();
     }
@@ -139,12 +150,9 @@ abstract class CrudAbstract extends Controller
         $isValid = $this->validateForm();
 
         if (!$isValid) {
-            throw new \Exception(
-                sprintf(
-                    'Create errors aren\'t yet handled: %s',
-                    json_encode($this->validator->getErrors()->getAll())
-                )
-            );
+            $this->session->flash(static::SESSION_ERROR, $this->validator->getErrors()->getAll());
+
+            return $this->redirectToList(static::IS_EDIT_CREATE);
         }
 
         $this->entity = $this->createEntity();
@@ -153,6 +161,8 @@ abstract class CrudAbstract extends Controller
         $this->repo->add($this->entity);
 
         $this->unitOfWork->commit();
+
+        $this->session->flash(static::SESSION_SUCCESS, ['Create okay']);
 
         return $this->redirectToList(static::IS_EDIT_CREATE);
     }
@@ -174,6 +184,8 @@ abstract class CrudAbstract extends Controller
         $this->view->setVar(static::VAR_ENTITY, $this->entity);
         $this->view->setVar(static::VAR_SHOW_URL, $this->getShowUrl());
         $this->view->setVar(static::VAR_METHOD, static::METHOD_PUT);
+        $this->view->setVar(static::VAR_MSG_ERROR, $this->session->get(static::SESSION_ERROR));
+        $this->view->setVar(static::VAR_MSG_SUCCESS, $this->session->get(static::SESSION_SUCCESS));
 
         return $this->createResponse();
     }
@@ -188,13 +200,17 @@ abstract class CrudAbstract extends Controller
         $isValid = $this->validateForm();
 
         if (!$isValid) {
-            throw new \Exception('Update errors aren\'t yet handled');
+            $this->session->flash(static::SESSION_ERROR, $this->validator->getErrors()->getAll());
+
+            return $this->redirectToList(static::IS_EDIT_UPDATE, $id);
         }
 
         $this->entity = $this->retrieveEntity($id);
         $this->fillEntity($this->entity);
 
         $this->unitOfWork->commit();
+
+        $this->session->flash(static::SESSION_SUCCESS, ['Update okay']);
 
         return $this->redirectToList(static::IS_EDIT_UPDATE, $id);
     }
@@ -222,8 +238,9 @@ abstract class CrudAbstract extends Controller
             /** @var IStringerEntity $entity */
             $this->entity = $this->repo->getById($id);
         } catch (OrmException $e) {
-            throw new \Exception('Retrieval errors aren\'t yet handled');
-            // return $this->createEntity();
+            $this->session->flash(static::SESSION_ERROR, ['Not loaded.']);
+
+            return $this->createEntity();
         }
 
         return $this->entity;
@@ -266,7 +283,7 @@ abstract class CrudAbstract extends Controller
      */
     protected function redirectToList(bool $isEdit, int $id = null): Response
     {
-        $continue = (int)$this->request->getInput('continue');
+        $continue = (int)$this->request->getInput(static::INPUT_CONTINUE);
 
         $url = '';
         if (!$continue) {

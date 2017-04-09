@@ -105,11 +105,11 @@
         </div><!-- tab end -->
     </div><!-- content area end -->
 
-
     <!-- Scripts Starts -->
     <!-- include summernote css/js-->
     <script src="/admin/js/bootstrap.min.js"></script>
     <script src="/admin/js/propeller.min.js"></script>
+    <script src="/admin/js/custom.js"></script>
     <!-- Scripts Ends -->
 
 </body>
