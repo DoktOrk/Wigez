@@ -1,4 +1,5 @@
 <?php
+
 namespace Project\Application\Bootstrappers\Http\Routing;
 
 use Opulence\Environments\Environment;
@@ -19,13 +20,13 @@ class RouterBootstrapper extends BaseBootstrapper
      */
     protected function configureRouter(Router $router)
     {
-        $httpConfigPath = Config::get('paths', 'config.http');
-        $routingConfig = require "$httpConfigPath/routing.php";
+        $httpConfigPath   = Config::get('paths', 'config.http');
+        $routingConfig    = require "$httpConfigPath/routing.php";
         $routesConfigPath = "$httpConfigPath/routes.php";
 
         if ($routingConfig['cache'] && getenv('ENV_NAME') === Environment::PRODUCTION) {
             $cachedRoutesPath = Config::get('paths', 'routes.cache') . '/' . ICache::DEFAULT_CACHED_ROUTES_FILE_NAME;
-            $routes = $this->cache->get($cachedRoutesPath, $router, $routesConfigPath);
+            $routes           = $this->cache->get($cachedRoutesPath, $router, $routesConfigPath);
             $router->setRouteCollection($routes);
         } else {
             require $routesConfigPath;

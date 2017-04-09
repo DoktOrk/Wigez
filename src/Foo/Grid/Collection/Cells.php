@@ -2,9 +2,9 @@
 
 namespace Foo\Grid\Collection;
 
+use Foo\Grid\Cell\ICell;
 use InvalidArgumentException;
 use LogicException;
-use Foo\Grid\Cell\ICell;
 
 class Cells extends BaseCollection
 {
@@ -29,7 +29,7 @@ class Cells extends BaseCollection
 
     /**
      * @param int|null $offset
-     * @param ICell $value
+     * @param ICell    $value
      *
      * @throws InvalidArgumentException
      */

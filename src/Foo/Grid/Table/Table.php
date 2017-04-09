@@ -14,10 +14,10 @@ class Table extends Component implements ITable
      */
     const TEMPLATE_CONTENT = '%1$s%2$s';
 
-    const TAG_TABLE = 'table';
-    const TAG_HEADERS = 'thead';
+    const TAG_TABLE       = 'table';
+    const TAG_HEADERS     = 'thead';
     const TAG_HEADER_CELL = 'th';
-    const TAG_ROWS = 'tbody';
+    const TAG_ROWS        = 'tbody';
 
     /** @var Cells */
     protected $headers;
@@ -32,7 +32,7 @@ class Table extends Component implements ITable
      */
     public function __construct(Rows $rows, Cells $headers, array $attributes = [])
     {
-        $this->rows = $rows;
+        $this->rows    = $rows;
         $this->headers = $headers;
 
         parent::__construct('', static::TAG_TABLE, $attributes);

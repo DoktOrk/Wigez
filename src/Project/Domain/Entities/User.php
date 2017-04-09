@@ -17,10 +17,10 @@ class User implements IStringerEntity
     protected $password;
 
     /**
-     * @param int        $id
-     * @param string     $username
-     * @param string     $email
-     * @param string     $password
+     * @param int    $id
+     * @param string $username
+     * @param string $email
+     * @param string $password
      */
     public function __construct(
         int $id,
@@ -113,7 +113,7 @@ class User implements IStringerEntity
     /**
      * @return string
      */
-    public function __toString():string
+    public function __toString(): string
     {
         return $this->getUsername();
     }

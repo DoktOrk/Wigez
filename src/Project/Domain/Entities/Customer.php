@@ -36,10 +36,10 @@ class Customer implements IStringerEntity
         array $categories,
         string $password
     ) {
-        $this->id             = $id;
-        $this->name           = $name;
-        $this->email          = $email;
-        $this->password       = $password;
+        $this->id       = $id;
+        $this->name     = $name;
+        $this->email    = $email;
+        $this->password = $password;
 
         /** @var Category $category */
         foreach ($categories as $category) {
@@ -187,7 +187,7 @@ class Customer implements IStringerEntity
     /**
      * @return string
      */
-    public function __toString():string
+    public function __toString(): string
     {
         return $this->getName();
     }

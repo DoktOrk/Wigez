@@ -27,7 +27,7 @@ class Actions extends BaseCollection
 
     /**
      * @param int|null $offset
-     * @param IAction $value
+     * @param IAction  $value
      *
      * @throws InvalidArgumentException
      */
@@ -57,12 +57,12 @@ class Actions extends BaseCollection
     /**
      * @return Actions
      */
-    public function duplicate() :Actions
+    public function duplicate(): Actions
     {
         $actionsCopy = new Actions();
 
         foreach ($this->components as $action) {
-            $actionCopy = $action->duplicate();
+            $actionCopy    = $action->duplicate();
             $actionsCopy[] = $actionCopy;
         }
 

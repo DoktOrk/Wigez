@@ -1,4 +1,5 @@
 <?php
+
 namespace Project\Application\Http\Controllers;
 
 use Opulence\Http\Responses\Response;
@@ -26,7 +27,7 @@ class Index extends Controller
      *
      * @return Response The response
      */
-    public function showHomePage() : Response
+    public function showHomePage(): Response
     {
         $this->view = $this->viewFactory->createView('contents/website/home');
 

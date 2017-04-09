@@ -2,9 +2,9 @@
 
 namespace Foo\Grid\Collection;
 
+use Foo\Grid\Filter\IFilter;
 use InvalidArgumentException;
 use LogicException;
-use Foo\Grid\Filter\IFilter;
 
 class Filters extends BaseCollection
 {
@@ -27,7 +27,7 @@ class Filters extends BaseCollection
 
     /**
      * @param int|null $offset
-     * @param IFilter $value
+     * @param IFilter  $value
      *
      * @throws InvalidArgumentException
      */

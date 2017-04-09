@@ -16,13 +16,11 @@ class Category extends ValidatorFactory
 
         $validator
             ->field('id')
-            ->integer()
-        ;
+            ->integer();
 
         $validator
             ->field('name')
-            ->required()
-        ;
+            ->required();
 
         return $validator;
     }

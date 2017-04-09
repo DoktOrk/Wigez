@@ -16,15 +16,15 @@ class Page implements IStringerEntity
     /**
      * Page constructor.
      *
-     * @param int $id
+     * @param int    $id
      * @param string $title
      * @param string $body
      */
     public function __construct(int $id, string $title, string $body)
     {
-        $this->id = $id;
+        $this->id    = $id;
         $this->title = $title;
-        $this->body = $body;
+        $this->body  = $body;
     }
 
     /**
@@ -86,7 +86,7 @@ class Page implements IStringerEntity
     /**
      * @return string
      */
-    public function __toString():string
+    public function __toString(): string
     {
         return $this->getTitle();
     }

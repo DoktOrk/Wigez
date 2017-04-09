@@ -1,4 +1,5 @@
 <?php
+
 namespace Project\Application\Http\Middleware;
 
 use Opulence\Framework\Configuration\Config;
@@ -25,9 +26,10 @@ class Session extends BaseSession
      * Writes any session data needed in the response
      *
      * @param Response $response The response to write to
+     *
      * @return Response The response with data written to it
      */
-    protected function writeToResponse(Response $response) : Response
+    protected function writeToResponse(Response $response): Response
     {
         $response->getHeaders()->setCookie(
             new Cookie(

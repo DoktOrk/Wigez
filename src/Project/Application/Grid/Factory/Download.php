@@ -9,19 +9,19 @@ use Project\Domain\Entities\Download as Entity;
 
 class Download extends Base
 {
-    const GROUP_ID = 'download-id';
-    const GROUP_FILE = 'download-file';
-    const GROUP_CUSTOMER = 'download-customer';
+    const GROUP_ID            = 'download-id';
+    const GROUP_FILE          = 'download-file';
+    const GROUP_CUSTOMER      = 'download-customer';
     const GROUP_DOWNLOADED_AT = 'download-downloaded-at';
 
-    const HEADER_ID = 'Id';
-    const HEADER_FILE = 'File';
-    const HEADER_CUSTOMER = 'Customer';
+    const HEADER_ID            = 'Id';
+    const HEADER_FILE          = 'File';
+    const HEADER_CUSTOMER      = 'Customer';
     const HEADER_DOWNLOADED_AT = 'Downloaded At';
 
-    const GETTER_ID = 'getId';
-    const GETTER_FILE = 'getFile';
-    const GETTER_CUSTOMER = 'getCustomer';
+    const GETTER_ID            = 'getId';
+    const GETTER_FILE          = 'getFile';
+    const GETTER_CUSTOMER      = 'getCustomer';
     const GETTER_DOWNLOADED_AT = 'getDownloadedAt';
 
     /** @var array */

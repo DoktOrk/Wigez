@@ -17,13 +17,13 @@ class Grid extends Component implements IGrid
      */
     const TEMPLATE_CONTENT = '%1$s%2$s%3$s';
 
-    const TAG_GRID = 'div';
-    const TAG_FILTER = 'div';
+    const TAG_GRID    = 'div';
+    const TAG_FILTER  = 'div';
     const TAG_ACTIONS = 'div';
-    const TAG_FORM = 'form';
+    const TAG_FORM    = 'form';
 
-    const ATTRIBUTE_GRID_CLASS = 'grid';
-    const ATTRIBUTE_FILTER_CLASS = 'grid-filters';
+    const ATTRIBUTE_GRID_CLASS    = 'grid';
+    const ATTRIBUTE_FILTER_CLASS  = 'grid-filters';
     const ATTRIBUTE_ACTIONS_CLASS = 'grid-actions';
 
     const ATTRIBUTES_FORM = ['class' => 'grid-form'];
@@ -44,10 +44,10 @@ class Grid extends Component implements IGrid
     protected $whitespace;
 
     /**
-     * @param ITable $rows
+     * @param ITable       $rows
      * @param Filters|null $filters
      * @param Actions|null $massActions
-     * @param array $attributes
+     * @param array        $attributes
      */
     public function __construct(
         ITable $table,
@@ -73,7 +73,7 @@ class Grid extends Component implements IGrid
     }
 
     /**
-     * @param int $num
+     * @param int    $num
      * @param string $whitespace
      */
     public function setIndentation(int $num, string $whitespace = '    ')
@@ -87,7 +87,7 @@ class Grid extends Component implements IGrid
         }
 
         $this->indentation = str_repeat($whitespace, $num);
-        $this->whitespace = $whitespace;
+        $this->whitespace  = $whitespace;
     }
 
     /**
@@ -97,13 +97,29 @@ class Grid extends Component implements IGrid
     {
         $filters = (string)$this->filters;
         $actions = $this->actions ? (string)$this->actions : '';
-        $table = (string)$this->table;
+        $table   = (string)$this->table;
 
         $this->content = sprintf(static::TEMPLATE_CONTENT, $filters, $actions, $table);
 
         $this->wrapContentInForm();
 
         return parent::__toString();
+    }
+
+    /**
+     * @return ITable
+     */
+    public function getTable(): ITable
+    {
+        return $this->table;
+    }
+
+    /**
+     * @param Filters $filters
+     */
+    public function setFilter(Filters $filters)
+    {
+        $this->filters = $filters;
     }
 
     protected function wrapContentInForm()
@@ -120,21 +136,5 @@ class Grid extends Component implements IGrid
             static::ATTRIBUTES_FORM,
             $whitespace
         );
-    }
-
-    /**
-     * @return ITable
-     */
-    public function getTable() :ITable
-    {
-        return $this->table;
-    }
-
-    /**
-     * @param Filters $filters
-     */
-    public function setFilter(Filters $filters)
-    {
-        $this->filters = $filters;
     }
 }

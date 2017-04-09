@@ -44,7 +44,7 @@ class Numeric
      */
     private function getInQueryPartial(array $parameters, int $key)
     {
-        $values    = $parameters[$key][0];
+        $values = $parameters[$key][0];
 
         $paramType = $parameters[$key][1] === ArrayParameter::PARAM_INT_ARRAY ? \PDO::PARAM_INT : \PDO::PARAM_STR;
 

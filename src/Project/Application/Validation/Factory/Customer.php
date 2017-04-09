@@ -16,32 +16,26 @@ class Customer extends ValidatorFactory
 
         $validator
             ->field('id')
-            ->integer()
-        ;
+            ->integer();
 
         $validator
             ->field('name')
-            ->required()
-        ;
+            ->required();
 
         $validator
             ->field('email')
             ->email()
-            ->required()
-        ;
+            ->required();
 
         $validator
-            ->field('categories')
-        ;
+            ->field('categories');
 
         $validator
-            ->field('password')
-        ;
+            ->field('password');
 
         $validator
             ->field('password_confirmed')
-            ->equalsField('password')
-        ;
+            ->equalsField('password');
 
         return $validator;
     }

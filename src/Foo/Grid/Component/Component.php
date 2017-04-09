@@ -17,18 +17,18 @@ class Component implements IComponent
     /** @var array */
     protected $attributes = [];
 
-    /** @var string  */
+    /** @var string */
     protected $indentation = '';
 
     /**
      * @param string|IComponent $content
-     * @param string $tag
-     * @param array $attributes
+     * @param string            $tag
+     * @param array             $attributes
      */
     public function __construct($content = '', string $tag = null, array $attributes = [])
     {
-        $this->content = $content;
-        $this->tag = $tag;
+        $this->content    = $content;
+        $this->tag        = $tag;
         $this->attributes = $attributes;
     }
 
@@ -67,7 +67,7 @@ class Component implements IComponent
     }
 
     /**
-     * @param int $num
+     * @param int    $num
      * @param string $whitespace
      */
     public function setIndentation(int $num, string $whitespace = '    ')

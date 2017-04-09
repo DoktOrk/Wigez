@@ -10,7 +10,7 @@ interface IComponent
     public function __toString(): string;
 
     /**
-     * @param int $num
+     * @param int    $num
      * @param string $whitespace
      */
     public function setIndentation(int $num, string $whitespace = ' ');

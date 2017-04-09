@@ -1,4 +1,5 @@
 <?php
+
 namespace Project\Application\Bootstrappers\Http\Sessions;
 
 use Opulence\Cache\ArrayBridge;
@@ -29,9 +30,10 @@ class SessionBootstrapper extends BaseBootstrapper
      * Gets the session object to use
      *
      * @param IContainer $container The IoC Container
+     *
      * @return ISession The session to use
      */
-    protected function getSession(IContainer $container) : ISession
+    protected function getSession(IContainer $container): ISession
     {
         $session = new Session();
         $session->setName(Config::get('sessions', 'name'));
@@ -43,10 +45,11 @@ class SessionBootstrapper extends BaseBootstrapper
      * Gets the session handler object to use
      *
      * @param IContainer $container The IoC Container
+     *
      * @return SessionHandlerInterface The session handler to use
      * @throws IocException Thrown if the encrypter could not be resolved
      */
-    protected function getSessionHandler(IContainer $container) : SessionHandlerInterface
+    protected function getSessionHandler(IContainer $container): SessionHandlerInterface
     {
         switch (Config::get('sessions', 'handler')) {
             case CacheSessionHandler::class:
@@ -74,10 +77,11 @@ class SessionBootstrapper extends BaseBootstrapper
      * Gets the cache bridge to use for a cache session handler
      *
      * @param IContainer $container The IoC container
+     *
      * @return ICacheBridge The cache bridge
      * @throws IocException Thrown if the cache bridge could not be resolved
      */
-    private function getCacheBridge(IContainer $container) : ICacheBridge
+    private function getCacheBridge(IContainer $container): ICacheBridge
     {
         switch (Config::get('sessions', 'cache.bridge')) {
             case ArrayBridge::class:

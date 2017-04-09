@@ -43,7 +43,7 @@ class Customer extends CrudAbstract
     /**
      * Helps DIC figure out the dependencies
      *
-     * @param ISession          $session
+     * @param ISession         $session
      * @param UrlGenerator     $urlGenerator
      * @param GridFactory      $gridFactory
      * @param Repo             $repo
@@ -91,17 +91,6 @@ class Customer extends CrudAbstract
         return parent::edit($id);
     }
 
-    protected function addCategories()
-    {
-        $categoryIds = [];
-        foreach ($this->entity->getCategories() as $category) {
-            $categoryIds[] = $category->getId();
-        }
-
-        $this->viewVarsExtra[static::VAR_CURRENT_CATEGORIES] = $categoryIds;
-        $this->viewVarsExtra[static::VAR_ALL_CATEGORIES]     = $this->categoryRepo->getAll();
-    }
-
     /**
      * @param int|null $id
      *
@@ -120,11 +109,6 @@ class Customer extends CrudAbstract
         return $this->entity;
     }
 
-    /*
-     * @param Entity $entity
-     *
-     * @return Entity
-     */
     public function fillEntity(IStringerEntity $entity): IStringerEntity
     {
         $post = $this->request->getPost()->getAll();
@@ -144,9 +128,25 @@ class Customer extends CrudAbstract
             ->setName($name)
             ->setEmail($email)
             ->setPassword($password)
-            ->setCategories($categories)
-        ;
+            ->setCategories($categories);
 
         return $entity;
+    }
+
+    /*
+     * @param Entity $entity
+     *
+     * @return Entity
+     */
+
+    protected function addCategories()
+    {
+        $categoryIds = [];
+        foreach ($this->entity->getCategories() as $category) {
+            $categoryIds[] = $category->getId();
+        }
+
+        $this->viewVarsExtra[static::VAR_CURRENT_CATEGORIES] = $categoryIds;
+        $this->viewVarsExtra[static::VAR_ALL_CATEGORIES]     = $this->categoryRepo->getAll();
     }
 }

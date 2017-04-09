@@ -1,4 +1,5 @@
 <?php
+
 namespace Project\Application\Bootstrappers\Http\Views;
 
 use Opulence\Framework\Configuration\Config;
@@ -18,9 +19,10 @@ class ViewBootstrapper extends BaseBootstrapper
      * To use a different view cache than the one returned here, extend this class and override this method
      *
      * @param IContainer $container The dependency injection container
+     *
      * @return ICache The view cache
      */
-    protected function getViewCache(IContainer $container) : ICache
+    protected function getViewCache(IContainer $container): ICache
     {
         switch (Config::get('views', 'cache')) {
             case ArrayCache::class:

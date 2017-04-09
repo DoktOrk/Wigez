@@ -31,7 +31,7 @@ class Category extends CrudAbstract
     /**
      * Helps DIC figure out the dependencies
      *
-     * @param ISession          $session
+     * @param ISession         $session
      * @param UrlGenerator     $urlGenerator
      * @param GridFactory      $gridFactory
      * @param Repo             $repo

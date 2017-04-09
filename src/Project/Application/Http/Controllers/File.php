@@ -39,7 +39,7 @@ class File extends CrudAbstract
     /**
      * Helps DIC figure out the dependencies
      *
-     * @param ISession      $session
+     * @param ISession         $session
      * @param UrlGenerator     $urlGenerator
      * @param GridFactory      $gridFactory
      * @param Repo             $repo
@@ -111,11 +111,6 @@ class File extends CrudAbstract
         return parent::edit($id);
     }
 
-    protected function addAllCategories()
-    {
-        $this->viewVarsExtra[static::VAR_CATEGORIES] = $this->categoryRepo->getAll();
-    }
-
     /**
      * @param int|null $id
      *
@@ -134,11 +129,6 @@ class File extends CrudAbstract
         return $entity;
     }
 
-    /*
-     * @param Entity $entity
-     *
-     * @return Entity
-     */
     public function fillEntity(IStringerEntity $entity): IStringerEntity
     {
         $post = $this->request->getPost()->getAll();
@@ -150,9 +140,19 @@ class File extends CrudAbstract
         $entity
             ->setFile($file)
             ->setDescription($description)
-            ->setCategory($category)
-        ;
+            ->setCategory($category);
 
         return $entity;
+    }
+
+    /*
+     * @param Entity $entity
+     *
+     * @return Entity
+     */
+
+    protected function addAllCategories()
+    {
+        $this->viewVarsExtra[static::VAR_CATEGORIES] = $this->categoryRepo->getAll();
     }
 }

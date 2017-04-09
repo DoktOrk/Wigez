@@ -1,4 +1,5 @@
 <?php
+
 namespace Project\Application\Bootstrappers\Validation;
 
 use InvalidArgumentException;
@@ -26,9 +27,33 @@ class ValidatorBootstrapper extends BaseBootstrapper
     ];
 
     /**
+     * @inheritdoc
+     */
+    public function getBindings(): array
+    {
+        $bindings = array_merge(
+            parent::getBindings(),
+            $this->validatorFactories
+        );
+
+        return $bindings;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function registerBindings(IContainer $container)
+    {
+        parent::registerBindings($container);
+
+
+    }
+
+    /**
      * Registers the error templates
      *
      * @param ErrorTemplateRegistry $errorTemplateRegistry The registry to register to
+     *
      * @throws InvalidArgumentException Thrown if the config was invalid
      */
     protected function registerErrorTemplates(ErrorTemplateRegistry $errorTemplateRegistry)
@@ -50,28 +75,5 @@ class ValidatorBootstrapper extends BaseBootstrapper
     protected function registerRuleExtensions(RuleExtensionRegistry $ruleExtensionRegistry)
     {
         // Register any custom rules here
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getBindings() : array
-    {
-        $bindings = array_merge(
-            parent::getBindings(),
-            $this->validatorFactories
-        );
-
-        return $bindings;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function registerBindings(IContainer $container)
-    {
-        parent::registerBindings($container);
-
-
     }
 }

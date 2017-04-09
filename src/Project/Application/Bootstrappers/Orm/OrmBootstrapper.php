@@ -151,14 +151,14 @@ class OrmBootstrapper extends Bootstrapper implements ILazyBootstrapper
     }
 
     /**
-     * @param IContainer  $container
-     * @param string      $repoClass
-     * @param string      $dataMapperClass
-     * @param string      $entityClass
-     * @param IConnection $readConnection
-     * @param IConnection $writeConnection
+     * @param IContainer    $container
+     * @param string        $repoClass
+     * @param string        $dataMapperClass
+     * @param string        $entityClass
+     * @param IConnection   $readConnection
+     * @param IConnection   $writeConnection
      * @param IPreprocessor $preprocessor
-     * @param IUnitOfWork $unitOfWork
+     * @param IUnitOfWork   $unitOfWork
      *
      * @return \Closure
      */

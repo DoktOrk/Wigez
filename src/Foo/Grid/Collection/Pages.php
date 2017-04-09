@@ -4,7 +4,6 @@ namespace Foo\Grid\Collection;
 
 use InvalidArgumentException;
 use LogicException;
-use Foo\Grid\Cell\ICell;
 
 class Pages extends BaseCollection
 {
@@ -27,7 +26,7 @@ class Pages extends BaseCollection
 
     /**
      * @param int|null $offset
-     * @param IPage $value
+     * @param IPage    $value
      *
      * @throws InvalidArgumentException
      */

@@ -40,7 +40,7 @@ class CategorySqlDataMapper extends SqlDataMapper implements ICategoryDataMapper
         $query = (new QueryBuilder())
             ->update('categories', 'categories', ['deleted' => [1, \PDO::PARAM_INT]])
             ->where('id = ?')
-            ->addUnnamedPlaceholderValue( $entity->getId(), \PDO::PARAM_INT);
+            ->addUnnamedPlaceholderValue($entity->getId(), \PDO::PARAM_INT);
 
         $statement = $this->writeConnection->prepare($query->getSql());
         $statement->bindValues($query->getParameters());
@@ -55,26 +55,6 @@ class CategorySqlDataMapper extends SqlDataMapper implements ICategoryDataMapper
         $query = $this->getBaseQuery();
 
         return $this->read($query->getSql(), [], self::VALUE_TYPE_ARRAY);
-    }
-
-    /**
-     * @param bool $joinCustomer
-     *
-     * @return SelectQuery
-     */
-    private function getBaseQuery(bool $joinCustomer = false)
-    {
-        /** @var SelectQuery $query */
-        $query = (new QueryBuilder())
-            ->select('categories.id', 'categories.name')
-            ->from('categories')
-            ->where('categories.deleted = 0');
-
-        if ($joinCustomer) {
-            $query->innerJoin('categories', 'categories', 'categories.id = categories_customers.category_id');
-        }
-
-        return $query;
     }
 
     /**
@@ -151,5 +131,25 @@ class CategorySqlDataMapper extends SqlDataMapper implements ICategoryDataMapper
             (int)$hash['id'],
             $hash['name']
         );
+    }
+
+    /**
+     * @param bool $joinCustomer
+     *
+     * @return SelectQuery
+     */
+    private function getBaseQuery(bool $joinCustomer = false)
+    {
+        /** @var SelectQuery $query */
+        $query = (new QueryBuilder())
+            ->select('categories.id', 'categories.name')
+            ->from('categories')
+            ->where('categories.deleted = 0');
+
+        if ($joinCustomer) {
+            $query->innerJoin('categories', 'categories', 'categories.id = categories_customers.category_id');
+        }
+
+        return $query;
     }
 }

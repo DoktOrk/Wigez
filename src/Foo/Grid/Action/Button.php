@@ -8,7 +8,7 @@ use Opulence\Orm\IEntity;
 
 class Button extends Component implements IAction
 {
-    const TAG_A = 'a';
+    const TAG_A      = 'a';
     const TAG_BUTTON = 'button';
 
     /** @var IEntity */

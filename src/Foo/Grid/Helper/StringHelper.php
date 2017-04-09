@@ -8,9 +8,9 @@ class StringHelper
 {
     /**
      * @param string|IComponent $content
-     * @param string|null $tag
-     * @param array $attributes
-     * @param string $whitespace
+     * @param string|null       $tag
+     * @param array             $attributes
+     * @param string            $whitespace
      *
      * @return string
      */

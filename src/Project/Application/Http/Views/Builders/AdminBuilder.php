@@ -1,4 +1,5 @@
 <?php
+
 namespace Project\Application\Http\Views\Builders;
 
 use Opulence\Sessions\ISession;
@@ -22,10 +23,11 @@ class AdminBuilder implements IViewBuilder
     {
         $this->session = $session;
     }
+
     /**
      * @inheritdoc
      */
-    public function build(IView $view) : IView
+    public function build(IView $view): IView
     {
         $view->setVar('title', 'Admin');
         $view->setVar('username', $this->session->get(SESSION_USERNAME));

@@ -4,18 +4,18 @@ namespace Foo\Grid\Collection;
 
 use ArrayAccess;
 use Countable;
+use Foo\Grid\Component\Component;
+use Foo\Grid\Component\IComponent;
+use Foo\Grid\Helper\StringHelper;
 use InvalidArgumentException;
 use Iterator;
 use LogicException;
-use Foo\Grid\Component\Component;
-use Foo\Grid\Helper\StringHelper;
-use Foo\Grid\Component\IComponent;
 
 class BaseCollection extends Component implements ArrayAccess, Countable, Iterator, IComponent
 {
-    const ERROR_INVALID_TYPE_ARG = 'Provided value must be an object instance of "%s", type "%s" is found';
+    const ERROR_INVALID_TYPE_ARG     = 'Provided value must be an object instance of "%s", type "%s" is found';
     const ERROR_INVALID_INSTANCE_ARG = 'Provided value must be an instance of "%s", not an instance of "%s"';
-    const ERROR_INVALID_TYPE_RETURN = 'Retrieved value is not an instance of "%s"';
+    const ERROR_INVALID_TYPE_RETURN  = 'Retrieved value is not an instance of "%s"';
 
     /** @var int */
     protected $position = 0;
@@ -34,8 +34,9 @@ class BaseCollection extends Component implements ArrayAccess, Countable, Iterat
 
     /**
      * Collection constructor.
+     *
      * @param string|null $tag
-     * @param array $attributes
+     * @param array       $attributes
      */
     public function __construct(string $tag = null, $attributes = [])
     {
@@ -82,7 +83,7 @@ class BaseCollection extends Component implements ArrayAccess, Countable, Iterat
 
     /**
      * @param int|null $offset
-     * @param object $value
+     * @param object   $value
      */
     public function offsetSet($offset, $value)
     {
@@ -130,6 +131,36 @@ class BaseCollection extends Component implements ArrayAccess, Countable, Iterat
     }
 
     /**
+     * @param int    $num
+     * @param string $whitespace
+     */
+    public function setIndentation(int $num, string $whitespace = '    ')
+    {
+        foreach ($this->components as $component) {
+            $component->setIndentation($num + 1, $whitespace);
+        }
+
+        $this->indentation = str_repeat($num, $whitespace);
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString(): string
+    {
+        $list = [];
+        foreach ($this->components as $stringer) {
+            $list[] = (string)$stringer;
+        }
+
+        $content = implode("\n" . $this->indentation, $list);
+
+        $result = StringHelper::wrapInTag($content, $this->tag, $this->attributes);
+
+        return $result;
+    }
+
+    /**
      * @param object $object
      * @param string $className
      *
@@ -165,35 +196,5 @@ class BaseCollection extends Component implements ArrayAccess, Countable, Iterat
         }
 
         throw new LogicException(sprintf(static::ERROR_INVALID_TYPE_RETURN, $className));
-    }
-
-    /**
-     * @param int $num
-     * @param string $whitespace
-     */
-    public function setIndentation(int $num, string $whitespace = '    ')
-    {
-        foreach ($this->components as $component) {
-            $component->setIndentation($num + 1, $whitespace);
-        }
-
-        $this->indentation = str_repeat($num, $whitespace);
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString(): string
-    {
-        $list = [];
-        foreach ($this->components as $stringer) {
-            $list[] = (string)$stringer;
-        }
-
-        $content = implode("\n" . $this->indentation, $list);
-
-        $result = StringHelper::wrapInTag($content, $this->tag, $this->attributes);
-
-        return $result;
     }
 }

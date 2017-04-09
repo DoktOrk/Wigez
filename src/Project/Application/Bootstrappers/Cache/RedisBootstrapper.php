@@ -1,7 +1,7 @@
 <?php
+
 namespace Project\Application\Bootstrappers\Cache;
 
-use Exception;
 use Opulence\Ioc\Bootstrappers\Bootstrapper;
 use Opulence\Ioc\Bootstrappers\ILazyBootstrapper;
 use Opulence\Ioc\IContainer;
@@ -9,7 +9,6 @@ use Opulence\Redis\Redis;
 use Opulence\Redis\Types\TypeMapper;
 use Project\Application\Constant\Env;
 use Redis as Client;
-use RuntimeException;
 
 /**
  * Defines the Redis bootstrapper
@@ -19,7 +18,7 @@ class RedisBootstrapper extends Bootstrapper implements ILazyBootstrapper
     /**
      * @inheritdoc
      */
-    public function getBindings() : array
+    public function getBindings(): array
     {
         return [Redis::class, TypeMapper::class];
     }

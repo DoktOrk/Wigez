@@ -50,7 +50,7 @@ class CustomerSqlDataMapper extends SqlDataMapper implements ICustomerDataMapper
         $query = (new QueryBuilder())
             ->update('customers', 'customers', ['deleted' => [1, \PDO::PARAM_INT]])
             ->where('id = ?')
-            ->addUnnamedPlaceholderValue( $entity->getId(), \PDO::PARAM_INT);
+            ->addUnnamedPlaceholderValue($entity->getId(), \PDO::PARAM_INT);
 
         $statement = $this->writeConnection->prepare($query->getSql());
         $statement->bindValues($query->getParameters());

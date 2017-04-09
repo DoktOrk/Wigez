@@ -15,7 +15,7 @@ class UserRepo extends Repository
     {
         return $this->getFromDataMapper('getByUsername', [$username]);
     }
-    
+
     /**
      * @param string $email
      *

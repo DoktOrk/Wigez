@@ -17,7 +17,7 @@ class DefaultHasher extends Hasher
     /**
      * @inheritdoc
      */
-    public function hash(string $unhashedValue, array $options = [], string $pepper = '') : string
+    public function hash(string $unhashedValue, array $options = [], string $pepper = ''): string
     {
         if (!isset($options['cost'])) {
             $options['cost'] = self::DEFAULT_COST;
@@ -29,7 +29,7 @@ class DefaultHasher extends Hasher
     /**
      * @inheritdoc
      */
-    public function needsRehash(string $hashedValue, array $options = []) : bool
+    public function needsRehash(string $hashedValue, array $options = []): bool
     {
         if (!isset($options['cost'])) {
             $options['cost'] = self::DEFAULT_COST;

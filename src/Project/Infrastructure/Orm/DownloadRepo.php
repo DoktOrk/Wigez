@@ -17,6 +17,7 @@ class DownloadRepo extends Repository
     {
         return $this->getFromDataMapper('getByFileId', [$file->getId()]);
     }
+
     /**
      * @param Customer $customer
      *

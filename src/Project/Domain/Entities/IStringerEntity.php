@@ -1,4 +1,5 @@
 <?php
+
 namespace Project\Domain\Entities;
 
 use Opulence\Orm\IEntity;

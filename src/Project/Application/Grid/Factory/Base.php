@@ -8,12 +8,12 @@ use Opulence\Routing\Urls\UrlGenerator;
 abstract class Base implements IFactory
 {
     const ATTRIBUTE_CLASS = 'class';
-    const ATTRIBUTE_HREF = 'href';
+    const ATTRIBUTE_HREF  = 'href';
 
     const CLASS_PRIMARY = 'btn btn-primary';
-    const CLASS_DANGER = 'btn btn-danger';
+    const CLASS_DANGER  = 'btn btn-danger';
 
-    const LABEL_EDIT = 'Edit';
+    const LABEL_EDIT   = 'Edit';
     const LABEL_DELETE = 'Delete';
 
     /** @var UrlGenerator */

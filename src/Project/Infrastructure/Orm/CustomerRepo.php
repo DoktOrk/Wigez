@@ -15,7 +15,7 @@ class CustomerRepo extends Repository
     {
         return $this->getFromDataMapper('getByName', [$name]);
     }
-    
+
     /**
      * @param string $email
      *

@@ -77,7 +77,7 @@ class Download implements IStringerEntity
     /**
      * @return string
      */
-    public function __toString():string
+    public function __toString(): string
     {
         return '#' . $this->getId();
     }

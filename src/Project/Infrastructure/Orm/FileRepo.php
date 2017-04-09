@@ -14,7 +14,11 @@ class FileRepo extends Repository
      */
     public function getByCategories(array $categories)
     {
-        $categoryIds = array_map(function(Category $category){return $category->getId();}, $categories);
+        $categoryIds = array_map(
+            function (Category $category) {
+                return $category->getId();
+            }, $categories
+        );
 
         return $this->getFromDataMapper('getByCategoryIds', [$categoryIds]);
     }

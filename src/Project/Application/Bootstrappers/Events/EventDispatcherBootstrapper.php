@@ -1,4 +1,5 @@
 <?php
+
 namespace Project\Application\Bootstrappers\Events;
 
 use Opulence\Framework\Configuration\Config;
@@ -14,7 +15,7 @@ class EventDispatcherBootstrapper extends BaseBootstrapper
      *
      * @return array The event listener config
      */
-    protected function getEventListenerConfig() : array
+    protected function getEventListenerConfig(): array
     {
         return require Config::get('paths', 'config') . '/events.php';
     }

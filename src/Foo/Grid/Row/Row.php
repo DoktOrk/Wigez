@@ -31,7 +31,7 @@ class Row extends Component implements IRow
      */
     public function __construct(Cells $cells, Actions $actions = null, array $attributes = [], string $tag = self::TAG)
     {
-        $this->cells = $cells;
+        $this->cells   = $cells;
         $this->actions = $actions;
 
         parent::__construct('', $tag, $attributes);

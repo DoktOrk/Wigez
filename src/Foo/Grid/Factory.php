@@ -14,7 +14,7 @@ use Opulence\Orm\IEntity;
 class Factory
 {
     const CELL_ACTIONS_CONTENT = 'Actions';
-    const CELL_ACTIONS_GROUP = 'actions';
+    const CELL_ACTIONS_GROUP   = 'actions';
 
     /**
      * @param array        $entities

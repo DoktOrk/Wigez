@@ -1,4 +1,5 @@
 <?php
+
 namespace Project\Application\Bootstrappers\Translation;
 
 use InvalidArgumentException;
@@ -16,6 +17,7 @@ class TranslationBootstrapper extends BaseBootstrapper
      * Registers the error templates
      *
      * @param ErrorTemplateRegistry $errorTemplateRegistry The registry to register to
+     *
      * @throws InvalidArgumentException Thrown if the config was invalid
      */
     protected function registerErrorTemplates(ErrorTemplateRegistry $errorTemplateRegistry)

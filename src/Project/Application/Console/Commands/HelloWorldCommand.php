@@ -1,4 +1,5 @@
 <?php
+
 namespace Project\Application\Console\Commands;
 
 use Opulence\Console\Commands\Command;
@@ -18,12 +19,14 @@ class HelloWorldCommand extends Command
     {
         $this->setName('hello:world')
             ->setDescription('Defines an example console command')
-            ->addOption(new Option(
-                'yell',
-                'y',
-                OptionTypes::NO_VALUE,
-                'Whether or not to yell'
-            ));
+            ->addOption(
+                new Option(
+                    'yell',
+                    'y',
+                    OptionTypes::NO_VALUE,
+                    'Whether or not to yell'
+                )
+            );
     }
 
     /**

@@ -16,24 +16,20 @@ class File extends ValidatorFactory
 
         $validator
             ->field('id')
-            ->integer()
-        ;
+            ->integer();
 
         $validator
             ->field('description')
-            ->required()
-        ;
+            ->required();
 
         $validator
             ->field('file')
-            ->required()
-        ;
+            ->required();
 
         $validator
             ->field('category')
             ->integer()
-            ->required()
-        ;
+            ->required();
 
         return $validator;
     }

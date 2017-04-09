@@ -1,4 +1,5 @@
 <?php
+
 namespace Project\Application\Bootstrappers\Console\Commands;
 
 use Exception;
@@ -17,7 +18,7 @@ class CommandsBootstrapper extends Bootstrapper
      * Sets the console commands from this project
      *
      * @param CommandCollection $commandCollection The commands to add to
-     * @param IContainer $container The dependency injection container
+     * @param IContainer        $container         The dependency injection container
      */
     public function run(CommandCollection $commandCollection, IContainer $container)
     {

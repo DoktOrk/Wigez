@@ -2,8 +2,8 @@
 
 namespace Foo\Grid\Cell;
 
-use Foo\Grid\Component\IComponent;
 use Foo\Grid\Component\Component;
+use Foo\Grid\Component\IComponent;
 
 class Cell extends Component implements ICell
 {
@@ -15,9 +15,9 @@ class Cell extends Component implements ICell
 
     /**
      * @param string|IComponent $content
-     * @param string $group
-     * @param array $attributes
-     * @param string $tag
+     * @param string            $group
+     * @param array             $attributes
+     * @param string            $tag
      */
     public function __construct(string $content, string $group, array $attributes = [], string $tag = self::BODY)
     {

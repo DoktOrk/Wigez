@@ -33,10 +33,10 @@ class Pagination extends Component implements IPagination
     protected $buttons;
 
     /**
-     * @param int $from
-     * @param int $pageSize
-     * @param int $totalCount
-     * @param int $maxNumButtons
+     * @param int   $from
+     * @param int   $pageSize
+     * @param int   $totalCount
+     * @param int   $maxNumButtons
      * @param array $pageSizes
      * @param array $attributes
      */
@@ -48,13 +48,13 @@ class Pagination extends Component implements IPagination
         $pageSizes = [10, 50, 200],
         $attributes = []
     ) {
-        $this->from = $from;
-        $this->pageSize = $pageSize;
-        $this->totalCount = $totalCount;
-        $this->pageSizes = $pageSizes;
+        $this->from        = $from;
+        $this->pageSize    = $pageSize;
+        $this->totalCount  = $totalCount;
+        $this->pageSizes   = $pageSizes;
         $this->numberCount = $numberCount;
 
-        $this->to = min($this->totalCount, $this->from + $this->pageSize - 1);
+        $this->to      = min($this->totalCount, $this->from + $this->pageSize - 1);
         $this->buttons = new Actions();
 
         parent::__construct('', 'div', $attributes);
@@ -76,8 +76,8 @@ class Pagination extends Component implements IPagination
     public function getMinPageNumber()
     {
         $currentPage = (int)floor($this->from / $this->pageSize);
-        $minPage = (int)($currentPage - floor($this->numberCount / 2));
-        $result = (int)max($minPage, 0) + 1;
+        $minPage     = (int)($currentPage - floor($this->numberCount / 2));
+        $result      = (int)max($minPage, 0) + 1;
 
         return $result;
     }
@@ -88,8 +88,8 @@ class Pagination extends Component implements IPagination
     public function getMaxPageNumber()
     {
         $currentPage = (int)floor($this->from / $this->pageSize);
-        $maxPage = (int)($currentPage + floor($this->numberCount / 2) + 1);
-        $result = (int)min($maxPage, floor($this->totalCount / $this->pageSize));
+        $maxPage     = (int)($currentPage + floor($this->numberCount / 2) + 1);
+        $result      = (int)min($maxPage, floor($this->totalCount / $this->pageSize));
 
         return $result;
     }

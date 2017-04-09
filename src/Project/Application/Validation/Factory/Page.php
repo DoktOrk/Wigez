@@ -16,17 +16,14 @@ class Page extends ValidatorFactory
 
         $validator
             ->field('id')
-            ->integer()
-        ;
+            ->integer();
 
         $validator
             ->field('title')
-            ->required()
-        ;
+            ->required();
 
         $validator
-            ->field('body')
-        ;
+            ->field('body');
 
         return $validator;
     }

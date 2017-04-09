@@ -1,4 +1,5 @@
 <?php
+
 namespace Project\Application\Http\Views\Builders;
 
 use Opulence\Views\Factories\IViewBuilder;
@@ -12,7 +13,7 @@ class LoginBuilder implements IViewBuilder
     /**
      * @inheritdoc
      */
-    public function build(IView $view) : IView
+    public function build(IView $view): IView
     {
         $view->setVar('title', 'Login');
 

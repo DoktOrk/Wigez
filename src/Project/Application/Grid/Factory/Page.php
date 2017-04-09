@@ -71,7 +71,7 @@ class Page extends Base
             static::ATTRIBUTE_HREF  => ROUTE_PAGES_DELETE,
         ];
 
-        $cellActions = new Actions();
+        $cellActions   = new Actions();
         $cellActions[] = new Button(
             static::LABEL_EDIT,
             Button::TAG_A,

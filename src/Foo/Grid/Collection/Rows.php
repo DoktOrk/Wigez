@@ -2,9 +2,9 @@
 
 namespace Foo\Grid\Collection;
 
+use Foo\Grid\Row\IRow;
 use InvalidArgumentException;
 use LogicException;
-use Foo\Grid\Row\IRow;
 
 class Rows extends BaseCollection
 {
@@ -13,7 +13,7 @@ class Rows extends BaseCollection
 
     /**
      * @param string|null $tag
-     * @param array $attributes
+     * @param array       $attributes
      */
     public function __construct(string $tag = null, $attributes = [])
     {
@@ -38,7 +38,7 @@ class Rows extends BaseCollection
 
     /**
      * @param int|null $offset
-     * @param IRow $value
+     * @param IRow     $value
      *
      * @throws InvalidArgumentException
      */

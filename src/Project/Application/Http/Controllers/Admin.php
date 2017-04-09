@@ -1,4 +1,5 @@
 <?php
+
 namespace Project\Application\Http\Controllers;
 
 use Opulence\Http\Responses\Response;
@@ -11,7 +12,7 @@ class Admin extends Controller
      *
      * @return Response
      */
-    public function showDashboardPage() : Response
+    public function showDashboardPage(): Response
     {
         $this->view = $this->viewFactory->createView('contents/admin/dashboard');
 
