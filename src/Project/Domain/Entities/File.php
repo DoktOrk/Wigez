@@ -15,6 +15,12 @@ class File implements IStringerEntity
     protected $file;
 
     /** @var string */
+    protected $oldFile;
+
+    /** @var string */
+    protected $filename;
+
+    /** @var string */
     protected $description;
 
     /** @var DateTime */
@@ -26,6 +32,7 @@ class File implements IStringerEntity
     /**
      * @param int           $id
      * @param string        $file
+     * @param string        $filename
      * @param string        $description
      * @param Category|null $category
      * @param DateTime      $uploadedAt
@@ -33,12 +40,15 @@ class File implements IStringerEntity
     public function __construct(
         int $id,
         string $file,
+        string $filename,
         string $description,
         Category $category = null,
         DateTime $uploadedAt = null
     ) {
         $this->id          = $id;
         $this->file        = $file;
+        $this->oldFile     = $file;
+        $this->filename    = $filename;
         $this->description = $description;
         $this->category    = $category;
         $this->uploadedAt  = $uploadedAt ?: new DateTime();
@@ -76,6 +86,42 @@ class File implements IStringerEntity
     public function setFile(string $file): File
     {
         $this->file = $file;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOldFile(): string
+    {
+        return $this->oldFile;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFileUploaded(): bool
+    {
+        return $this->oldFile !== $this->file;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFilename(): string
+    {
+        return $this->filename;
+    }
+
+    /**
+     * @param string $file
+     *
+     * @return File
+     */
+    public function setFilename(string $filename): File
+    {
+        $this->filename = $filename;
 
         return $this;
     }

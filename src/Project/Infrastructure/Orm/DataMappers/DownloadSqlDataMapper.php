@@ -146,7 +146,7 @@ class DownloadSqlDataMapper extends SqlDataMapper implements IDownloadDataMapper
      */
     protected function loadEntity(array $hash)
     {
-        $file     = new File(0, $hash['file_name'], '');
+        $file     = new File(0, $hash['file'], $hash['filename'], '');
         $customer = new Customer(0, $hash['customer_name'], '', [], '', 0);
 
         return new Entity(
@@ -169,7 +169,8 @@ class DownloadSqlDataMapper extends SqlDataMapper implements IDownloadDataMapper
                 'file_downloads.file_id',
                 'file_downloads.customer_id',
                 'file_downloads.downloaded_at',
-                'files.file AS file_name',
+                'files.file AS file',
+                'files.filename AS filename',
                 'customers.name AS customer_name'
             )
             ->from('file_downloads')

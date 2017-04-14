@@ -27,7 +27,8 @@
     "monolog/monolog": "1.22.0",
     "opulence/opulence": "1.0.*",
     "phpunit/phpunit": "^6.1",
-    "filp/whoops": "^2.1"
+    "filp/whoops": "^2.1",
+    "league/flysystem": "^1.0"
   },
   "require-dev": {
   },

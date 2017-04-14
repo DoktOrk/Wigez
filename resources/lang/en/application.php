@@ -19,6 +19,7 @@ return [
     'fileCategory'            => 'Category',
     'fileDescription'         => 'Description',
     'fileFile'                => 'File',
+    'fileFilename'            => 'Filename',
     'fileId'                  => 'Id',
     'fileUploadedAt'          => 'Uploaded At',
     'files'                   => 'Files',

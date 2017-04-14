@@ -68,23 +68,11 @@ class Page extends Base
             static::ATTRIBUTE_HREF  => ROUTE_PAGES_EDIT,
         ];
 
-        $deleteAttributes = [
-            static::ATTRIBUTE_CLASS => static::CLASS_DANGER,
-            static::ATTRIBUTE_HREF  => ROUTE_PAGES_DELETE,
-        ];
-
         $cellActions   = new Actions();
         $cellActions[] = new Button(
             static::LABEL_EDIT,
             Button::TAG_A,
             $editAttributes,
-            $attributeCallbacks,
-            $this->translator
-        );
-        $cellActions[] = new Button(
-            static::LABEL_DELETE,
-            Button::TAG_A,
-            $deleteAttributes,
             $attributeCallbacks,
             $this->translator
         );

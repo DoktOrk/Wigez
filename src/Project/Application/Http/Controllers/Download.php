@@ -3,6 +3,7 @@
 namespace Project\Application\Http\Controllers;
 
 use Foo\I18n\ITranslator;
+use Foo\Session\FlashService;
 use Opulence\Http\Responses\Response;
 use Opulence\Routing\Urls\UrlGenerator;
 use Opulence\Sessions\ISession;
@@ -38,15 +39,17 @@ class Download extends CrudAbstract
      * @param GridFactory  $gridFactory
      * @param Repo         $repo
      * @param ITranslator  $translator
+     * @param FlashService $flashService
      */
     public function __construct(
         ISession $session,
         UrlGenerator $urlGenerator,
         GridFactory $gridFactory,
         Repo $repo,
-        ITranslator $translator
+        ITranslator $translator,
+        FlashService $flashService
     ) {
-        parent::__construct($session, $urlGenerator, $gridFactory, $repo, $translator);
+        parent::__construct($session, $urlGenerator, $gridFactory, $repo, $translator, $flashService);
     }
 
     /**

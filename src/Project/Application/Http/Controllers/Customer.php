@@ -3,6 +3,7 @@
 namespace Project\Application\Http\Controllers;
 
 use Foo\I18n\ITranslator;
+use Foo\Session\FlashService;
 use Opulence\Http\Responses\Response;
 use Opulence\Orm\IUnitOfWork;
 use Opulence\Routing\Urls\UrlGenerator;
@@ -52,6 +53,7 @@ class Customer extends CrudAbstract
      * @param GridFactory      $gridFactory
      * @param Repo             $repo
      * @param ITranslator      $translator
+     * @param FlashService     $flashService
      * @param ValidatorFactory $validatorFactory
      * @param IUnitOfWork      $unitOfWork
      * @param CategoryRepo     $categoryRepo
@@ -62,13 +64,23 @@ class Customer extends CrudAbstract
         GridFactory $gridFactory,
         Repo $repo,
         ITranslator $translator,
+        FlashService $flashService,
         ValidatorFactory $validatorFactory,
         IUnitOfWork $unitOfWork,
         CategoryRepo $categoryRepo
     ) {
         $this->categoryRepo = $categoryRepo;
 
-        parent::__construct($session, $urlGenerator, $gridFactory, $repo, $translator, $validatorFactory, $unitOfWork);
+        parent::__construct(
+            $session,
+            $urlGenerator,
+            $gridFactory,
+            $repo,
+            $translator,
+            $flashService,
+            $validatorFactory,
+            $unitOfWork
+        );
     }
 
     /**

@@ -12,6 +12,9 @@ class Authorization extends Session
 {
     const CUSTOMER_PATH = '/admin/file';
 
+    /** @var array */
+    protected $allowedPaths = [self::CUSTOMER_PATH];
+
     // $next consists of the next middleware in the pipeline
     public function handle(Request $request, Closure $next): Response
     {
@@ -19,7 +22,7 @@ class Authorization extends Session
             return $next($request);
         }
 
-        if ($request->getPath() === static::CUSTOMER_PATH) {
+        if (in_array($request->getPath(), $this->allowedPaths, true)) {
             return $next($request);
         }
 

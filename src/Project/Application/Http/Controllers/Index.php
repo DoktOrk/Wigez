@@ -2,24 +2,27 @@
 
 namespace Project\Application\Http\Controllers;
 
+use Foo\Session\FlashService;
 use Opulence\Http\Responses\Response;
-use Opulence\Routing\Controller;
 use Project\Infrastructure\Orm\PageRepo as Repo;
 
 /**
  * Defines an example controller
  */
-class Index extends Controller
+class Index extends ControllerAbstract
 {
     /** @var Repo */
     protected $repo;
 
     /**
-     * @param Repo $repo
+     * @param Repo         $repo
+     * @param FlashService $flashService
      */
-    public function __construct(Repo $repo)
+    public function __construct(Repo $repo, FlashService $flashService)
     {
         $this->repo = $repo;
+
+        parent::__construct($flashService);
     }
 
     /**
@@ -31,6 +34,7 @@ class Index extends Controller
     {
         $this->view = $this->viewFactory->createView('contents/website/home');
 
+        $this->view->setVar('title', '');
         $this->view->setVar('header', $this->repo->getById(1));
         $this->view->setVar('ugyvitel', $this->repo->getById(2));
         $this->view->setVar('importExport', $this->repo->getById(3));
@@ -38,6 +42,7 @@ class Index extends Controller
         $this->view->setVar('szoftver', $this->repo->getById(5));
         $this->view->setVar('kapcsolat', $this->repo->getById(6));
 
-        return new Response($this->viewCompiler->compile($this->view));
+        return $this->createResponse('');
     }
+
 }

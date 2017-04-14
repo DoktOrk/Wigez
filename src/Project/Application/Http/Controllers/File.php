@@ -2,7 +2,9 @@
 
 namespace Project\Application\Http\Controllers;
 
+use Foo\Filesystem\Uploader\Uploader;
 use Foo\I18n\ITranslator;
+use Foo\Session\FlashService;
 use Opulence\Http\Responses\Response;
 use Opulence\Orm\IUnitOfWork;
 use Opulence\Routing\Urls\UrlGenerator;
@@ -25,6 +27,9 @@ class File extends CrudAbstract
 
     const VAR_CATEGORIES = 'categories';
 
+    const FILE_FILE     = 'file';
+    const FILE_FILENAME = 'filename';
+
     /** @var GridFactory */
     protected $gridFactory;
 
@@ -40,6 +45,12 @@ class File extends CrudAbstract
     /** @var CategoryRepo */
     protected $categoryRepo;
 
+    /** @var Uploader */
+    protected $uploader;
+
+    /** @var Entity */
+    protected $entity;
+
     /**
      * Helps DIC figure out the dependencies
      *
@@ -48,9 +59,11 @@ class File extends CrudAbstract
      * @param GridFactory      $gridFactory
      * @param Repo             $repo
      * @param ITranslator      $translator
+     * @param FlashService     $flashService
      * @param ValidatorFactory $validatorFactory
      * @param IUnitOfWork      $unitOfWork
      * @param CategoryRepo     $categoryRepo
+     * @param Uploader         $uploader
      */
     public function __construct(
         ISession $session,
@@ -58,13 +71,25 @@ class File extends CrudAbstract
         GridFactory $gridFactory,
         Repo $repo,
         ITranslator $translator,
+        FlashService $flashService,
         ValidatorFactory $validatorFactory,
         IUnitOfWork $unitOfWork,
-        CategoryRepo $categoryRepo
+        CategoryRepo $categoryRepo,
+        Uploader $uploader
     ) {
         $this->categoryRepo = $categoryRepo;
+        $this->uploader     = $uploader;
 
-        parent::__construct($session, $urlGenerator, $gridFactory, $repo, $translator, $validatorFactory, $unitOfWork);
+        parent::__construct(
+            $session,
+            $urlGenerator,
+            $gridFactory,
+            $repo,
+            $translator,
+            $flashService,
+            $validatorFactory,
+            $unitOfWork
+        );
     }
 
     /**
@@ -80,19 +105,46 @@ class File extends CrudAbstract
     }
 
     /**
+     * @return bool
+     */
+    protected function validateForm(): bool
+    {
+        $this->upload();
+
+        $postData = $this->getPostData();
+
+        $this->validator = $this->validatorFactory->createValidator();
+
+        $this->uploader->field(static::FILE_FILE);
+
+        $isValid = $this->validator->isValid($postData) && $this->uploader->isValid($_FILES);
+
+        return $isValid;
+    }
+
+    public function upload()
+    {
+        $this->uploader->field(static::FILE_FILE);
+
+        if (!$this->uploader->isValid($_FILES)) {
+            $this->flashService->mergeErrorMessages($this->uploader->getErrors()->getAll());
+        }
+    }
+
+    /**
      * @return Response
      */
     public function showLimited(): Response
     {
         $pages = $this->repo->getByCategories($this->session->get(SESSION_CATEGORIES));
         $grid  = $this->gridFactory->createGrid($pages);
+        $title = sprintf(static::TITLE_SHOW, static::ENTITY_PLURAL);
 
         $this->view = $this->viewFactory->createView(static::VIEW_LIST);
-        $this->view->setVar(static::VAR_TITLE, sprintf(static::TITLE_SHOW, static::ENTITY_PLURAL));
         $this->view->setVar(static::VAR_GRID, $grid);
         $this->view->setVar(static::VAR_CREATE_URL, $this->getCreateUrl());
 
-        return $this->createResponse();
+        return $this->createResponse($title);
     }
 
     /**
@@ -126,29 +178,57 @@ class File extends CrudAbstract
     {
         $id          = (int)$id;
         $file        = '';
+        $filename    = '';
         $description = '';
         $uploadedAt  = new \DateTime();
         $category    = new Category(0, '');
 
-        $entity = new Entity($id, $file, $description, $category, $uploadedAt);
+        $entity = new Entity($id, $file, $filename, $description, $category, $uploadedAt);
 
         return $entity;
     }
 
+    /**
+     * @param Entity $entity
+     *
+     * @return Entity
+     */
     public function fillEntity(IStringerEntity $entity): IStringerEntity
     {
-        $post = $this->request->getPost()->getAll();
+        $post = $this->getPostData();
 
-        $file        = (string)$post['file'];
         $description = (string)$post['description'];
-        $category    = $this->categoryRepo->getById($post['category']);
+
+        /** @var Category $category */
+        $category = $this->categoryRepo->getById($post['category']);
 
         $entity
-            ->setFile($file)
             ->setDescription($description)
             ->setCategory($category);
 
+        if (array_key_exists(static::FILE_FILE, $post)) {
+            $entity
+                ->setFile((string)$post[static::FILE_FILE])
+                ->setFilename((string)$post[static::FILE_FILENAME]);
+        }
+
         return $entity;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getPostData(): array
+    {
+        $postData = $this->request->getPost()->getAll();
+
+        $uploadInfo = $this->uploader->getUploadInfo(static::FILE_FILE);
+        if ($uploadInfo->isValid()) {
+            $postData[static::FILE_FILE]     = $uploadInfo->getFileName();
+            $postData[static::FILE_FILENAME] = $uploadInfo->getRawName();
+        }
+
+        return $postData;
     }
 
     /*
@@ -156,9 +236,52 @@ class File extends CrudAbstract
      *
      * @return Entity
      */
-
     protected function addAllCategories()
     {
         $this->viewVarsExtra[static::VAR_CATEGORIES] = $this->categoryRepo->getAll();
+    }
+
+    public function commitUpdate()
+    {
+        if ($this->entity->isFileUploaded()) {
+            $this->deleteFile();
+        }
+
+        $this->unitOfWork->commit();
+
+        $this->uploadFile();
+    }
+
+    public function commitCreate()
+    {
+        $this->unitOfWork->commit();
+
+        $this->uploadFile();
+    }
+
+    public function commitDelete()
+    {
+        $this->entity = $this->retrieveEntity($this->entity->getId());
+
+        $this->deleteFile();
+
+        $this->unitOfWork->commit();
+    }
+
+    private function uploadFile()
+    {
+        if ($this->uploader->persistAll()) {
+            $this->flashService->mergeSuccessMessages($this->uploader->getSuccessMessages());
+        } else {
+            $this->flashService->mergeErrorMessages($this->uploader->getErrors()->getAll());
+        }
+    }
+
+    private function deleteFile()
+    {
+        $file = $this->entity->getOldFile();
+        if ($file) {
+            $this->uploader->delete($file, static::FILE_FILE);
+        }
     }
 }

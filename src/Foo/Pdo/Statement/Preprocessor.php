@@ -8,6 +8,11 @@ class Preprocessor implements IPreprocessor
 {
     protected $preprocessors = [];
 
+    /**
+     * Preprocessor constructor.
+     *
+     * @param IPreprocessor[] ...$preprocessors
+     */
     public function __construct(IPreprocessor ...$preprocessors)
     {
         $this->preprocessors = $preprocessors;

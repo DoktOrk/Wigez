@@ -30,5 +30,8 @@ class Env
     const ENCRYPTION_KEY = 'ENCRYPTION_KEY';
 
     const DEFAULT_LANGUAGE = 'DEFAULT_LANGUAGE';
+
+    const DIR_PRIVATE = 'DIR_PRIVATE';
+    const DIR_PUBLIC  = 'DIR_PUBLIC';
 }
 

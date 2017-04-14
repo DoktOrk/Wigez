@@ -45,8 +45,6 @@ class ValidatorBootstrapper extends BaseBootstrapper
     public function registerBindings(IContainer $container)
     {
         parent::registerBindings($container);
-
-
     }
 
     /**

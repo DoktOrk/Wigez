@@ -5,6 +5,6 @@ $(document).ready(function () {
         function () {
             alerts.remove();
         },
-        3000
+        9000
     );
 });

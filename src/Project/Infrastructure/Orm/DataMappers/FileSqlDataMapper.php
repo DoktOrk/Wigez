@@ -24,6 +24,7 @@ class FileSqlDataMapper extends ExtendedSqlDataMapper implements IFileDataMapper
                 'files',
                 [
                     'file'        => [$entity->getFile(), \PDO::PARAM_STR],
+                    'filename'    => [$entity->getFilename(), \PDO::PARAM_STR],
                     'description' => [$entity->getDescription(), \PDO::PARAM_STR],
                     'category_id' => [$entity->getCategory()->getId(), \PDO::PARAM_INT],
                     'uploaded_at' => [$entity->getUploadedAt()->format(Entity::DATE_FORMAT), \PDO::PARAM_STR],
@@ -116,6 +117,7 @@ class FileSqlDataMapper extends ExtendedSqlDataMapper implements IFileDataMapper
                 'files',
                 [
                     'file'        => [$entity->getFile(), \PDO::PARAM_STR],
+                    'filename'    => [$entity->getFilename(), \PDO::PARAM_STR],
                     'description' => [$entity->getDescription(), \PDO::PARAM_STR],
                     'uploaded_at' => [$entity->getUploadedAt()->format(Entity::DATE_FORMAT), \PDO::PARAM_STR],
                     'category_id' => [$entity->getCategory()->getId(), \PDO::PARAM_INT],
@@ -141,6 +143,7 @@ class FileSqlDataMapper extends ExtendedSqlDataMapper implements IFileDataMapper
         return new Entity(
             (int)$hash['id'],
             $hash['file'],
+            $hash['filename'],
             $hash['description'],
             $category,
             new \DateTime($hash['uploaded_at'])
@@ -157,6 +160,7 @@ class FileSqlDataMapper extends ExtendedSqlDataMapper implements IFileDataMapper
             ->select(
                 'files.id',
                 'files.file',
+                'files.filename',
                 'files.description',
                 'files.uploaded_at',
                 'categories.name',

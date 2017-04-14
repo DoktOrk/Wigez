@@ -4,14 +4,16 @@
 
 <h1>{{ $title }}</h1>
 
-<form method="post" action="{{ $route }}">
+<% include("./partials/admin/general/messages", compact("errorMessages", "successMessages")) %>
+
+<form method="post" action="{{ $route }}" enctype="multipart/form-data">
     {{! httpMethodInput($method) !}}
     {{! csrfInput() !}}
 
     <!-- File input -->
     <div class="form-group">
         <label for="file" class="control-label">{{ tr("application:fileFile") }}</label>
-        <input type="file" id="file" name="file" class="form-control" value="{{ $entity->getFile() }}">
+        <input type="file" id="file" name="file" class="form-control" value="">
         <p class="help-block">Example block-level help text here.</p>
     </div>
 

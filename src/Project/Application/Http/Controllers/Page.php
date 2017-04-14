@@ -3,6 +3,8 @@
 namespace Project\Application\Http\Controllers;
 
 use Foo\I18n\ITranslator;
+use Foo\Session\FlashService;
+use Opulence\Http\Responses\Response;
 use Opulence\Orm\IUnitOfWork;
 use Opulence\Routing\Urls\UrlGenerator;
 use Opulence\Sessions\ISession;
@@ -40,6 +42,7 @@ class Page extends CrudAbstract
      * @param GridFactory           $gridFactory
      * @param Repo                  $repo
      * @param ITranslator           $translator
+     * @param FlashService          $flashService
      * @param ValidatorFactory|null $validatorFactory
      * @param IUnitOfWork|null      $unitOfWork
      */
@@ -49,10 +52,30 @@ class Page extends CrudAbstract
         GridFactory $gridFactory,
         Repo $repo,
         ITranslator $translator,
+        FlashService $flashService,
         ValidatorFactory $validatorFactory = null,
         IUnitOfWork $unitOfWork = null
     ) {
-        parent::__construct($session, $urlGenerator, $gridFactory, $repo, $translator, $validatorFactory, $unitOfWork);
+        parent::__construct(
+            $session,
+            $urlGenerator,
+            $gridFactory,
+            $repo,
+            $translator,
+            $flashService,
+            $validatorFactory,
+            $unitOfWork
+        );
+    }
+
+    /**
+     * @return Response
+     */
+    public function show(): Response
+    {
+        $this->viewVarsExtra[static::VAR_CREATE_URL] = '';
+
+        return parent::show();
     }
 
     /**

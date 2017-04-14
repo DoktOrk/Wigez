@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Project\Application\Http\Controllers;
 
 use Foo\I18n\ITranslator;
+use Foo\Session\FlashService;
 use Opulence\Http\Responses\RedirectResponse;
 use Opulence\Http\Responses\Response;
 use Opulence\Orm\IUnitOfWork;
 use Opulence\Orm\OrmException;
 use Opulence\Orm\Repositories\IRepository;
-use Opulence\Routing\Controller;
 use Opulence\Routing\Urls\UrlGenerator;
 use Opulence\Sessions\ISession;
 use Opulence\Validation\Factories\IValidatorFactory;
@@ -16,20 +18,17 @@ use Opulence\Validation\IValidator;
 use Project\Application\Grid\Factory\IFactory;
 use Project\Domain\Entities\IStringerEntity;
 
-abstract class CrudAbstract extends Controller
+abstract class CrudAbstract extends ControllerAbstract
 {
     const VIEW_LIST = 'contents/admin/grid';
     const VIEW_FORM = 'contents/admin/form/%s';
 
-    const VAR_TITLE       = 'title';
     const VAR_GRID        = 'grid';
     const VAR_ROUTE       = 'route';
     const VAR_ENTITY      = 'entity';
     const VAR_SHOW_URL    = 'showUrl';
     const VAR_CREATE_URL  = 'createUrl';
     const VAR_METHOD      = 'method';
-    const VAR_MSG_ERROR   = 'errorMessages';
-    const VAR_MSG_SUCCESS = 'successMessages';
 
     const ENTITY_SINGULAR = '';
     const ENTITY_PLURAL   = '';
@@ -48,10 +47,15 @@ abstract class CrudAbstract extends Controller
     const METHOD_POST = 'POST';
     const METHOD_PUT  = 'PUT';
 
-    const SESSION_ERROR   = 'error';
-    const SESSION_SUCCESS = 'success';
-
     const INPUT_CONTINUE = 'continue';
+
+    const URL_NEW    = '%s-new';
+    const URL_EDIT   = '%s-edit';
+    const URL_CREATE = '%s-create';
+
+    const CREATE_SUCCESS      = 'New %s created successfully';
+    const UPDATE_SUCCESS      = 'Updated %s successfully';
+    const ENTITY_LOAD_FAILURE = 'Loading %s failed.';
 
     /** @var IFactory */
     protected $gridFactory;
@@ -74,9 +78,6 @@ abstract class CrudAbstract extends Controller
     /** @var IUnitOfWork|null */
     protected $unitOfWork = null;
 
-    /** @var array */
-    protected $viewVarsExtra = [];
-
     /** @var ISession */
     protected $session;
 
@@ -86,12 +87,16 @@ abstract class CrudAbstract extends Controller
     /** @var ITranslator */
     protected $translator;
 
+    /** @var FlashService */
+    protected $flashService;
+
     /**
      * @param ISession          $session
      * @param UrlGenerator      $urlGenerator
      * @param IFactory          $gridFactory
      * @param IRepository       $repo
      * @param ITranslator       $translator
+     * @param FlashService      $flashService
      * @param IValidatorFactory $validatorFactory
      * @param IUnitOfWork       $unitOfWork
      */
@@ -101,6 +106,7 @@ abstract class CrudAbstract extends Controller
         IFactory $gridFactory,
         IRepository $repo,
         ITranslator $translator,
+        FlashService $flashService,
         IValidatorFactory $validatorFactory = null,
         IUnitOfWork $unitOfWork = null
     ) {
@@ -108,9 +114,11 @@ abstract class CrudAbstract extends Controller
         $this->urlGenerator     = $urlGenerator;
         $this->gridFactory      = $gridFactory;
         $this->repo             = $repo;
+        $this->translator       = $translator;
         $this->validatorFactory = $validatorFactory;
         $this->unitOfWork       = $unitOfWork;
-        $this->translator       = $translator;
+
+        parent::__construct($flashService);
     }
 
     /**
@@ -123,13 +131,10 @@ abstract class CrudAbstract extends Controller
         $title = $this->translator->translate(static::TITLE_SHOW, static::ENTITY_TITLE_PLURAL);
 
         $this->view = $this->viewFactory->createView(static::VIEW_LIST);
-        $this->view->setVar(static::VAR_TITLE, $title);
         $this->view->setVar(static::VAR_GRID, $grid);
         $this->view->setVar(static::VAR_CREATE_URL, $this->getCreateUrl());
-        $this->view->setVar(static::VAR_MSG_ERROR, $this->session->get(static::SESSION_ERROR));
-        $this->view->setVar(static::VAR_MSG_SUCCESS, $this->session->get(static::SESSION_SUCCESS));
 
-        return $this->createResponse();
+        return $this->createResponse($title);
     }
 
     /**
@@ -139,19 +144,16 @@ abstract class CrudAbstract extends Controller
     {
         $this->entity = $this->createEntity();
 
-        $url   = $this->urlGenerator->createFromName(sprintf('%s-new', static::ENTITY_PLURAL));
+        $url   = $this->urlGenerator->createFromName(sprintf(static::URL_NEW, static::ENTITY_PLURAL));
         $title = $this->translator->translate(static::TITLE_NEW, static::ENTITY_TITLE_SINGULAR);
 
         $this->view = $this->viewFactory->createView(sprintf(static::VIEW_FORM, static::ENTITY_SINGULAR));
-        $this->view->setVar(static::VAR_TITLE, $title);
         $this->view->setVar(static::VAR_ROUTE, $url);
         $this->view->setVar(static::VAR_ENTITY, $this->entity);
         $this->view->setVar(static::VAR_SHOW_URL, $this->getShowUrl());
         $this->view->setVar(static::VAR_METHOD, static::METHOD_POST);
-        $this->view->setVar(static::VAR_MSG_ERROR, $this->session->get(static::SESSION_ERROR));
-        $this->view->setVar(static::VAR_MSG_SUCCESS, $this->session->get(static::SESSION_SUCCESS));
 
-        return $this->createResponse();
+        return $this->createResponse($title);
     }
 
     /**
@@ -162,7 +164,7 @@ abstract class CrudAbstract extends Controller
         $isValid = $this->validateForm();
 
         if (!$isValid) {
-            $this->session->flash(static::SESSION_ERROR, $this->validator->getErrors()->getAll());
+            $this->flashService->mergeErrorMessages($this->validator->getErrors()->getAll());
 
             return $this->redirectToList(static::IS_EDIT_CREATE);
         }
@@ -172,9 +174,9 @@ abstract class CrudAbstract extends Controller
 
         $this->repo->add($this->entity);
 
-        $this->unitOfWork->commit();
+        $this->commitCreate();
 
-        $this->session->flash(static::SESSION_SUCCESS, ['Create okay']);
+        $this->flashService->mergeSuccessMessages([sprintf(static::CREATE_SUCCESS, static::ENTITY_SINGULAR)]);
 
         return $this->redirectToList(static::IS_EDIT_CREATE);
     }
@@ -193,15 +195,12 @@ abstract class CrudAbstract extends Controller
         $title = $this->translator->translate(static::TITLE_EDIT, static::ENTITY_TITLE_SINGULAR, $entityName);
 
         $this->view = $this->viewFactory->createView(sprintf(static::VIEW_FORM, static::ENTITY_SINGULAR));
-        $this->view->setVar(static::VAR_TITLE, $title);
         $this->view->setVar(static::VAR_ROUTE, $this->getEditUrl($id));
         $this->view->setVar(static::VAR_ENTITY, $this->entity);
         $this->view->setVar(static::VAR_SHOW_URL, $this->getShowUrl());
         $this->view->setVar(static::VAR_METHOD, static::METHOD_PUT);
-        $this->view->setVar(static::VAR_MSG_ERROR, $this->session->get(static::SESSION_ERROR));
-        $this->view->setVar(static::VAR_MSG_SUCCESS, $this->session->get(static::SESSION_SUCCESS));
 
-        return $this->createResponse();
+        return $this->createResponse($title);
     }
 
     /**
@@ -214,7 +213,7 @@ abstract class CrudAbstract extends Controller
         $isValid = $this->validateForm();
 
         if (!$isValid) {
-            $this->session->flash(static::SESSION_ERROR, $this->validator->getErrors()->getAll());
+            $this->flashService->mergeErrorMessages($this->validator->getErrors()->getAll());
 
             return $this->redirectToList(static::IS_EDIT_UPDATE, $id);
         }
@@ -222,25 +221,12 @@ abstract class CrudAbstract extends Controller
         $this->entity = $this->retrieveEntity($id);
         $this->fillEntity($this->entity);
 
-        $this->unitOfWork->commit();
+        $this->commitUpdate();
 
-        $this->session->flash(static::SESSION_SUCCESS, ['Update okay']);
+        $this->flashService->mergeSuccessMessages([sprintf(static::UPDATE_SUCCESS, static::ENTITY_SINGULAR)]);
 
         return $this->redirectToList(static::IS_EDIT_UPDATE, $id);
     }
-
-    /**
-     * @return Response
-     */
-    public function createResponse(): Response
-    {
-        foreach ($this->viewVarsExtra as $viewKey => $viewValue) {
-            $this->view->setVar($viewKey, $viewValue);
-        }
-
-        return new Response($this->viewCompiler->compile($this->view));
-    }
-
     /**
      * @param int|null $id
      *
@@ -252,7 +238,7 @@ abstract class CrudAbstract extends Controller
             /** @var IStringerEntity $entity */
             $this->entity = $this->repo->getById($id);
         } catch (OrmException $e) {
-            $this->session->flash(static::SESSION_ERROR, ['Not loaded.']);
+            $this->flashService->mergeErrorMessages([sprintf(static::ENTITY_LOAD_FAILURE, static::ENTITY_SINGULAR)]);
 
             return $this->createEntity();
         }
@@ -270,7 +256,7 @@ abstract class CrudAbstract extends Controller
         $this->entity = $this->createEntity($id);
 
         $this->repo->delete($this->entity);
-        $this->unitOfWork->commit();
+        $this->commitDelete();
 
         return $this->redirectToList(static::IS_EDIT_DELETE);
     }
@@ -280,13 +266,23 @@ abstract class CrudAbstract extends Controller
      */
     protected function validateForm(): bool
     {
-        $postData = $this->request->getPost()->getAll();
+        $postData = $this->getPostData();
 
         $this->validator = $this->validatorFactory->createValidator();
 
         $isValid = $this->validator->isValid($postData);
 
         return $isValid;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getPostData(): array
+    {
+        $postData = $this->request->getPost()->getAll();
+
+        return $postData;
     }
 
     /**
@@ -297,21 +293,32 @@ abstract class CrudAbstract extends Controller
      */
     protected function redirectToList(bool $isEdit, int $id = null): Response
     {
-        $continue = (int)$this->request->getInput(static::INPUT_CONTINUE);
+        $continue = (bool)$this->request->getInput(static::INPUT_CONTINUE);
 
-        $url = '';
-        if (!$continue) {
-            $url = $this->getShowUrl();
-        } elseif ($isEdit) {
-            $url = $this->getEditUrl($id);
-        } else {
-            $url = $this->getCreateUrl();
-        }
+        $url = $this->getUrl($continue, $isEdit, $id);
 
         $response = new RedirectResponse($url);
         $response->send();
 
         return $response;
+    }
+
+    /**
+     * @param bool     $continue
+     * @param bool     $isEdit
+     * @param int|null $id
+     *
+     * @return string
+     */
+    protected function getUrl(bool $continue, bool $isEdit, int $id = null)
+    {
+        if (!$continue) {
+            return $this->getShowUrl();
+        } elseif ($isEdit) {
+            return $this->getEditUrl($id);
+        }
+
+        return $this->getCreateUrl();
     }
 
     /**
@@ -331,7 +338,7 @@ abstract class CrudAbstract extends Controller
      */
     protected function getEditUrl(int $id): string
     {
-        $url = $this->urlGenerator->createFromName(sprintf('%s-edit', static::ENTITY_PLURAL), $id);
+        $url = $this->urlGenerator->createFromName(sprintf(static::URL_EDIT, static::ENTITY_PLURAL), $id);
 
         return $url;
     }
@@ -341,9 +348,24 @@ abstract class CrudAbstract extends Controller
      */
     protected function getCreateUrl(): string
     {
-        $url = $this->urlGenerator->createFromName(sprintf('%s-create', static::ENTITY_PLURAL));
+        $url = $this->urlGenerator->createFromName(sprintf(static::URL_CREATE, static::ENTITY_PLURAL));
 
         return $url;
+    }
+
+    public function commitUpdate()
+    {
+        $this->unitOfWork->commit();
+    }
+
+    public function commitCreate()
+    {
+        $this->unitOfWork->commit();
+    }
+
+    public function commitDelete()
+    {
+        $this->unitOfWork->commit();
     }
 
     /**

@@ -23,8 +23,7 @@ class File extends ValidatorFactory
             ->required();
 
         $validator
-            ->field('file')
-            ->required();
+            ->field('file');
 
         $validator
             ->field('category')

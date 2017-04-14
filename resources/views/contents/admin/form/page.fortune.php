@@ -4,6 +4,8 @@
 
 <h1>{{ $title }}</h1>
 
+<% include("./partials/admin/general/messages", compact("errorMessages", "successMessages")) %>
+
 <form method="post" action="{{ $route }}">
     {{! httpMethodInput($method) !}}
     {{! csrfInput() !}}
