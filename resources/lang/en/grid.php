@@ -6,4 +6,5 @@ return [
     'deleteItem' => 'Delete',
     'editItem'   => 'Edit',
     'titleList'  => '%s',
+    'download'   => 'Download',
 ];

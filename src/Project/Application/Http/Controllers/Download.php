@@ -87,7 +87,7 @@ class Download extends CrudAbstract
      */
     protected function createEntity(int $id = null): IStringerEntity
     {
-        $file     = new File(0, '', '');
+        $file     = new File(0, '', '', '');
         $customer = new Customer(0, '', '', [], '');
 
         return new Entity(0, $file, $customer, new \DateTime());

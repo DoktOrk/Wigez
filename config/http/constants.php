@@ -44,10 +44,12 @@ const ROUTE_FILES = 'files';
 const ROUTE_FILES_NEW = 'files-new';
 const ROUTE_FILES_EDIT = 'files-edit';
 const ROUTE_FILES_DELETE = 'files-delete';
+const ROUTE_FILES_DOWNLOAD = 'files-download';
 const PATH_FILES = '/file';
 const PATH_FILES_NEW = '/file/new';
 const PATH_FILES_EDIT = '/file/:id/edit';
 const PATH_FILES_DELETE = '/file/:id/delete';
+const PATH_FILES_DOWNLOAD = '/file/:id/download';
 
 const ROUTE_DOWNLOADS = 'downloads';
 const PATH_DOWNLOADS = '/download';

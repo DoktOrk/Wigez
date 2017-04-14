@@ -2,6 +2,8 @@
 
 namespace Project\Application\Grid\Factory;
 
+use Foo\Grid\Action\Button;
+use Foo\Grid\Collection\Actions;
 use Foo\Grid\Factory;
 use Foo\Grid\Grid;
 use Opulence\Routing\Router;

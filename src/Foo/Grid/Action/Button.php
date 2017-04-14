@@ -12,6 +12,13 @@ class Button extends Component implements IAction
     const TAG_A      = 'a';
     const TAG_BUTTON = 'button';
 
+    const CLASS_PRIMARY = 'btn btn-primary';
+    const CLASS_DANGER  = 'btn btn-danger';
+    const CLASS_SUCCESS = 'btn btn-success';
+    const CLASS_INFO    = 'btn btn-info';
+    const CLASS_WARNING = 'btn btn-warning';
+    const CLASS_LINK    = 'btn btn-link';
+
     /** @var IEntity */
     protected $entity;
 

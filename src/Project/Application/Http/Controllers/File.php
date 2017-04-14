@@ -5,7 +5,10 @@ namespace Project\Application\Http\Controllers;
 use Foo\Filesystem\Uploader\Uploader;
 use Foo\I18n\ITranslator;
 use Foo\Session\FlashService;
+use Opulence\Http\Responses\RedirectResponse;
 use Opulence\Http\Responses\Response;
+use Opulence\Http\Responses\ResponseHeaders;
+use Opulence\Http\Responses\StreamResponse;
 use Opulence\Orm\IUnitOfWork;
 use Opulence\Routing\Urls\UrlGenerator;
 use Opulence\Sessions\ISession;
@@ -283,5 +286,52 @@ class File extends CrudAbstract
         if ($file) {
             $this->uploader->delete($file, static::FILE_FILE);
         }
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return Response
+     */
+    public function download(int $id): Response
+    {
+        /** @var Entity $entity */
+        $entity = $this->retrieveEntity($id);
+
+        $stream = $this->uploader->getStream($entity->getFile(), static::FILE_FILE);
+
+        if (!$stream) {
+            return new RedirectResponse($this->getShowUrl());
+        }
+
+//        $headers = [
+//            'Content-type' => 'application/octet-stream',
+//            'Content-Transfer-Encoding' => '',
+//            'Content-disposition' => 'attachment; filename=' . $entity->getFilename(),
+//        ];
+//
+//        return new StreamResponse(
+//            function() use($stream) {
+//                while(!feof($stream)) {
+//                    print(@fread($stream, 1024*8));
+//                    ob_flush();
+//                    flush();
+//                }
+//            },
+//            ResponseHeaders::HTTP_OK,
+//            $headers
+//        );
+
+        header('Content-type: application/octet-stream');
+        header('Content-Transfer-Encoding: Binary');
+        header('Content-disposition: attachment; filename=' . $entity->getFilename());
+
+        while(!feof($stream)) {
+            print(@fread($stream, 1024*8));
+            ob_flush();
+            flush();
+        }
+
+        exit();
     }
 }

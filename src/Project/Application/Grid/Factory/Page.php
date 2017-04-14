@@ -64,7 +64,7 @@ class Page extends Base
         $attributeCallbacks = $this->getAttributeCallbacks();
 
         $editAttributes = [
-            static::ATTRIBUTE_CLASS => static::CLASS_PRIMARY,
+            static::ATTRIBUTE_CLASS => Button::CLASS_PRIMARY,
             static::ATTRIBUTE_HREF  => ROUTE_PAGES_EDIT,
         ];
 

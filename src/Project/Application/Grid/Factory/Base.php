@@ -2,8 +2,6 @@
 
 namespace Project\Application\Grid\Factory;
 
-use Foo\Grid\Action\Button;
-use Foo\Grid\Collection\Actions;
 use Foo\I18n\ITranslator;
 use Opulence\Orm\IEntity;
 use Opulence\Routing\Urls\UrlGenerator;
@@ -12,9 +10,6 @@ abstract class Base implements IFactory
 {
     const ATTRIBUTE_CLASS = 'class';
     const ATTRIBUTE_HREF  = 'href';
-
-    const CLASS_PRIMARY = 'btn btn-primary';
-    const CLASS_DANGER  = 'btn btn-danger';
 
     const LABEL_EDIT   = 'grid:editItem';
     const LABEL_DELETE = 'grid:deleteItem';

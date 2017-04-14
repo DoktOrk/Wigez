@@ -52,5 +52,7 @@ $router->group(['controllerNamespace' => 'Project\\Application\\Http\\Controller
                 $router->put("/${path}/:id/edit", "${controllerName}@update", [OPTIONS_NAME => "${route}-update"]);
                 $router->get("/${path}/:id/delete", "${controllerName}@delete", [OPTIONS_NAME => "${route}-delete"]);
             }
+
+            $router->get("/files/:id/download", "File@download", [OPTIONS_NAME => "files-download"]);
         });
 });

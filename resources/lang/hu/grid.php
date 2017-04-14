@@ -6,4 +6,5 @@ return [
     'deleteItem' => 'Törlés',
     'editItem'   => 'Szerkesztés',
     'titleList'  => '%s',
+    'download'   => 'Letöltés',
 ];

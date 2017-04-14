@@ -70,12 +70,12 @@ class Category extends Base
         $attributeCallbacks = $this->getAttributeCallbacks();
 
         $editAttributes = [
-            static::ATTRIBUTE_CLASS => static::CLASS_PRIMARY,
+            static::ATTRIBUTE_CLASS => Button::CLASS_PRIMARY,
             static::ATTRIBUTE_HREF  => ROUTE_CATEGORIES_EDIT,
         ];
 
         $deleteAttributes = [
-            static::ATTRIBUTE_CLASS => static::CLASS_DANGER,
+            static::ATTRIBUTE_CLASS => Button::CLASS_DANGER,
             static::ATTRIBUTE_HREF  => ROUTE_CATEGORIES_DELETE,
         ];
 

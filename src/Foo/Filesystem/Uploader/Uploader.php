@@ -258,14 +258,61 @@ class Uploader extends Validator implements IValidator
      */
     public function delete(string $fileName, string $key)
     {
-        $uploadInfo = $this->getUploadInfo($key);
-        $dirName    = $this->getDirName($uploadInfo);
-        $path       = $dirName . $fileName;
+        $path = $this->getPath($fileName, $key);
 
         if (!$this->persister->has($path)) {
             return false;
         }
 
         return $this->persister->delete($path);
+    }
+
+    /**
+     * @param string $fileName
+     * @param string $key
+     *
+     * @return string
+     */
+    public function getContent(string $fileName, string $key)
+    {
+        $path = $this->getPath($fileName, $key);
+
+        if (!$this->persister->has($path)) {
+            return '';
+        }
+
+        return $this->persister->read($path);
+    }
+
+    /**
+     * @param string $fileName
+     * @param string $key
+     *
+     * @return bool|false|resource
+     */
+    public function getStream(string $fileName, string $key)
+    {
+        $path = $this->getPath($fileName, $key);
+
+        if (!$this->persister->has($path)) {
+            return false;
+        }
+
+        return $this->persister->readStream($path);
+    }
+
+    /**
+     * @param string $fileName
+     * @param string $key
+     *
+     * @return string
+     */
+    protected function getPath(string $fileName, string $key)
+    {
+        $uploadInfo = $this->getUploadInfo($key);
+        $dirName    = $this->getDirName($uploadInfo);
+        $path       = $dirName . $fileName;
+
+        return $path;
     }
 }

@@ -28,6 +28,8 @@ class File extends Base
     const GETTER_CATEGORY    = 'getCategory';
     const GETTER_DESCRIPTION = 'getDescription';
 
+    const LABEL_DOWNLOAD = 'grid:download';
+
     /** @var array */
     protected $headerAttributes = [];
 
@@ -95,13 +97,18 @@ class File extends Base
         $attributeCallbacks = $this->getAttributeCallbacks();
 
         $editAttributes = [
-            static::ATTRIBUTE_CLASS => static::CLASS_PRIMARY,
+            static::ATTRIBUTE_CLASS => Button::CLASS_PRIMARY,
             static::ATTRIBUTE_HREF  => ROUTE_FILES_EDIT,
         ];
 
         $deleteAttributes = [
-            static::ATTRIBUTE_CLASS => static::CLASS_DANGER,
+            static::ATTRIBUTE_CLASS => Button::CLASS_DANGER,
             static::ATTRIBUTE_HREF  => ROUTE_FILES_DELETE,
+        ];
+
+        $downloadAttributes = [
+            static::ATTRIBUTE_CLASS => Button::CLASS_SUCCESS,
+            static::ATTRIBUTE_HREF  => ROUTE_FILES_DOWNLOAD,
         ];
 
         $cellActions   = new Actions();
@@ -116,6 +123,13 @@ class File extends Base
             static::LABEL_DELETE,
             Button::TAG_A,
             $deleteAttributes,
+            $attributeCallbacks,
+            $this->translator
+        );
+        $cellActions[] = new Button(
+            static::LABEL_DOWNLOAD,
+            Button::TAG_A,
+            $downloadAttributes,
             $attributeCallbacks,
             $this->translator
         );
