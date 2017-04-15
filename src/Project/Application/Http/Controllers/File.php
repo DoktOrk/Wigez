@@ -54,6 +54,9 @@ class File extends CrudAbstract
     /** @var Entity */
     protected $entity;
 
+    /** @var bool */
+    protected $hasFileUpload = false;
+
     /**
      * Helps DIC figure out the dependencies
      *
@@ -93,6 +96,8 @@ class File extends CrudAbstract
             $validatorFactory,
             $unitOfWork
         );
+
+        $this->hasFileUpload = $_FILES && !empty($_FILES[static::FILE_FILE]['name']);
     }
 
     /**
@@ -120,13 +125,27 @@ class File extends CrudAbstract
 
         $this->uploader->field(static::FILE_FILE);
 
-        $isValid = $this->validator->isValid($postData) && $this->uploader->isValid($_FILES);
+        $isValid = $this->validator->isValid($postData);
+
+        if (!$isValid) {
+            return false;
+        }
+
+        if (!$this->hasFileUpload) {
+            return true;
+        }
+
+        $isValid = $this->uploader->isValid($_FILES);
 
         return $isValid;
     }
 
     public function upload()
     {
+        if (!$this->hasFileUpload) {
+            return;
+        }
+
         $this->uploader->field(static::FILE_FILE);
 
         if (!$this->uploader->isValid($_FILES)) {
@@ -224,6 +243,9 @@ class File extends CrudAbstract
     protected function getPostData(): array
     {
         $postData = $this->request->getPost()->getAll();
+        if (!$this->hasFileUpload) {
+            return $postData;
+        }
 
         $uploadInfo = $this->uploader->getUploadInfo(static::FILE_FILE);
         if ($uploadInfo->isValid()) {
@@ -304,33 +326,33 @@ class File extends CrudAbstract
             return new RedirectResponse($this->getShowUrl());
         }
 
-//        $headers = [
-//            'Content-type' => 'application/octet-stream',
-//            'Content-Transfer-Encoding' => 'Binary',
-//            'Content-disposition' => 'attachment; filename=' . $entity->getFilename(),
-//        ];
-//
+        $filename = $entity->getFilename();
+
+        $callback = function() use($stream) {
+            while(!feof($stream)) {
+                print(@fread($stream, 1024*8));
+                ob_flush();
+                flush();
+            }
+        };
+
+        $headers = [
+            'Content-type'              => 'application/octet-stream',
+            'Content-Transfer-Encoding' => 'Binary',
+            'Content-disposition'       => 'attachment; filename=' . $filename,
+        ];
+
 //        return new StreamResponse(
-//            function() use($stream) {
-//                while(!feof($stream)) {
-//                    print(@fread($stream, 1024*8));
-//                    ob_flush();
-//                    flush();
-//                }
-//            },
+//            $callback,
 //            ResponseHeaders::HTTP_OK,
 //            $headers
 //        );
 
-        header('Content-type: application/octet-stream');
-        header('Content-Transfer-Encoding: Binary');
-        header('Content-disposition: attachment; filename=' . $entity->getFilename());
-
-        while(!feof($stream)) {
-            print(@fread($stream, 1024*8));
-            ob_flush();
-            flush();
+        foreach ($headers as $key => $value) {
+            header("$key: $value");
         }
+
+        $callback();
 
         exit();
     }

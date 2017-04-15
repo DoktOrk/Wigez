@@ -26,6 +26,9 @@ class File extends ValidatorFactory
             ->field('file');
 
         $validator
+            ->field('filename');
+
+        $validator
             ->field('category')
             ->integer()
             ->required();
