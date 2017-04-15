@@ -5,6 +5,7 @@ namespace Project\Application\Http\Controllers;
 use Foo\Session\FlashService;
 use Opulence\Http\Responses\Response;
 use Opulence\Http\Responses\ResponseHeaders;
+use Opulence\Orm\OrmException;
 use Project\Infrastructure\Orm\PageRepo as Repo;
 
 /**
@@ -37,12 +38,22 @@ class Index extends ControllerAbstract
     {
         $this->view = $this->viewFactory->createView('contents/website/home');
 
-        $this->view->setVar('title', '');
-        $this->view->setVar('ugyvitel', $this->repo->getById(2));
-        $this->view->setVar('importExport', $this->repo->getById(3));
-        $this->view->setVar('tanacsadas', $this->repo->getById(4));
-        $this->view->setVar('szoftver', $this->repo->getById(5));
-        $this->view->setVar('kapcsolat', $this->repo->getById(6));
+        $this->view->setVar('title', 'Ecomp.co.hu');
+
+        $this->view->setVar('ugyvitel', '');
+        $this->view->setVar('importExport', '');
+        $this->view->setVar('tanacsadas', '');
+        $this->view->setVar('szoftver', '');
+        $this->view->setVar('kapcsolat', '');
+
+        try {
+            $this->view->setVar('ugyvitel', $this->repo->getByTitle('Ügyvitel')->getBody());
+            $this->view->setVar('importExport', $this->repo->getByTitle('Import-Export')->getBody());
+            $this->view->setVar('tanacsadas', $this->repo->getByTitle('Tanácsadás')->getBody());
+            $this->view->setVar('szoftver', $this->repo->getByTitle('Szoftver')->getBody());
+            $this->view->setVar('kapcsolat', $this->repo->getByTitle('Kapcsolat')->getBody());
+        } catch (OrmException $e) {
+        }
 
         return $this->createResponse('');
     }

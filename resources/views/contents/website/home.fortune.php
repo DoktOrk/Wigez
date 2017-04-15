@@ -37,7 +37,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-5 col-sm-6">
-                {{! $ugyvitel->getBody() !}}
+                {{! $ugyvitel !}}
             </div>
             <div class="col-lg-5 col-lg-offset-2 col-sm-6 bordered-img-container">
                 <img class="img-responsive" src="/website/img/pexels-photo-237675.jpeg" alt="Ügyvitel">
@@ -52,7 +52,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6">
-                {{! $importExport->getBody() !}}
+                {{! $importExport !}}
             </div>
             <div class="col-lg-5 col-sm-pull-6 col-sm-6 bordered-img-container">
                 <img class="img-responsive" src="/website/img/pexels-photo-122164.jpeg" alt="Import-Export">
@@ -67,7 +67,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-5 col-sm-6">
-                {{! $tanacsadas->getBody() !}}
+                {{! $tanacsadas !}}
             </div>
             <div class="col-lg-5 col-lg-offset-2 col-sm-6 bordered-img-container">
                 <img class="img-responsive" src="/website/img/pexels-photo-288477.jpeg" alt="Tanácsadás">
@@ -82,7 +82,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6">
-                {{! $szoftver->getBody() !}}
+                {{! $szoftver !}}
             </div>
             <div class="col-lg-5 col-sm-pull-6 col-sm-6 bordered-img-container">
                 <img class="img-responsive" src="/website/img/pexels-photo-173983.jpeg" alt="Szoftver">
@@ -97,7 +97,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-3 col-sm-6">
-                {{! $kapcsolat->getBody() !}}
+                {{! $kapcsolat !}}
             </div>
             <div class="col-lg-7 col-lg-offset-2 col-sm-6 map-container">
                 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2695.5043252294363!2d19.037624316274556!3d47.49956880335754!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4741dc3d0dbf9fd1%3A0x5b446ebcd0645d53!2sBudapest%2C+F%C5%91+u.+8%2C+1011+Hungary!5e0!3m2!1sen!2sde!4v1491256323930" width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
