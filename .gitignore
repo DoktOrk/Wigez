@@ -6,3 +6,5 @@ phpunit.phar
 vendor/
 .env.*.php
 !config/environment/.env.example.php
+
+private
