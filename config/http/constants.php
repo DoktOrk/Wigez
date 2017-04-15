@@ -14,6 +14,11 @@ const PATH_DASHBOARD = '/dashboard';
 const PATH_API = '/api';
 const PATH_NOPE = '/nope';
 
+const ROUTE_API_CSV = 'api-csv';
+const ROUTE_API_DOWNLOAD = 'api-download';
+const PATH_API_CSV = '/files/csv';
+const PATH_API_DOWNLOAD = '/files/:id/delete';
+
 const ROUTE_PAGES = 'pages';
 const ROUTE_PAGES_NEW = 'pages-new';
 const ROUTE_PAGES_EDIT = 'pages-edit';
@@ -52,10 +57,14 @@ const PATH_FILES_EDIT = '/file/:id/edit';
 const PATH_FILES_DELETE = '/file/:id/delete';
 const PATH_FILES_DOWNLOAD = '/file/:id/download';
 
-const ROUTE_API_CSV = 'api-csv';
-const ROUTE_API_DOWNLOAD = 'api-download';
-const PATH_API_CSV = '/csv';
-const PATH_API_DOWNLOAD = '/download';
+const ROUTE_USERS = 'users';
+const ROUTE_USERS_NEW = 'users-new';
+const ROUTE_USERS_EDIT = 'users-edit';
+const ROUTE_USERS_DELETE = 'users-delete';
+const PATH_USERS = '/user';
+const PATH_USERS_NEW = '/user/new';
+const PATH_USERS_EDIT = '/user/:id/edit';
+const PATH_USERS_DELETE = '/user/:id/delete';
 
 const ROUTE_DOWNLOADS = 'downloads';
 const PATH_DOWNLOADS = '/download';

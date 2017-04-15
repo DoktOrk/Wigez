@@ -55,7 +55,7 @@
                 <a href="javascript:void(0);"
                    class="btn btn-sm pmd-btn-fab pmd-btn-flat pmd-ripple-effect pull-left margin-r8 pmd-sidebar-toggle"><i
                             class="material-icons">menu</i></a>
-                <a href="{{! route('dashboard') !}}l" class="navbar-brand">
+                <a href="{{! route('dashboard') !}}" class="navbar-brand">
                     Logo
                 </a>
             </div>
@@ -85,6 +85,7 @@
             <li><a class="pmd-ripple-effect" href="{{! route('pages') !}}" tabindex="-1"><i class="material-icons media-left media-middle">text_format</i> <span class="media-body">{{ tr("application:pages") }}</span></a></li>
             <li><a class="pmd-ripple-effect" href="{{! route('categories') !}}" tabindex="-1"><i class="material-icons media-left media-middle">group_work</i> <span class="media-body">{{ tr("application:categories") }}</span></a></li>
             <li><a class="pmd-ripple-effect" href="{{! route('customers') !}}" tabindex="-1"><i class="material-icons media-left media-middle">person</i> <span class="media-body">{{ tr("application:customers") }}</span></a></li>
+            <li><a class="pmd-ripple-effect" href="{{! route('users') !}}" tabindex="-1"><i class="material-icons media-left media-middle">person</i> <span class="media-body">{{ tr("application:users") }}</span></a></li>
             <% endif %>
             <li><a class="pmd-ripple-effect" href="{{! route('files') !}}" tabindex="-1"><i class="material-icons media-left media-middle">attachment</i> <span class="media-body">{{ tr("application:files") }}</span></a></li>
             <% if ($is_user) %>

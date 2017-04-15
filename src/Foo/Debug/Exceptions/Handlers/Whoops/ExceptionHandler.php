@@ -5,7 +5,6 @@ namespace Foo\Debug\Exceptions\Handlers\Whoops;
 use Monolog\Logger;
 use Opulence\Debug\Exceptions\Handlers\IExceptionHandler;
 use Throwable;
-use Whoops\Run;
 
 class ExceptionHandler implements IExceptionHandler
 {
@@ -42,7 +41,12 @@ class ExceptionHandler implements IExceptionHandler
     {
         $whoops = $this->whoopsRenderer->getRun();
 
-        $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
+        if (php_sapi_name() === 'cli') {
+            $whoops->pushHandler(new \Whoops\Handler\PlainTextHandler($this->logger));
+        } else {
+            $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler());
+        }
+
         $whoops->register();
     }
 }

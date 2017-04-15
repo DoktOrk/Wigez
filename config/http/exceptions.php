@@ -12,7 +12,9 @@ use Whoops\Run;
  *
  * The last parameter lists any exceptions you do not want to log
  */
-$exceptionRenderer = new ExceptionRenderer(new Run(), Environment::getVar('ENV_NAME') == Environment::DEVELOPMENT);
+$isDevelopment = Environment::getVar('ENV_NAME') === Environment::DEVELOPMENT;
+
+$exceptionRenderer = new ExceptionRenderer(new Run(), $isDevelopment);
 
 return new ExceptionHandler(
     $logger,

@@ -17,11 +17,11 @@ class ExceptionRenderer extends Http\ExceptionRenderer implements Http\IExceptio
      *
      * @param Run $run
      */
-    public function __construct(Run $run)
+    public function __construct(Run $run, bool $inDevelopmentEnvironment = false)
     {
         $this->run = $run;
 
-        parent::__construct();
+        parent::__construct($inDevelopmentEnvironment);
     }
 
     /**

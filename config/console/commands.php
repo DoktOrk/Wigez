@@ -1,5 +1,5 @@
 <?php
-use Project\Application\Console\Commands\HelloWorldCommand;
+use Project\Application\Console\Commands\CustomerHashPasswordsCommand;
 
 /**
  * ----------------------------------------------------------
@@ -7,5 +7,5 @@ use Project\Application\Console\Commands\HelloWorldCommand;
  * ----------------------------------------------------------
  */
 return [
-    HelloWorldCommand::class
+    CustomerHashPasswordsCommand::class
 ];

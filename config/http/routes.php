@@ -17,8 +17,8 @@ $router->group(['controllerNamespace' => 'Project\\Application\\Http\\Controller
     /** @see \Project\Application\Http\Controllers\Index::nope() */
     $router->get(PATH_NOPE, 'Index@nope', [OPTIONS_NAME => ROUTE_NOPE]);
 
-    /** @see \Project\Application\Http\Controllers\User::loginPage() */
-    $router->get(PATH_LOGIN, 'User@loginPage', [OPTIONS_NAME => ROUTE_LOGIN]);
+    /** @see \Project\Application\Http\Controllers\User::loginForm() */
+    $router->get(PATH_LOGIN, 'User@loginForm', [OPTIONS_NAME => ROUTE_LOGIN]);
     /** @see \Project\Application\Http\Controllers\User::login() */
     $router->post(PATH_LOGIN, 'User@login', [OPTIONS_NAME => ROUTE_LOGIN_POST]);
     /** @see \Project\Application\Http\Controllers\User::logout() */
@@ -55,9 +55,10 @@ $router->group(['controllerNamespace' => 'Project\\Application\\Http\\Controller
                 'customers'  => 'Customer',
                 'files'      => 'File',
                 'downloads'  => 'Download',
+                'users'      => 'User',
             ];
 
-            $router->get(PATH_DASHBOARD, 'Admin@showDashboardPage', [OPTIONS_NAME => ROUTE_DASHBOARD]);
+            $router->get(PATH_DASHBOARD, 'Admin@showDashboard', [OPTIONS_NAME => ROUTE_DASHBOARD]);
 
             foreach ($entities as $route => $controllerName) {
                 $path = strtolower($controllerName);
