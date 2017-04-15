@@ -2,8 +2,6 @@
 
 use Opulence\Routing\Router;
 
-require_once __DIR__ . '/../../config/http/constants.php';
-
 /**
  * ----------------------------------------------------------
  * Create all of the routes for the HTTP kernel
