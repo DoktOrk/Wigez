@@ -306,7 +306,7 @@ class File extends CrudAbstract
 
 //        $headers = [
 //            'Content-type' => 'application/octet-stream',
-//            'Content-Transfer-Encoding' => '',
+//            'Content-Transfer-Encoding' => 'Binary',
 //            'Content-disposition' => 'attachment; filename=' . $entity->getFilename(),
 //        ];
 //
