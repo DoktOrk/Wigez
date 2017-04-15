@@ -12,15 +12,15 @@ require_once __DIR__ . '/../../config/http/constants.php';
  * @var Router $router
  */
 $router->group(['controllerNamespace' => 'Project\\Application\\Http\\Controllers'], function (Router $router) {
-    /** @see \Project\Application\Http\Controllers\Index::showHomePage() */
-    $router->get(PATH_HOME, 'Index@showHomePage', [OPTIONS_NAME => ROUTE_HOME]);
+    /** @see \Project\Application\Http\Controllers\Index::homePage() */
+    $router->get(PATH_HOME, 'Index@homePage', [OPTIONS_NAME => ROUTE_HOME]);
 
-    /** @see \Project\Application\Http\Controllers\User::showLoginPage() */
-    $router->get(PATH_LOGIN, 'User@showLoginPage', [OPTIONS_NAME => ROUTE_LOGIN]);
-    /** @see \Project\Application\Http\Controllers\User::loginAction() */
-    $router->post(PATH_LOGIN, 'User@loginAction', [OPTIONS_NAME => ROUTE_LOGIN_POST]);
-    /** @see \Project\Application\Http\Controllers\User::logoutAction() */
-    $router->get(PATH_LOGOUT, 'User@logoutAction', [OPTIONS_NAME => ROUTE_LOGOUT]);
+    /** @see \Project\Application\Http\Controllers\User::loginPage() */
+    $router->get(PATH_LOGIN, 'User@loginPage', [OPTIONS_NAME => ROUTE_LOGIN]);
+    /** @see \Project\Application\Http\Controllers\User::login() */
+    $router->post(PATH_LOGIN, 'User@login', [OPTIONS_NAME => ROUTE_LOGIN_POST]);
+    /** @see \Project\Application\Http\Controllers\User::logout() */
+    $router->get(PATH_LOGOUT, 'User@logout', [OPTIONS_NAME => ROUTE_LOGOUT]);
 
     $router->group(
         [

@@ -30,7 +30,7 @@ class Index extends ControllerAbstract
      *
      * @return Response The response
      */
-    public function showHomePage(): Response
+    public function homePage(): Response
     {
         $this->view = $this->viewFactory->createView('contents/website/home');
 

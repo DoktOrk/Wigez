@@ -57,7 +57,7 @@ class User extends Controller
      *
      * @return Response
      */
-    public function showLoginPage(): Response
+    public function loginForm(): Response
     {
         if ($this->session->get(static::POST_USERNAME)) {
             $response = new RedirectResponse(PATH_ADMIN . PATH_DASHBOARD);
@@ -75,7 +75,7 @@ class User extends Controller
      *
      * @return Response
      */
-    public function loginAction(): Response
+    public function login(): Response
     {
         $username = (string)$this->request->getInput(static::POST_USERNAME);
         $password = (string)$this->request->getInput(static::POST_PASSWORD);
@@ -108,7 +108,7 @@ class User extends Controller
      *
      * @return Response
      */
-    public function logoutAction(): Response
+    public function logout(): Response
     {
         $this->session->flush();
 
