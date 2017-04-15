@@ -9,8 +9,22 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="intro-message">
-                    <h1>{{ $header->getTitle() }}</h1>
-                    {{! $header->getBody() !}}
+                    <h1>Ecomp.co.hu</h1>
+                    <p><hr class="intro-divider"></p>
+                    <ul class="list-inline intro-social-buttons">
+                        <li>
+                            <a href="#ugyvitel" class="btn btn-default btn-lg"><em><em><em><em><i class="fa fa-euro fa-fw"></i></em></em></em></em> <span class="network-name">Ügyvitel</span></a>
+                        </li>
+                        <li>
+                            <a href="#import-export" class="btn btn-default btn-lg"><em><em><em><em><i class="fa fa-truck fa-fw"></i></em></em></em></em> <span class="network-name">Import-Export</span></a>
+                        </li>
+                        <li>
+                            <a href="#tanacsadas" class="btn btn-default btn-lg"><em><em><em><em><i class="fa fa-comments fa-fw"></i></em></em></em></em> <span class="network-name">Tanácsadás</span></a>
+                        </li>
+                        <li>
+                            <a href="#szoftver" class="btn btn-default btn-lg"><em><em><em><em><i class="fa fa-laptop fa-fw"></i></em></em></em></em> <span class="network-name">Szoftver</span></a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>

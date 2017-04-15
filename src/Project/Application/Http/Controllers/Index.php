@@ -38,7 +38,6 @@ class Index extends ControllerAbstract
         $this->view = $this->viewFactory->createView('contents/website/home');
 
         $this->view->setVar('title', '');
-        $this->view->setVar('header', $this->repo->getById(1));
         $this->view->setVar('ugyvitel', $this->repo->getById(2));
         $this->view->setVar('importExport', $this->repo->getById(3));
         $this->view->setVar('tanacsadas', $this->repo->getById(4));
