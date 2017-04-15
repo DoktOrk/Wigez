@@ -34,9 +34,11 @@ $router->group(['controllerNamespace' => 'Project\\Application\\Http\\Controller
         ],
         function (Router $router) {
             /** @see \Project\Application\Http\Controllers\File::csv() */
-            $router->get(PATH_API_CSV, 'File@csv', [OPTIONS_NAME => ROUTE_API_CSV]);
+            $router->multiple(['GET', 'POST'], PATH_API_CSV, 'File@csv', [OPTIONS_NAME => ROUTE_API_CSV]);
             /** @see \Project\Application\Http\Controllers\File::download() */
-            $router->get(PATH_API_DOWNLOAD, 'File@download', [OPTIONS_NAME => ROUTE_API_DOWNLOAD]);
+            $router->multiple(['GET', 'POST'], PATH_API_DOWNLOAD, 'File@download', [OPTIONS_NAME => ROUTE_API_DOWNLOAD]);
+            /** @see \Project\Application\Http\Controllers\File::downloadInput() */
+            $router->multiple(['GET', 'POST'], PATH_API_DOWNLOAD_INPUT, 'File@downloadInput', [OPTIONS_NAME => ROUTE_API_DOWNLOAD_INPUT]);
         }
     );
 

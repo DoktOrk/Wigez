@@ -354,6 +354,16 @@ class File extends CrudAbstract
     }
 
     /**
+     * @return Response
+     */
+    public function downloadInput(): Response
+    {
+        $id = $this->request->getInput('id');
+
+        return $this->download($id);
+    }
+
+    /**
      * Shows a random number on this page
      *
      * @return Response

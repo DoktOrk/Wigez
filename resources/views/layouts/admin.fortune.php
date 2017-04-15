@@ -84,13 +84,14 @@
             <% if ($is_user) %>
             <li><a class="pmd-ripple-effect" href="{{! route('pages') !}}" tabindex="-1"><i class="material-icons media-left media-middle">text_format</i> <span class="media-body">{{ tr("application:pages") }}</span></a></li>
             <li><a class="pmd-ripple-effect" href="{{! route('categories') !}}" tabindex="-1"><i class="material-icons media-left media-middle">group_work</i> <span class="media-body">{{ tr("application:categories") }}</span></a></li>
-            <li><a class="pmd-ripple-effect" href="{{! route('customers') !}}" tabindex="-1"><i class="material-icons media-left media-middle">person</i> <span class="media-body">{{ tr("application:customers") }}</span></a></li>
-            <li><a class="pmd-ripple-effect" href="{{! route('users') !}}" tabindex="-1"><i class="material-icons media-left media-middle">person</i> <span class="media-body">{{ tr("application:users") }}</span></a></li>
+            <li><a class="pmd-ripple-effect" href="{{! route('customers') !}}" tabindex="-1"><i class="material-icons media-left media-middle">people</i> <span class="media-body">{{ tr("application:customers") }}</span></a></li>
             <% endif %>
-            <li><a class="pmd-ripple-effect" href="{{! route('files') !}}" tabindex="-1"><i class="material-icons media-left media-middle">attachment</i> <span class="media-body">{{ tr("application:files") }}</span></a></li>
+            <li><a class="pmd-ripple-effect" href="{{! route('files') !}}" tabindex="-1"><i class="material-icons media-left media-middle">file_upload</i> <span class="media-body">{{ tr("application:files") }}</span></a></li>
             <% if ($is_user) %>
             <li><a class="pmd-ripple-effect" href="{{! route('downloads') !}}" tabindex="-1"><i class="material-icons media-left media-middle">file_download</i> <span class="media-body">{{ tr("application:downloads") }}</span></a></li>
+            <li><a class="pmd-ripple-effect" href="{{! route('users') !}}" tabindex="-1"><i class="material-icons media-left media-middle">verified_user</i> <span class="media-body">{{ tr("application:users") }}</span></a></li>
             <% endif %>
+            <li><a class="pmd-ripple-effect" href="{{! route('logout') !}}" tabindex="-1"><i class="material-icons media-left media-middle">settings_power</i> <span class="media-body">{{ tr("application:logout") }}</span></a></li>
         </ul>
     </aside><!-- End Left sidebar -->
     <!-- Sidebar Ends -->
