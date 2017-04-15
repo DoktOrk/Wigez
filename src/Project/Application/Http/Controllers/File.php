@@ -313,7 +313,7 @@ class File extends CrudAbstract
     /**
      * @param int $id
      *
-     * @return Response
+     * @return StreamResponse
      */
     public function download(int $id): Response
     {
@@ -342,18 +342,66 @@ class File extends CrudAbstract
             'Content-disposition'       => 'attachment; filename=' . $filename,
         ];
 
-//        return new StreamResponse(
-//            $callback,
-//            ResponseHeaders::HTTP_OK,
-//            $headers
-//        );
+        foreach ($headers as $key => $value) {
+            header("$key: $value");
+        }
+
+        return new StreamResponse(
+            $callback,
+            ResponseHeaders::HTTP_OK,
+            $headers
+        );
+    }
+
+    /**
+     * Shows a random number on this page
+     *
+     * @return Response
+     */
+    public function csv(): Response
+    {
+        $files = $this->repo->getAll();
+
+        $content = [];
+        /** @var Entity $file */
+        foreach ($files as $file) {
+            $content[] = sprintf(
+                '%s,%s,%s,%s,%s',
+                $file->getId(),
+                $this->csvText($file->getUploadedAt()->format('Y-m-d H:i:s')),
+                $this->csvText($file->getFilename()),
+                $this->uploader->getSize($file->getFile(), static::FILE_FILE),
+                $this->csvText($file->getDescription())
+            );
+        }
+
+        $content = implode(PHP_EOL, $content);
+
+        $headers = [
+            'Expires'             => '0',
+            'Cache-Control'       => 'private',
+            'Pragma'              => 'cache',
+            'Content-type'        => 'text/csv, windows-1250',
+            'Content-Disposition' => 'attachment; filename="version.txt"',
+            'Content-Length'      => strlen($content),
+        ];
 
         foreach ($headers as $key => $value) {
             header("$key: $value");
         }
 
-        $callback();
+        return new Response($content, ResponseHeaders::HTTP_OK, $headers);
+    }
 
-        exit();
+    /**
+     * @param string $string
+     *
+     * @return string
+     */
+    protected function csvText(string $string)
+    {
+        $string = str_replace('"', "'", $string);
+
+        return '"' . trim($string, "'") . '"';
     }
 }

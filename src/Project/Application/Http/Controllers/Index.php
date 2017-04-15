@@ -4,6 +4,7 @@ namespace Project\Application\Http\Controllers;
 
 use Foo\Session\FlashService;
 use Opulence\Http\Responses\Response;
+use Opulence\Http\Responses\ResponseHeaders;
 use Project\Infrastructure\Orm\PageRepo as Repo;
 
 /**
@@ -11,6 +12,8 @@ use Project\Infrastructure\Orm\PageRepo as Repo;
  */
 class Index extends ControllerAbstract
 {
+    const NOPE = 'nope.';
+
     /** @var Repo */
     protected $repo;
 
@@ -45,4 +48,13 @@ class Index extends ControllerAbstract
         return $this->createResponse('');
     }
 
+    /**
+     * Shows the homepage
+     *
+     * @return Response The response
+     */
+    public function nope(): Response
+    {
+        return new Response(static::NOPE, ResponseHeaders::HTTP_FORBIDDEN);
+    }
 }

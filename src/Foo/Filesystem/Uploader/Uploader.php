@@ -315,4 +315,21 @@ class Uploader extends Validator implements IValidator
 
         return $path;
     }
+
+    /**
+     * @param string $fileName
+     * @param string $key
+     *
+     * @return int
+     */
+    public function getSize(string $fileName, string $key)
+    {
+        $path = $this->getPath($fileName, $key);
+
+        if (!$this->persister->has($path)) {
+            return 0;
+        }
+
+        return $this->persister->getSize($path);
+    }
 }
