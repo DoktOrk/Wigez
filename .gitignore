@@ -8,3 +8,7 @@ vendor/
 !config/environment/.env.example.php
 
 private
+.env
+docker/datadir
+!docker/datadir/.gitkeep
+tmp/
