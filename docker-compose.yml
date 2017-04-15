@@ -1,0 +1,50 @@
+version: '2'
+services:
+  db:
+    image: percona:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=
+      - MYSQL_DATABASE=
+      - MYSQL_USER=
+      - MYSQL_PASSWORD=
+      - MYSQL_PORT=3306
+    volumes:
+      - ./docker/datadir:/var/lib/mysql
+      - ./docker/init-dump:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+
+  memcached:
+    image: memcached:alpine
+
+  php:
+    build: ./docker/image/php
+    environment:
+      - DB_HOST=db
+      - DB_USER=
+      - DB_NAME=
+      - DB_PASSWORD=
+      - DB_PORT=
+      - ENV_NAME=production
+      - MEMCACHED_HOST=memcached
+      - MEMCACHED_PORT=11211
+    links:
+      - db
+      - memcached
+    volumes:
+      - .:/website
+      - ./docker/conf/php/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
+      - ./docker/conf/php/conf.d/zzz_custom.ini:/usr/local/etc/php/conf.d/zzz_custom.ini:ro
+    working_dir: /website
+
+  web:
+    image: nginx
+    links:
+      - php
+    ports:
+      - "80:80"
+    volumes:
+      - .:/website
+      - ./docker/conf/nginx/conf.d:/etc/nginx/conf.d:ro
+    working_dir: /website
+
