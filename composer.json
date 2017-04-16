@@ -1,6 +1,6 @@
 {
-  "name": "peteraba/opulence-propeller-website",
-  "description": "An example project that uses the Opulence framework",
+  "name": "peteraba/wigez",
+  "description": "PHP based website for those who don't need a blog, a full blown CMS, but a static site just want do.",
   "authors": [
     {
       "name": "Peter Aba",
@@ -16,9 +16,9 @@
         "src/Foo",
         "tests/src/Foo"
       ],
-      "Project\\": [
-        "src/Project",
-        "tests/src/Project"
+      "Wigez\\": [
+        "src/Wigez",
+        "tests/src/Wigez"
       ]
     }
   },
@@ -26,11 +26,11 @@
     "php": "^7.0",
     "monolog/monolog": "1.22.0",
     "opulence/opulence": "1.0.*",
-    "phpunit/phpunit": "^6.1",
     "filp/whoops": "^2.1",
     "league/flysystem": "^1.0"
   },
   "require-dev": {
+    "phpunit/phpunit": "^6.1",
   },
   "extra": {
     "branch-alias": {
