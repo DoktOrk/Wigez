@@ -28,7 +28,9 @@ class I18nBootstrapper extends Bootstrapper
     {
         $translator = new Translator();
 
-        $lang = getenv(\Project\Application\Constant\Env::DEFAULT_LANGUAGE);
+
+
+        $lang = getenv(\Wigez\Application\Constant\Env::DEFAULT_LANGUAGE);
         $dir  = sprintf('%s/%s/', Config::get('paths', 'resources.lang'), $lang);
 
         foreach (scandir($dir) as $file) {

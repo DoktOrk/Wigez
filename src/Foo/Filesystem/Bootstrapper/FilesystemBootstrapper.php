@@ -9,7 +9,7 @@ use Opulence\Ioc\Bootstrappers\Bootstrapper;
 use Opulence\Ioc\Bootstrappers\ILazyBootstrapper;
 use Opulence\Ioc\IContainer;
 use Opulence\Validation\Rules\Factories\RulesFactory;
-use Project\Application\Constant\Env;
+use Wigez\Application\Constant\Env;
 
 class FilesystemBootstrapper extends Bootstrapper implements ILazyBootstrapper
 {

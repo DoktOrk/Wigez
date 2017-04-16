@@ -7,7 +7,8 @@
         timeoutForSmallTests="1"
         timeoutForMediumTests="10"
         timeoutForLargeTests="60"
-        verbose="true">
+        verbose="true"
+        bootstrap="./start.php">
     <testsuites>
         <testsuite name="Foo Suite">
             <directory>./unit</directory>

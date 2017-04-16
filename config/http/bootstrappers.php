@@ -2,10 +2,10 @@
 
 use Opulence\Framework\Http\Bootstrappers\RequestBootstrapper;
 use Opulence\Framework\Views\Bootstrappers\ViewFunctionsBootstrapper;
-use Project\Application\Bootstrappers\Http\Routing\RouterBootstrapper;
-use Project\Application\Bootstrappers\Http\Sessions\SessionBootstrapper;
-use Project\Application\Bootstrappers\Http\Views\BuildersBootstrapper;
-use Project\Application\Bootstrappers\Http\Views\ViewBootstrapper;
+use Wigez\Application\Bootstrappers\Http\Routing\RouterBootstrapper;
+use Wigez\Application\Bootstrappers\Http\Sessions\SessionBootstrapper;
+use Wigez\Application\Bootstrappers\Http\Views\BuildersBootstrapper;
+use Wigez\Application\Bootstrappers\Http\Views\ViewBootstrapper;
 
 /**
  * ----------------------------------------------------------

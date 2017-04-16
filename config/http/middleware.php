@@ -1,7 +1,7 @@
 <?php
 use Opulence\Framework\Http\Middleware\CheckMaintenanceMode;
-use Project\Application\Http\Middleware\CheckCsrfToken;
-use Project\Application\Http\Middleware\Session;
+use Wigez\Application\Http\Middleware\CheckCsrfToken;
+use Wigez\Application\Http\Middleware\Session;
 
 /**
  * ----------------------------------------------------------

@@ -1,5 +1,5 @@
 <?php
-use Project\Application\Console\Commands\CustomerHashPasswordsCommand;
+use Wigez\Application\Console\Commands\CustomerHashPasswordsCommand;
 
 /**
  * ----------------------------------------------------------

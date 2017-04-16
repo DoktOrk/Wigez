@@ -9,17 +9,17 @@ use Opulence\Routing\Router;
  *
  * @var Router $router
  */
-$router->group(['controllerNamespace' => 'Project\\Application\\Http\\Controllers'], function (Router $router) {
-    /** @see \Project\Application\Http\Controllers\Index::homePage() */
+$router->group(['controllerNamespace' => 'Wigez\\Application\\Http\\Controllers'], function (Router $router) {
+    /** @see \Wigez\Application\Http\Controllers\Index::homePage() */
     $router->get(PATH_HOME, 'Index@homePage', [OPTIONS_NAME => ROUTE_HOME]);
-    /** @see \Project\Application\Http\Controllers\Index::nope() */
+    /** @see \Wigez\Application\Http\Controllers\Index::nope() */
     $router->get(PATH_NOPE, 'Index@nope', [OPTIONS_NAME => ROUTE_NOPE]);
 
-    /** @see \Project\Application\Http\Controllers\User::loginForm() */
+    /** @see \Wigez\Application\Http\Controllers\User::loginForm() */
     $router->get(PATH_LOGIN, 'User@loginForm', [OPTIONS_NAME => ROUTE_LOGIN]);
-    /** @see \Project\Application\Http\Controllers\User::login() */
+    /** @see \Wigez\Application\Http\Controllers\User::login() */
     $router->post(PATH_LOGIN, 'User@login', [OPTIONS_NAME => ROUTE_LOGIN_POST]);
-    /** @see \Project\Application\Http\Controllers\User::logout() */
+    /** @see \Wigez\Application\Http\Controllers\User::logout() */
     $router->get(PATH_LOGOUT, 'User@logout', [OPTIONS_NAME => ROUTE_LOGOUT]);
 
 
@@ -27,15 +27,15 @@ $router->group(['controllerNamespace' => 'Project\\Application\\Http\\Controller
         [
             'path' => PATH_API,
             'middleware' => [
-                'Project\\Application\\Http\\Middleware\\Api',
+                'Wigez\\Application\\Http\\Middleware\\Api',
             ]
         ],
         function (Router $router) {
-            /** @see \Project\Application\Http\Controllers\File::csv() */
+            /** @see \Wigez\Application\Http\Controllers\File::csv() */
             $router->multiple(['GET', 'POST'], PATH_API_CSV, 'File@csv', [OPTIONS_NAME => ROUTE_API_CSV]);
-            /** @see \Project\Application\Http\Controllers\File::download() */
+            /** @see \Wigez\Application\Http\Controllers\File::download() */
             $router->multiple(['GET', 'POST'], PATH_API_DOWNLOAD, 'File@download', [OPTIONS_NAME => ROUTE_API_DOWNLOAD]);
-            /** @see \Project\Application\Http\Controllers\File::downloadInput() */
+            /** @see \Wigez\Application\Http\Controllers\File::downloadInput() */
             $router->multiple(['GET', 'POST'], PATH_API_DOWNLOAD_INPUT, 'File@downloadInput', [OPTIONS_NAME => ROUTE_API_DOWNLOAD_INPUT]);
         }
     );
@@ -44,8 +44,8 @@ $router->group(['controllerNamespace' => 'Project\\Application\\Http\\Controller
         [
             'path' => PATH_ADMIN,
             'middleware' => [
-                'Project\\Application\\Http\\Middleware\\Authentication',
-                'Project\\Application\\Http\\Middleware\\Authorization',
+                'Wigez\\Application\\Http\\Middleware\\Authentication',
+                'Wigez\\Application\\Http\\Middleware\\Authorization',
             ]
         ],
         function (Router $router) {
