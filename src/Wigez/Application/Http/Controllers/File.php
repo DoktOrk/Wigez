@@ -326,9 +326,9 @@ class File extends CrudAbstract
         $callback = function() use($stream) {
             while(!feof($stream)) {
                 print(@fread($stream, 1024*8));
-                ob_flush();
-                flush();
             }
+            ob_flush();
+            flush();
         };
 
         $headers = [
