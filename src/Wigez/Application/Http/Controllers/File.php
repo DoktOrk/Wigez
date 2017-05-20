@@ -256,11 +256,6 @@ class File extends CrudAbstract
         return $postData;
     }
 
-    /*
-     * @param Entity $entity
-     *
-     * @return Entity
-     */
     protected function addAllCategories()
     {
         $this->viewVarsExtra[static::VAR_CATEGORIES] = $this->categoryRepo->getAll();
