@@ -56,7 +56,7 @@ CREATE TABLE `files` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `category_id` int(10) unsigned DEFAULT NULL,
   `file` varchar(100) NOT NULL,
-  `filename` varchar(30) NOT NULL,
+  `filename` varchar(100) NOT NULL,
   `uploaded_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `description` text NOT NULL,
   `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0',
