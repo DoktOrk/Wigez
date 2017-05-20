@@ -195,10 +195,10 @@ class File implements IStringerEntity
      */
     public function __toString(): string
     {
-        if (!$this->file) {
+        if (!$this->filename) {
             return '#' . $this->getId();
         }
 
-        return $this->file;
+        return $this->filename;
     }
 }
